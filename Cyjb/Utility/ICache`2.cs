@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示缓冲池的接口。
-	/// </summary>
-	/// <typeparam name="TKey">缓存对象的键的类型。</typeparam>
-	/// <typeparam name="TValue">缓存对象的类型。</typeparam>
-	public interface ICache<TKey, TValue>
+    /// <summary>
+    /// 表示缓冲池的接口。
+    /// </summary>
+    /// <typeparam name="TKey">缓存对象的键的类型。</typeparam>
+    /// <typeparam name="TValue">缓存对象的类型。</typeparam>
+    public interface ICache<TKey, TValue>
 	{
 		/// <summary>
 		/// 将指定的键和对象添加到缓存中，无论键是否存在。

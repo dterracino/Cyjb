@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 允许跨域的进度更新的提供程序。
-	/// </summary>
-	/// <typeparam name="T">进度更新值的类型。</typeparam>
-	public sealed class RemoteProgress<T> : MarshalByRefObject, IProgress<T>
+    /// <summary>
+    /// 允许跨域的进度更新的提供程序。
+    /// </summary>
+    /// <typeparam name="T">进度更新值的类型。</typeparam>
+    public sealed class RemoteProgress<T> : MarshalByRefObject, IProgress<T>
 	{
 		/// <summary>
 		/// 被包装的进度更新提供程序。

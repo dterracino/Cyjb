@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Configurations
 {
-	/// <summary>
-	/// 表示强类型的包含一个子元素集合的配置元素。
-	/// </summary>
-	/// <typeparam name="TKey">子配置元素的键的类型。</typeparam>
-	/// <typeparam name="TElement">子配置元素的类型。</typeparam>
-	public abstract class ConfigurationElementCollection<TKey, TElement> : ConfigurationElementCollection<TElement>
+    /// <summary>
+    /// 表示强类型的包含一个子元素集合的配置元素。
+    /// </summary>
+    /// <typeparam name="TKey">子配置元素的键的类型。</typeparam>
+    /// <typeparam name="TElement">子配置元素的类型。</typeparam>
+    public abstract class ConfigurationElementCollection<TKey, TElement> : ConfigurationElementCollection<TElement>
 		where TElement : ConfigurationElement
 	{
 	    /// <summary>

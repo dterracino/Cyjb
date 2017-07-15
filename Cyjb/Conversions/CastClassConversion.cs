@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示显式引用转换。
-	/// </summary>
-	internal class CastClassConversion : Conversion
+    /// <summary>
+    /// 表示显式引用转换。
+    /// </summary>
+    internal class CastClassConversion : Conversion
 	{
 		/// <summary>
 		/// <see cref="CastClassConversion"/> 的默认实例。

@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 提供列表键嵌入在值中的列表的抽象基类。
-	/// </summary>
-	/// <typeparam name="TKey">列表中键的类型。</typeparam>
-	/// <typeparam name="TItem">列表中的项的类型。</typeparam>
-	/// <remarks>列表中存储的元素都不能为 <c>null</c>，相应的键也不能为 <c>null</c>。</remarks>
-	[Serializable]
+    /// <summary>
+    /// 提供列表键嵌入在值中的列表的抽象基类。
+    /// </summary>
+    /// <typeparam name="TKey">列表中键的类型。</typeparam>
+    /// <typeparam name="TItem">列表中的项的类型。</typeparam>
+    /// <remarks>列表中存储的元素都不能为 <c>null</c>，相应的键也不能为 <c>null</c>。</remarks>
+    [Serializable]
 	[ContractClass(typeof(ContractsForKeyedListBase<,>))]
 	public abstract class KeyedListBase<TKey, TItem> : ListBase<TItem>
 	{

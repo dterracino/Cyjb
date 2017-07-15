@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb.Reflection
 {
-	/// <summary>
-	/// <see cref="MethodExt"/> 类的单元测试。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// <see cref="MethodExt"/> 类的单元测试。
+    /// </summary>
+    [TestClass]
 	public class UnitTestMethodExt
 	{
 		/// <summary>

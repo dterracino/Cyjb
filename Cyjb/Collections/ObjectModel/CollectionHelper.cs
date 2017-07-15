@@ -2,18 +2,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 提供集合的辅助类。
-	/// </summary>
-	internal static class CollectionHelper
+    /// <summary>
+    /// 提供集合的辅助类。
+    /// </summary>
+    internal static class CollectionHelper
 	{
 		/// <summary>
 		/// 从特定的 <see cref="Array"/> 索引处开始，将指定集合

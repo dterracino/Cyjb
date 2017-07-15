@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Conversions;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 表示类型转换的 IL 指令。
-	/// </summary>
-	public class Converter
+    /// <summary>
+    /// 表示类型转换的 IL 指令。
+    /// </summary>
+    public class Converter
 	{
 		/// <summary>
 		/// 类型转换器。

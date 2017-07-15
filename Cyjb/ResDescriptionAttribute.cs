@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 指定属性或事件的说明。
-	/// </summary>
-	internal sealed class ResDescriptionAttribute : DescriptionAttribute
+    /// <summary>
+    /// 指定属性或事件的说明。
+    /// </summary>
+    internal sealed class ResDescriptionAttribute : DescriptionAttribute
 	{
 		/// <summary>
 		/// 说明是否已本地化。

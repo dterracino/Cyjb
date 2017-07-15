@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示缓冲池的配置元素。
-	/// </summary>
-	public sealed class CacheElement : ConfigurationElement
+    /// <summary>
+    /// 表示缓冲池的配置元素。
+    /// </summary>
+    public sealed class CacheElement : ConfigurationElement
 	{
 	    /// <summary>
 		/// 获取或设置缓冲池配置的键。

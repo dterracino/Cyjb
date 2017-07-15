@@ -2,19 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 提供集合键嵌入在值中的只读集合的抽象基类。
-	/// </summary>
-	/// <typeparam name="TKey">集合中键的类型。</typeparam>
-	/// <typeparam name="TItem">集合中的元素的类型。</typeparam>
-	/// <remarks>集合中存储的元素都不能为 <c>null</c>，相应的键也不能为 <c>null</c>。</remarks>
-	[Serializable]
+    /// <summary>
+    /// 提供集合键嵌入在值中的只读集合的抽象基类。
+    /// </summary>
+    /// <typeparam name="TKey">集合中键的类型。</typeparam>
+    /// <typeparam name="TItem">集合中的元素的类型。</typeparam>
+    /// <remarks>集合中存储的元素都不能为 <c>null</c>，相应的键也不能为 <c>null</c>。</remarks>
+    [Serializable]
 	public abstract class ReadOnlyKeyedCollectionBase<TKey, TItem> : ReadOnlyCollection<TItem>
 	{
 		/// <summary>

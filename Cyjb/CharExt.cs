@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 提供 <see cref="Char"/> 类的扩展方法。
-	/// </summary>
-	public static class CharExt
+    /// <summary>
+    /// 提供 <see cref="Char"/> 类的扩展方法。
+    /// </summary>
+    public static class CharExt
 	{
 		/// <summary>
 		/// 所有用于不同进制的字符。

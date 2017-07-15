@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.CodeAnalysis;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示类型转换的类型。
-	/// </summary>
-	[SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
+    /// <summary>
+    /// 表示类型转换的类型。
+    /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1028:EnumStorageShouldBeInt32")]
 	internal enum ConversionType : byte
 	{
 		/// <summary>

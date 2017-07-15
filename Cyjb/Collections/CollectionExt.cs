@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 提供对 <see cref="ICollection{T}"/> 的扩展方法。
-	/// </summary>
-	public static class CollectionExt
+    /// <summary>
+    /// 提供对 <see cref="ICollection{T}"/> 的扩展方法。
+    /// </summary>
+    public static class CollectionExt
 	{
 		/// <summary>
 		/// 将指定集合的元素添加到当前集合中。

@@ -3,16 +3,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Text
 {
-	/// <summary>
-	/// 实现从字符序列进行读取的 <see cref="TextReader"/>。
-	/// </summary>
-	public class CharsReader : TextReader
+    /// <summary>
+    /// 实现从字符序列进行读取的 <see cref="TextReader"/>。
+    /// </summary>
+    public class CharsReader : TextReader
 	{
 		/// <summary>
 		/// 字符序列的枚举器。

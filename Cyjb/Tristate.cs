@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cyjb
+﻿namespace Cyjb
 {
     /// <summary>
     /// 表示一个三态枚举。

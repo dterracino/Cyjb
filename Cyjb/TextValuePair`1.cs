@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.ComponentModel;
 using Cyjb.Utility;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示泛型的文本-值对。
-	/// </summary>
-	/// <typeparam name="TValue">值的数据类型。</typeparam>
-	[Serializable]
+    /// <summary>
+    /// 表示泛型的文本-值对。
+    /// </summary>
+    /// <typeparam name="TValue">值的数据类型。</typeparam>
+    [Serializable]
 	public sealed class TextValuePair<TValue> : ObservableObject, IEditableObject, IEquatable<TextValuePair<TValue>>
 	{
 		/// <summary>

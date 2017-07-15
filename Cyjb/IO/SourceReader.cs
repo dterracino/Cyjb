@@ -5,21 +5,20 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Text;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 表示支持行列计数的源文件读取器。
-	/// </summary>
-	/// <remarks><see cref="SourceReader"/> 类中，包含一个环形字符缓冲区，
-	/// 关于环形字符缓冲区的详细解释，请参见我的 C# 词法分析器系列博文
-	/// <see href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html">
-	/// 《C# 词法分析器（二）输入缓冲和代码定位》</see>。</remarks>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html">
-	/// 《C# 词法分析器（二）输入缓冲和代码定位》</seealso>
-	public sealed class SourceReader : IDisposable
+    /// <summary>
+    /// 表示支持行列计数的源文件读取器。
+    /// </summary>
+    /// <remarks><see cref="SourceReader"/> 类中，包含一个环形字符缓冲区，
+    /// 关于环形字符缓冲区的详细解释，请参见我的 C# 词法分析器系列博文
+    /// <see href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html">
+    /// 《C# 词法分析器（二）输入缓冲和代码定位》</see>。</remarks>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html">
+    /// 《C# 词法分析器（二）输入缓冲和代码定位》</seealso>
+    public sealed class SourceReader : IDisposable
 	{
 		/// <summary>
 		/// 缓冲区的大小。

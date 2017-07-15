@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示一个全局的线程安全伪随机数生成器，并提供关于随机数的扩展方法。
-	/// </summary>
-	public static class RandomExt
+    /// <summary>
+    /// 表示一个全局的线程安全伪随机数生成器，并提供关于随机数的扩展方法。
+    /// </summary>
+    public static class RandomExt
 	{
 		/// <summary>
 		/// 全局伪随机数生成器。

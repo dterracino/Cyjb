@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 提供 <see cref="EventInfo"/> 及其子类的扩展方法。
-	/// </summary>
-	public static class EventExt
+    /// <summary>
+    /// 提供 <see cref="EventInfo"/> 及其子类的扩展方法。
+    /// </summary>
+    public static class EventExt
 	{
 
 		#region 基定义

@@ -1,32 +1,28 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Conversions;
 using Cyjb.Utility;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 提供将一种类型转换为另一种类型的方法。
-	/// </summary>
-	/// <remarks><para>支持预定义的隐式、显式类型转换，用户自定义类型转换（Implicit 和 Explicit 运算符），
-	/// 并可以通过 <see cref="AddConverter{TInput, TOutput}"/> 和 <see cref="AddConverterProvider"/> 
-	/// 方法注入额外的类型转换方法。</para>
-	/// <para>默认添加了所有类型转换为字符串，和字符串转换为数字、布尔和日期/时间的额外方法。</para>
-	/// <para>所有数值类型转换，都会对溢出进行检查，如果数值不在范围内则会抛出异常。</para>
-	/// <para>explicit 和 implicit 方法缓存的键为 Cyjb.UserConversionCache，默认使用上限为 <c>256</c> 的 
-	/// <see cref="LruCache{TKey,TValue}"/>。动态生成的类型转换方法缓存的键为 Cyjb.ConverterCache，
-	/// 默认使用无上限的 <see cref="SimplyCache{TKey, TValue}"/>。关于如何设置缓存，
-	/// 可以参见 <see cref="CacheFactory"/>。</para>
-	/// </remarks>
-	public static partial class Convert
+    /// <summary>
+    /// 提供将一种类型转换为另一种类型的方法。
+    /// </summary>
+    /// <remarks><para>支持预定义的隐式、显式类型转换，用户自定义类型转换（Implicit 和 Explicit 运算符），
+    /// 并可以通过 <see cref="AddConverter{TInput, TOutput}"/> 和 <see cref="AddConverterProvider"/> 
+    /// 方法注入额外的类型转换方法。</para>
+    /// <para>默认添加了所有类型转换为字符串，和字符串转换为数字、布尔和日期/时间的额外方法。</para>
+    /// <para>所有数值类型转换，都会对溢出进行检查，如果数值不在范围内则会抛出异常。</para>
+    /// <para>explicit 和 implicit 方法缓存的键为 Cyjb.UserConversionCache，默认使用上限为 <c>256</c> 的 
+    /// <see cref="LruCache{TKey,TValue}"/>。动态生成的类型转换方法缓存的键为 Cyjb.ConverterCache，
+    /// 默认使用无上限的 <see cref="SimplyCache{TKey, TValue}"/>。关于如何设置缓存，
+    /// 可以参见 <see cref="CacheFactory"/>。</para>
+    /// </remarks>
+    public static partial class Convert
 	{
 		/// <summary>
 		/// 返回具有指定输入和输出类型的 <see cref="Converter{TInput, TOutput}"/> 类型。

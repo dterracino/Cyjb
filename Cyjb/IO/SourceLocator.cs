@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 提供可以用于在要定位的方法。
-	/// 支持 \n（Unix） 和 \r\n（Windows） 作为换行符。
-	/// </summary>
-	/// <remarks>
-	/// 对代码定位方法的详细解释，请参见我的 C# 词法分析器系列博文
-	/// <see href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html#SourceLocation">
-	/// 《C# 词法分析器（二）输入缓冲和代码定位》</see>。</remarks>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html#SourceLocation">
-	/// 《C# 词法分析器（二）输入缓冲和代码定位》</seealso>
-	[DebuggerDisplay("{Position}")]
+    /// <summary>
+    /// 提供可以用于在要定位的方法。
+    /// 支持 \n（Unix） 和 \r\n（Windows） 作为换行符。
+    /// </summary>
+    /// <remarks>
+    /// 对代码定位方法的详细解释，请参见我的 C# 词法分析器系列博文
+    /// <see href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html#SourceLocation">
+    /// 《C# 词法分析器（二）输入缓冲和代码定位》</see>。</remarks>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/LexerInputBuffer.html#SourceLocation">
+    /// 《C# 词法分析器（二）输入缓冲和代码定位》</seealso>
+    [DebuggerDisplay("{Position}")]
 	public sealed class SourceLocator
 	{
 		/// <summary>

@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb;
 using Cyjb.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb.Reflection
 {
-	/// <summary>
-	/// <see cref="PowerBinder"/> 类的单元测试。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// <see cref="PowerBinder"/> 类的单元测试。
+    /// </summary>
+    [TestClass]
 	public class UnitTestPowerBinder
 	{
 		/// <summary>

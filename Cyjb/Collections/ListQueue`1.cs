@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 表示对象的先进先出集合。
-	/// 该集合还允许使用索引访问队列中的元素。
-	/// </summary>
-	/// <typeparam name="T">指定队列中的元素的类型。</typeparam>
-	/// <seealso cref="Queue{T}"/>
-	[Serializable]
+    /// <summary>
+    /// 表示对象的先进先出集合。
+    /// 该集合还允许使用索引访问队列中的元素。
+    /// </summary>
+    /// <typeparam name="T">指定队列中的元素的类型。</typeparam>
+    /// <seealso cref="Queue{T}"/>
+    [Serializable]
 	public sealed class ListQueue<T> : Queue<T>
 	{
 		/// <summary>

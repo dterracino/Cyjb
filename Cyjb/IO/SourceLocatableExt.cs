@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 提供可在源文件中定位的对象的扩展方法。
-	/// </summary>
-	public static class SourceLocatableExt
+    /// <summary>
+    /// 提供可在源文件中定位的对象的扩展方法。
+    /// </summary>
+    public static class SourceLocatableExt
 	{
 		/// <summary>
 		/// 获取指定对象在源文件中的字符长度。

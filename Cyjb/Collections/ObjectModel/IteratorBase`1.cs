@@ -3,18 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 为迭代器提供基类。
-	/// </summary>
-	/// <typeparam name="T">迭代的元素类型。</typeparam>
-	[Serializable]
+    /// <summary>
+    /// 为迭代器提供基类。
+    /// </summary>
+    /// <typeparam name="T">迭代的元素类型。</typeparam>
+    [Serializable]
 	[ContractClass(typeof(ContractsForIteratorBase<>))]
 	public abstract class IteratorBase<T> : IEnumerator<T>, IEnumerable<T>
 	{

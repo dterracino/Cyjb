@@ -3,20 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 表示数组的一部分的列表。与 <see cref="ArraySegment{T}"/> 
-	/// 的区别就是 <see cref="ArrayAdapter{T}"/> 实现了 <see cref="IList{T}"/> 接口，
-	/// 访问方式与普通的列表相同。
-	/// </summary>
-	/// <typeparam name="T">元素的类型。</typeparam>
-	public sealed class ArrayAdapter<T> : ListBase<T>, IList
+    /// <summary>
+    /// 表示数组的一部分的列表。与 <see cref="ArraySegment{T}"/> 
+    /// 的区别就是 <see cref="ArrayAdapter{T}"/> 实现了 <see cref="IList{T}"/> 接口，
+    /// 访问方式与普通的列表相同。
+    /// </summary>
+    /// <typeparam name="T">元素的类型。</typeparam>
+    public sealed class ArrayAdapter<T> : ListBase<T>, IList
 	{
 		/// <summary>
 		/// 原数组。

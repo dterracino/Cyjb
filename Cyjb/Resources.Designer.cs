@@ -8,19 +8,6 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.CodeDom.Compiler;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Linq;
-using System.Resources;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Cyjb {
     using System;
     
@@ -32,27 +19,27 @@ namespace Cyjb {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
-    [DebuggerNonUserCode()]
-    [CompilerGenerated()]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
         
-        private static ResourceManager resourceMan;
+        private static global::System.Resources.ResourceManager resourceMan;
         
-        private static CultureInfo resourceCulture;
+        private static global::System.Globalization.CultureInfo resourceCulture;
         
-        [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
-        [System.ComponentModel.EditorBrowsableAttvartorBrowsableState.Advanced)]
-        internal static ResourceManager ResourceManager {
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager {
             get {
-                if (ReferenceEquals(resourceMan, null)) {
-                    ResourceManager temp = new ResourceManager("Cyjb.Resources", typeof(Resources).Assembly);
+                if (object.ReferenceEquals(resourceMan, null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Cyjb.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -63,8 +50,8 @@ namespace Cyjb {
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
-        [EditorBrowsable(EditorBrowsableState.Advanced)]
-        internal static CultureInfo Culture {
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -110,7 +97,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ambiguous user-defined converter found when convert &apos;{0}&apos; to &apos;{1}&apos;..
+        ///   Looks up a localized string similar to Ambiguous user-defined converter found when converting &apos;{0}&apos; to &apos;{1}&apos;..
         /// </summary>
         internal static string AmbiguousUserDefinedConverter {
             get {
@@ -119,7 +106,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Value of parameter &apos;{0}&apos; and &apos;{1}&apos; can not botn be null..
+        ///   Looks up a localized string similar to Value of parameter &apos;{0}&apos; and &apos;{1}&apos; can not both be null..
         /// </summary>
         internal static string ArgumentBothNull {
             get {
@@ -263,7 +250,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to null cannot be converted to a value type..
+        ///   Looks up a localized string similar to Null cannot be converted to a value type..
         /// </summary>
         internal static string CannotCastNullToValueType {
             get {
@@ -281,7 +268,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Collection element count must be the same as current colection..
+        ///   Looks up a localized string similar to Collection element count must be the same as current collection..
         /// </summary>
         internal static string CollectionCountDiffer {
             get {
@@ -542,7 +529,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Specific key is not exists..
+        ///   Looks up a localized string similar to Specific key does not exist..
         /// </summary>
         internal static string KeyNotFound {
             get {
@@ -551,7 +538,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Key &apos;{0}&apos; is not exists..
+        ///   Looks up a localized string similar to Key &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string KeyNotFound_Key {
             get {
@@ -839,7 +826,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no get accessor exists..
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no get accessor..
         /// </summary>
         internal static string PropertyNoGetter {
             get {
@@ -848,7 +835,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no set accessor exists..
+        ///   Looks up a localized string similar to Property &apos;{0}&apos; has no set accessor..
         /// </summary>
         internal static string PropertyNoSetter {
             get {
@@ -875,7 +862,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Public property or field named &apos;{0}&apos; not exists..
+        ///   Looks up a localized string similar to Public property or field named &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string PropertyOrFieldNotFound {
             get {
@@ -884,7 +871,7 @@ namespace Cyjb {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Property or field named &apos;{0}&apos; not exists..
+        ///   Looks up a localized string similar to Property or field named &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string PropertyOrFieldNotFound_NonPublic {
             get {

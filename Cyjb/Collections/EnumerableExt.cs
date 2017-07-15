@@ -2,15 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 提供对 <see cref="IEnumerable{T}"/> 接口的扩展方法。
-	/// </summary>
-	public static class EnumerableExt
+    /// <summary>
+    /// 提供对 <see cref="IEnumerable{T}"/> 接口的扩展方法。
+    /// </summary>
+    public static class EnumerableExt
 	{
 		/// <summary>
 		/// 随机打乱转序列中元素的顺序。

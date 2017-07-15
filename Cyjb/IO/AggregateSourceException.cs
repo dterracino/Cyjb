@@ -8,16 +8,15 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 using JetBrains.Annotations;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 表示源文件的异常的集合。
-	/// </summary>
-	[Serializable, DebuggerDisplay("Count = {InnerExceptionCount}")]
+    /// <summary>
+    /// 表示源文件的异常的集合。
+    /// </summary>
+    [Serializable, DebuggerDisplay("Count = {InnerExceptionCount}")]
 	public class AggregateSourceException : Exception
 	{
 		/// <summary>

@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示文本-值对的集合。
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// 表示文本-值对的集合。
+    /// </summary>
+    [Serializable]
 	public class TextValuePairCollection : BindingList<TextValuePair>
 	{
 	    /// <summary>

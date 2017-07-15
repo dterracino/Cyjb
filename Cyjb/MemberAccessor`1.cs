@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Reflection;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示静态或封闭的实例属性、字段的存取器。
-	/// </summary>
-	/// <typeparam name="T">属性或字段的类型。</typeparam>
-	public sealed class MemberAccessor<T>
+    /// <summary>
+    /// 表示静态或封闭的实例属性、字段的存取器。
+    /// </summary>
+    /// <typeparam name="T">属性或字段的类型。</typeparam>
+    public sealed class MemberAccessor<T>
 	{
 		/// <summary>
 		/// 属性或字段的名称。

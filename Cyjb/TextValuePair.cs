@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.ComponentModel;
 using Cyjb.Utility;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示简单的文本-值对。
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// 表示简单的文本-值对。
+    /// </summary>
+    [Serializable]
 	public sealed class TextValuePair : ObservableObject, IEditableObject, IEquatable<TextValuePair>
 	{
 		/// <summary>

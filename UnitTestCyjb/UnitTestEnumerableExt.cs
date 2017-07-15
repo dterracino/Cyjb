@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Cyjb.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb
 {
-	/// <summary>
-	/// <see cref="EnumerableExt"/> 类的单元测试。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// <see cref="EnumerableExt"/> 类的单元测试。
+    /// </summary>
+    [TestClass]
 	public class UnitTestEnumerableExt
 	{
 		/// <summary>

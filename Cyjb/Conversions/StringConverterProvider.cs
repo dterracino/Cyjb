@@ -1,20 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Reflection;
 using JetBrains.Annotations;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 与字符串相关的类型转换器的提供者。
-	/// </summary>
-	internal sealed class StringConverterProvider : IConverterProvider
+    /// <summary>
+    /// 与字符串相关的类型转换器的提供者。
+    /// </summary>
+    internal sealed class StringConverterProvider : IConverterProvider
 	{
 		/// <summary>
 		/// 默认的字符串类型转换器提供者。

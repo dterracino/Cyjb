@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Cyjb.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb.IO
 {
-	/// <summary>
-	/// 表示 <see cref="SourceReader"/> 类的相关扩展方法。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// 表示 <see cref="SourceReader"/> 类的相关扩展方法。
+    /// </summary>
+    [TestClass]
 	public class UnitTestSourceReader
 	{
 		/// <summary>

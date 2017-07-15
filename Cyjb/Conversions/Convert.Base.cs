@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	// 进制转换。
-	public static partial class Convert
+    // 进制转换。
+    public static partial class Convert
 	{
 
 		#region 字符串转换为数字

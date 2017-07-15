@@ -2,23 +2,20 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 表示指定源文件中的指定范围。
-	/// </summary>
-	/// <remarks>
-	/// <para>表示从 <see cref="Start"/> 开始，到 <see cref="End"/> （包含）结束的范围，
-	/// 要求 <see cref="Start"/> 属性的值小于等于 <see cref="End"/> 属性的值。</para>
-	/// <para>若 <see cref="Start"/> 属性和 <see cref="End"/> 属性的值都为 <see cref="SourcePosition.Unknown"/>，
-	/// 则表示未知的位置。</para>
-	/// </remarks>
-	[Serializable]
+    /// <summary>
+    /// 表示指定源文件中的指定范围。
+    /// </summary>
+    /// <remarks>
+    /// <para>表示从 <see cref="Start"/> 开始，到 <see cref="End"/> （包含）结束的范围，
+    /// 要求 <see cref="Start"/> 属性的值小于等于 <see cref="End"/> 属性的值。</para>
+    /// <para>若 <see cref="Start"/> 属性和 <see cref="End"/> 属性的值都为 <see cref="SourcePosition.Unknown"/>，
+    /// 则表示未知的位置。</para>
+    /// </remarks>
+    [Serializable]
 	public class SourceFileRange : ISourceFileLocatable, IEquatable<SourceFileRange>, IComparable<SourceFileRange>
 	{
 		/// <summary>

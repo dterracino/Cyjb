@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Cyjb.Text
 {
-	/// <summary>
-	/// 表示词法单元的分析器。
-	/// </summary>
-	/// <typeparam name="T">词法单元标识符的类型，必须是一个枚举类型。</typeparam>
-	public abstract class TokenParser<T>
+    /// <summary>
+    /// 表示词法单元的分析器。
+    /// </summary>
+    /// <typeparam name="T">词法单元标识符的类型，必须是一个枚举类型。</typeparam>
+    public abstract class TokenParser<T>
 		where T : struct
 	{
 	    /// <summary>

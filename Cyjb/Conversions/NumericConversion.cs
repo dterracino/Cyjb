@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示数值类型的转换。
-	/// </summary>
-	internal class NumericConversion : Conversion
+    /// <summary>
+    /// 表示数值类型的转换。
+    /// </summary>
+    internal class NumericConversion : Conversion
 	{
 
 		#region 静态属性

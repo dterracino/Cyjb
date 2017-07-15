@@ -2,19 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.IO;
 
 namespace Cyjb.Text
 {
-	/// <summary>
-	/// 表示词法单元的读取器。
-	/// </summary>
-	/// <seealso cref="Token{T}"/>
-	/// <typeparam name="T">词法单元标识符的类型，必须是一个枚举类型。</typeparam>
-	public abstract class TokenReader<T> : IDisposable, IEnumerable<Token<T>>
+    /// <summary>
+    /// 表示词法单元的读取器。
+    /// </summary>
+    /// <seealso cref="Token{T}"/>
+    /// <typeparam name="T">词法单元标识符的类型，必须是一个枚举类型。</typeparam>
+    public abstract class TokenReader<T> : IDisposable, IEnumerable<Token<T>>
 		where T : struct
 	{
 		/// <summary>

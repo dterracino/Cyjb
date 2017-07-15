@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Cyjb.IO;
+﻿using Cyjb.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb.IO
 {
-	/// <summary>
-	/// <see cref="SourceRange"/> 类的单元测试。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// <see cref="SourceRange"/> 类的单元测试。
+    /// </summary>
+    [TestClass]
 	public class UnitTestSourceRange
 	{
 		/// <summary>

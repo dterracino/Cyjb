@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 为 <see cref="ICollection{T}"/> 接口提供调试视图。
-	/// </summary>
-	/// <typeparam name="T">集合中元素的类型。</typeparam>
-	internal sealed class CollectionDebugView<T>
+    /// <summary>
+    /// 为 <see cref="ICollection{T}"/> 接口提供调试视图。
+    /// </summary>
+    /// <typeparam name="T">集合中元素的类型。</typeparam>
+    internal sealed class CollectionDebugView<T>
 	{
 		/// <summary>
 		/// 调试视图的源集合。

@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.Contracts;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示改进的最近最少使用算法的节点，不包含多线程同步。
-	/// </summary>
-	/// <typeparam name="TKey">对象缓存的键的类型。</typeparam>
-	/// <typeparam name="TValue">被缓存的对象的类型。</typeparam>
-	internal sealed class LruNodeNoSync<TKey, TValue>
+    /// <summary>
+    /// 表示改进的最近最少使用算法的节点，不包含多线程同步。
+    /// </summary>
+    /// <typeparam name="TKey">对象缓存的键的类型。</typeparam>
+    /// <typeparam name="TValue">被缓存的对象的类型。</typeparam>
+    internal sealed class LruNodeNoSync<TKey, TValue>
 	{
 		/// <summary>
 		/// 获取或设置对象缓存的键。

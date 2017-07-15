@@ -1,22 +1,18 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示缓存个数不受限制的对象缓冲池。
-	/// </summary>
-	/// <typeparam name="TKey">缓存对象的键的类型。</typeparam>
-	/// <typeparam name="TValue">缓存对象的类型。</typeparam>
-	/// <remarks>该类仅仅是 <see cref="ConcurrentDictionary{TKey,TValue}"/> 类的一个简单包装。
-	/// 缓存的对象数量会一直增长下去，通常应仅作为测试使用或用于缓存生成的代价非常大的对象。</remarks>
-	[DebuggerDisplay("Count = {Count}")]
+    /// <summary>
+    /// 表示缓存个数不受限制的对象缓冲池。
+    /// </summary>
+    /// <typeparam name="TKey">缓存对象的键的类型。</typeparam>
+    /// <typeparam name="TValue">缓存对象的类型。</typeparam>
+    /// <remarks>该类仅仅是 <see cref="ConcurrentDictionary{TKey,TValue}"/> 类的一个简单包装。
+    /// 缓存的对象数量会一直增长下去，通常应仅作为测试使用或用于缓存生成的代价非常大的对象。</remarks>
+    [DebuggerDisplay("Count = {Count}")]
 	public sealed class SimplyCache<TKey, TValue> : ICache<TKey, TValue>
 	{
 		/// <summary>

@@ -1,19 +1,15 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示用户自定义类型转换方法。
-	/// </summary>
-	internal class UserConversion : Conversion
+    /// <summary>
+    /// 表示用户自定义类型转换方法。
+    /// </summary>
+    internal class UserConversion : Conversion
 	{
 		/// <summary>
 		/// 用户自定义类型转换方法。

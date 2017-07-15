@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Permissions;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Cyjb.Threading
 {
-	/// <summary>
-	/// 允许跨域通知 <see cref="CancellationToken"/>，告知其应被取消。
-	/// </summary>
-	/// <remarks>使用时请将 <see cref="RemoteCancellationTokenSource"/> 创建在新的 AppDomain 中，
-	/// 并在原 AppDomain 中调用 <code>cancellationToken.Register(remoteCancellationTokenSource.Cancel);</code>，
-	/// 将此 <see cref="RemoteCancellationTokenSource"/> 注册到原 AppDomain 的 <see cref="CancellationToken"/> 里。</remarks>
-	[HostProtection(Synchronization = true, ExternalThreading = true)]
+    /// <summary>
+    /// 允许跨域通知 <see cref="CancellationToken"/>，告知其应被取消。
+    /// </summary>
+    /// <remarks>使用时请将 <see cref="RemoteCancellationTokenSource"/> 创建在新的 AppDomain 中，
+    /// 并在原 AppDomain 中调用 <code>cancellationToken.Register(remoteCancellationTokenSource.Cancel);</code>，
+    /// 将此 <see cref="RemoteCancellationTokenSource"/> 注册到原 AppDomain 的 <see cref="CancellationToken"/> 里。</remarks>
+    [HostProtection(Synchronization = true, ExternalThreading = true)]
 	[DebuggerDisplay("IsCancellationRequested = {IsCancellationRequested}")]
 	public sealed class RemoteCancellationTokenSource : MarshalByRefObject, IDisposable
 	{

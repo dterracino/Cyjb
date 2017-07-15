@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Conversions;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 提供 <see cref="Type"/> 类的扩展方法。
-	/// </summary>
-	public static class TypeExt
+    /// <summary>
+    /// 提供 <see cref="Type"/> 类的扩展方法。
+    /// </summary>
+    public static class TypeExt
 	{
 		/// <summary>
 		/// 搜索公共静态成员的绑定标志。

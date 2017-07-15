@@ -2,17 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 为泛型集合提供基类。
-	/// </summary>
-	/// <typeparam name="T">集合中元素的类型。</typeparam>
-	[Serializable, DebuggerDisplay("Count = {Count}")]
+    /// <summary>
+    /// 为泛型集合提供基类。
+    /// </summary>
+    /// <typeparam name="T">集合中元素的类型。</typeparam>
+    [Serializable, DebuggerDisplay("Count = {Count}")]
 	[DebuggerTypeProxy(typeof(CollectionDebugView<>))]
 	public class CollectionBase<T> : ICollection<T>, IReadOnlyCollection<T>, ICollection
 	{

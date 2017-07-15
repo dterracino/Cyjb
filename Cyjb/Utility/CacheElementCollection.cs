@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Configurations;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示缓冲池配置元素的集合。
-	/// </summary>
-	public sealed class CacheElementCollection : ConfigurationElementCollection<string, CacheElement>
+    /// <summary>
+    /// 表示缓冲池配置元素的集合。
+    /// </summary>
+    public sealed class CacheElementCollection : ConfigurationElementCollection<string, CacheElement>
 	{
 	    /// <summary>
 		/// 创建一个新的 <see cref="ConfigurationElement"/>。

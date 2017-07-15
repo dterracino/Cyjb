@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 提供对 <see cref="System.IO.File"/> 类的扩展方法。
-	/// </summary>
-	public static class FileExt
+    /// <summary>
+    /// 提供对 <see cref="System.IO.File"/> 类的扩展方法。
+    /// </summary>
+    public static class FileExt
 	{
 		/// <summary>
 		/// 返回与当前区域性相关的文件名。

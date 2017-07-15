@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace Cyjb.Configurations
 {
-	/// <summary>
-	/// 表示包含值的配置元素。
-	/// </summary>
-	public sealed class ValueConfigurationElement : ConfigurationElement
+    /// <summary>
+    /// 表示包含值的配置元素。
+    /// </summary>
+    public sealed class ValueConfigurationElement : ConfigurationElement
 	{
 		/// <summary>
 		/// 初始化 <see cref="ValueConfigurationElement"/> 类的新实例。

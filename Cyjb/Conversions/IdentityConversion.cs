@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cyjb.Conversions
+﻿namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示标识转换。
-	/// </summary>
-	internal class IdentityConversion : Conversion
+    /// <summary>
+    /// 表示标识转换。
+    /// </summary>
+    internal class IdentityConversion : Conversion
 	{
 		/// <summary>
 		/// <see cref="IdentityConversion"/> 的默认实例。

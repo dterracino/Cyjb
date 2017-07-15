@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Cyjb.IO
+﻿namespace Cyjb.IO
 {
-	/// <summary>
-	/// 表示可在指定源文件中定位的对象。
-	/// </summary>
-	public interface ISourceFileLocatable : ISourceLocatable
+    /// <summary>
+    /// 表示可在指定源文件中定位的对象。
+    /// </summary>
+    public interface ISourceFileLocatable : ISourceLocatable
 	{
 		/// <summary>
 		/// 获取源文件的名称。

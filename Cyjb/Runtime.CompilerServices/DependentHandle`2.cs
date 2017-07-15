@@ -1,28 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Runtime.CompilerServices
 {
-	/// <summary>
-	/// 表示依赖句柄，在键存在时对值强引用，键被回收后对值弱引用。
-	/// </summary>
-	/// <typeparam name="TKey">键的类型。</typeparam>
-	/// <typeparam name="TValue">值的类型。</typeparam>
-	/// <remarks><para>与 <see cref="ConditionalWeakTable{TKey,TValue}"/> 相同，<see cref="DependentHandle{TKey,TValue}"/>
-	/// 自身不对键强引用，只要外部没有对键的其它引用，键就可以被回收。</para>
-	/// <para>如果键在外部存在强引用，那么 <see cref="DependentHandle{TKey,TValue}"/> 会保证值不会被回收（强引用）。
-	/// 如果键在外部没有强引用，那么值也可以被回收（弱引用）。</para></remarks>
-	/// <seealso cref="ConditionalWeakTable{TKey,TValue}"/>
-	[ComVisible(false)]
+    /// <summary>
+    /// 表示依赖句柄，在键存在时对值强引用，键被回收后对值弱引用。
+    /// </summary>
+    /// <typeparam name="TKey">键的类型。</typeparam>
+    /// <typeparam name="TValue">值的类型。</typeparam>
+    /// <remarks><para>与 <see cref="ConditionalWeakTable{TKey,TValue}"/> 相同，<see cref="DependentHandle{TKey,TValue}"/>
+    /// 自身不对键强引用，只要外部没有对键的其它引用，键就可以被回收。</para>
+    /// <para>如果键在外部存在强引用，那么 <see cref="DependentHandle{TKey,TValue}"/> 会保证值不会被回收（强引用）。
+    /// 如果键在外部没有强引用，那么值也可以被回收（弱引用）。</para></remarks>
+    /// <seealso cref="ConditionalWeakTable{TKey,TValue}"/>
+    [ComVisible(false)]
 	[SecurityCritical, SecurityPermission(SecurityAction.InheritanceDemand, UnmanagedCode = true)]
 	public sealed class DependentHandle<TKey, TValue> : IDisposable
 		where TKey : class

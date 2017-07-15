@@ -1,15 +1,11 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	public static partial class DelegateBuilder
+    public static partial class DelegateBuilder
 	{
 
 		#region 构造开放属性委托

@@ -1,22 +1,18 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示通用方法的调用委托。
-	/// </summary>
-	/// <param name="instance">要调用方法的实例。</param>
-	/// <param name="parameters">方法的参数。</param>
-	/// <returns>方法的返回值。</returns>
-	public delegate object MethodInvoker(object instance, params object[] parameters);
+    /// <summary>
+    /// 表示通用方法的调用委托。
+    /// </summary>
+    /// <param name="instance">要调用方法的实例。</param>
+    /// <param name="parameters">方法的参数。</param>
+    /// <returns>方法的返回值。</returns>
+    public delegate object MethodInvoker(object instance, params object[] parameters);
 	/// <summary>
 	/// 表示通用构造函数的调用委托。
 	/// </summary>

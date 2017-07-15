@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics.Contracts;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 提供对整数的扩展方法。
-	/// </summary>
-	public static partial class IntegerExt
+    /// <summary>
+    /// 提供对整数的扩展方法。
+    /// </summary>
+    public static partial class IntegerExt
 	{
 
 		#region 位运算

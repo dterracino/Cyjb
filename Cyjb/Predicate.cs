@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 提供 <see cref="Predicate{T}"/> 的扩展方法。
-	/// </summary>
-	public static class Predicate
+    /// <summary>
+    /// 提供 <see cref="Predicate{T}"/> 的扩展方法。
+    /// </summary>
+    public static class Predicate
 	{
 		/// <summary>
 		/// 返回要求当前条件与指定条件进行同时满足的条件。

@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示类型转换的 IL 指令。
-	/// </summary>
-	internal abstract class Conversion
+    /// <summary>
+    /// 表示类型转换的 IL 指令。
+    /// </summary>
+    internal abstract class Conversion
 	{
 		/// <summary>
 		/// 当前转换的类型。

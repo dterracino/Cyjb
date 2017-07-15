@@ -3,18 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Configurations
 {
-	/// <summary>
-	/// 表示强类型的包含一个子元素集合的配置元素。
-	/// </summary>
-	/// <typeparam name="TElement">子配置元素的类型。</typeparam>
-	public abstract class ConfigurationElementCollection<TElement> :
+    /// <summary>
+    /// 表示强类型的包含一个子元素集合的配置元素。
+    /// </summary>
+    /// <typeparam name="TElement">子配置元素的类型。</typeparam>
+    public abstract class ConfigurationElementCollection<TElement> :
 		ConfigurationElementCollection, IList<TElement>, IList
 		where TElement : ConfigurationElement
 	{

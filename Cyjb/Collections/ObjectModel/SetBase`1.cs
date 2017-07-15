@@ -3,17 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 为泛型集合提供基类。
-	/// </summary>
-	/// <typeparam name="T">集合中的元素类型。</typeparam>
-	[Serializable, DebuggerDisplay("Count = {Count}")]
+    /// <summary>
+    /// 为泛型集合提供基类。
+    /// </summary>
+    /// <typeparam name="T">集合中的元素类型。</typeparam>
+    [Serializable, DebuggerDisplay("Count = {Count}")]
 	[DebuggerTypeProxy(typeof(CollectionDebugView<>))]
 	public class SetBase<T> : ISet<T>, ICollection
 	{

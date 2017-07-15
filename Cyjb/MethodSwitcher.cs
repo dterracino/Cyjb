@@ -10,68 +10,66 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 方法调用的切换器，对于使用同一个基类的不同子类作为参数的多个方法，能够自动推断关键参数
-	/// （使用不同子类的参数，必须是唯一的），并根据关键参数的实际类型调用相应的方法。
-	/// </summary>
-	/// <remarks><see cref="MethodSwitcher"/> 可以手动添加委托，也可以自动从类型中寻找处理器。
-	/// 关于方法切换器的更多信息，可以参加我的博文<see href="http://www.cnblogs.com/cyjb/archive/p/MethodSwitcher.html">
-	/// 《C# 方法调用的切换器》</see></remarks>
-	/// <seealso cref="ProcessorAttribute"/>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/MethodSwitcher.html">《C# 方法调用的切换器》</seealso>
-	/// <example>
-	/// 下面演示了手动添加委托的简单用法。
-	/// <code>
-	/// class Program {
-	/// 	static void A(int m) { Console.WriteLine("int"); }
-	/// 	static void B(string m) { Console.WriteLine("string"); }
-	/// 	static void C(Array m) { Console.WriteLine("Array"); }
-	/// 	static void D(int[] m) { Console.WriteLine("int[]"); }
-	/// 	static void E(object m) { Console.WriteLine("object"); }
-	/// 	static void Main(string[] args) {
-	/// 		Action&lt;object&gt; invoke = MethodSwitcher.Create&lt;Action&lt;object&gt;&gt;((Action&lt;int&gt;)A, 
-	/// 			(Action&lt;string&gt;)B, (Action&lt;Array&gt;)C, (Action&lt;int[]&gt;)D, (Action&lt;object&gt;)E);
-	/// 		invoke(10);
-	/// 		invoke("10");
-	/// 		invoke(new int[0]);
-	/// 		invoke(new string[0]);
-	/// 		invoke(10L);
-	/// 	}
-	/// }
-	/// </code>
-	/// </example>
-	/// <example>
-	/// 下面演示了自动寻找处理器的简单用法。
-	/// <code>
-	/// class Program {
-	///		[Processor]
-	/// 	static void A(int m) { Console.WriteLine("int"); }
-	///		[Processor]
-	/// 	static void B(string m) { Console.WriteLine("string"); }
-	///		[Processor]
-	/// 	static void C(Array m) { Console.WriteLine("Array"); }
-	///		[Processor]
-	/// 	static void D(int[] m) { Console.WriteLine("int[]"); }
-	///		[Processor]
-	/// 	static void E(object m) { Console.WriteLine("object"); }
-	/// 	static void Main(string[] args) {
-	/// 		Action&lt;object&gt; invoke = MethodSwitcher.Create&lt;Action&lt;object&gt;&gt;(typeof(Program));
-	/// 		invoke(10);
-	/// 		invoke("10");
-	/// 		invoke(new int[0]);
-	/// 		invoke(new string[0]);
-	/// 		invoke(10L);
-	/// 		return;
-	/// 	}
-	/// }
-	/// </code>
-	/// </example>
-	public static class MethodSwitcher
+    /// <summary>
+    /// 方法调用的切换器，对于使用同一个基类的不同子类作为参数的多个方法，能够自动推断关键参数
+    /// （使用不同子类的参数，必须是唯一的），并根据关键参数的实际类型调用相应的方法。
+    /// </summary>
+    /// <remarks><see cref="MethodSwitcher"/> 可以手动添加委托，也可以自动从类型中寻找处理器。
+    /// 关于方法切换器的更多信息，可以参加我的博文<see href="http://www.cnblogs.com/cyjb/archive/p/MethodSwitcher.html">
+    /// 《C# 方法调用的切换器》</see></remarks>
+    /// <seealso cref="ProcessorAttribute"/>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/MethodSwitcher.html">《C# 方法调用的切换器》</seealso>
+    /// <example>
+    /// 下面演示了手动添加委托的简单用法。
+    /// <code>
+    /// class Program {
+    /// 	static void A(int m) { Console.WriteLine("int"); }
+    /// 	static void B(string m) { Console.WriteLine("string"); }
+    /// 	static void C(Array m) { Console.WriteLine("Array"); }
+    /// 	static void D(int[] m) { Console.WriteLine("int[]"); }
+    /// 	static void E(object m) { Console.WriteLine("object"); }
+    /// 	static void Main(string[] args) {
+    /// 		Action&lt;object&gt; invoke = MethodSwitcher.Create&lt;Action&lt;object&gt;&gt;((Action&lt;int&gt;)A, 
+    /// 			(Action&lt;string&gt;)B, (Action&lt;Array&gt;)C, (Action&lt;int[]&gt;)D, (Action&lt;object&gt;)E);
+    /// 		invoke(10);
+    /// 		invoke("10");
+    /// 		invoke(new int[0]);
+    /// 		invoke(new string[0]);
+    /// 		invoke(10L);
+    /// 	}
+    /// }
+    /// </code>
+    /// </example>
+    /// <example>
+    /// 下面演示了自动寻找处理器的简单用法。
+    /// <code>
+    /// class Program {
+    ///		[Processor]
+    /// 	static void A(int m) { Console.WriteLine("int"); }
+    ///		[Processor]
+    /// 	static void B(string m) { Console.WriteLine("string"); }
+    ///		[Processor]
+    /// 	static void C(Array m) { Console.WriteLine("Array"); }
+    ///		[Processor]
+    /// 	static void D(int[] m) { Console.WriteLine("int[]"); }
+    ///		[Processor]
+    /// 	static void E(object m) { Console.WriteLine("object"); }
+    /// 	static void Main(string[] args) {
+    /// 		Action&lt;object&gt; invoke = MethodSwitcher.Create&lt;Action&lt;object&gt;&gt;(typeof(Program));
+    /// 		invoke(10);
+    /// 		invoke("10");
+    /// 		invoke(new int[0]);
+    /// 		invoke(new string[0]);
+    /// 		invoke(10L);
+    /// 		return;
+    /// 	}
+    /// }
+    /// </code>
+    /// </example>
+    public static class MethodSwitcher
 	{
 		/// <summary>
 		/// 表示 object.GetType 方法。

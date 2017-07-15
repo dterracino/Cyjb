@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 提供对 <see cref="IList{T}"/> 的扩展方法。
-	/// </summary>
-	public static class ListExt
+    /// <summary>
+    /// 提供对 <see cref="IList{T}"/> 的扩展方法。
+    /// </summary>
+    public static class ListExt
 	{
 
 		#region 二分查找

@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb.Collections
 {
-	/// <summary>
-	/// <see cref="Cyjb.Collections.CharSet"/> 类的单元测试。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// <see cref="Cyjb.Collections.CharSet"/> 类的单元测试。
+    /// </summary>
+    [TestClass]
 	public class UnitTestCharSet
 	{
 		private ISet<char> hashSet;

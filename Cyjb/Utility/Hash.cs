@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 提供 Hash 的辅助方法。
-	/// </summary>
-	public static class Hash
+    /// <summary>
+    /// 提供 Hash 的辅助方法。
+    /// </summary>
+    public static class Hash
 	{
 		/// <summary>
 		/// Hash 算法使用的近似黄金分割率：2^32 / ((1 + sqrt(5)) / 2) = 0x9e3779b9

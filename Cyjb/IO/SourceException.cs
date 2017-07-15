@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 表示源文件中出现异常。
-	/// </summary>
-	[Serializable]
+    /// <summary>
+    /// 表示源文件中出现异常。
+    /// </summary>
+    [Serializable]
 	public class SourceException : Exception, ISourceFileLocatable
 	{
 		/// <summary>

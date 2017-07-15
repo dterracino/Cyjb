@@ -4,17 +4,15 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 表示根据内容比较 <see cref="ISet{T}"/> 集合的比较器。
-	/// </summary>
-	/// <typeparam name="T">要比较的集合元素的类型。</typeparam>
-	public sealed class SetEqualityComparer<T> : EqualityComparer<ISet<T>>
+    /// <summary>
+    /// 表示根据内容比较 <see cref="ISet{T}"/> 集合的比较器。
+    /// </summary>
+    /// <typeparam name="T">要比较的集合元素的类型。</typeparam>
+    public sealed class SetEqualityComparer<T> : EqualityComparer<ISet<T>>
 	{
 		/// <summary>
 		/// 默认的相等比较器。

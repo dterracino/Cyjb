@@ -7,22 +7,20 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 表示特定于字符的集合，可以按字母顺序遍历集合。
-	/// </summary>
-	/// <remarks><see cref="CharSet"/> 类采用类似位示图的树状位压缩数组判断字符是否存在，
-	/// 关于该数据结构的更多解释，请参见我的博文
-	/// <see href="http://www.cnblogs.com/cyjb/archive/p/CharSet.html">
-	/// 《基于树状位压缩数组的字符集合》</see>。</remarks>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/CharSet.html">
-	/// 《基于树状位压缩数组的字符集合》</seealso>
-	[Serializable]
+    /// <summary>
+    /// 表示特定于字符的集合，可以按字母顺序遍历集合。
+    /// </summary>
+    /// <remarks><see cref="CharSet"/> 类采用类似位示图的树状位压缩数组判断字符是否存在，
+    /// 关于该数据结构的更多解释，请参见我的博文
+    /// <see href="http://www.cnblogs.com/cyjb/archive/p/CharSet.html">
+    /// 《基于树状位压缩数组的字符集合》</see>。</remarks>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/CharSet.html">
+    /// 《基于树状位压缩数组的字符集合》</seealso>
+    [Serializable]
 	public sealed class CharSet : SetBase<char>, ISerializable
 	{
 

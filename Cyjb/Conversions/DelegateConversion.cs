@@ -1,20 +1,17 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示调用委托进行类型转换。
-	/// </summary>
-	internal class DelegateConversion : Conversion
+    /// <summary>
+    /// 表示调用委托进行类型转换。
+    /// </summary>
+    internal class DelegateConversion : Conversion
 	{
 		/// <summary>
 		/// 表示 <see cref="Convert.ChangeType{TInput, TOutput}"/>。

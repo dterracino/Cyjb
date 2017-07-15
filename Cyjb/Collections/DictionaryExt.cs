@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 提供对 <see cref="IDictionary{TKey,TValue}"/> 的扩展方法。
-	/// </summary>
-	public static class DictionaryExt
+    /// <summary>
+    /// 提供对 <see cref="IDictionary{TKey,TValue}"/> 的扩展方法。
+    /// </summary>
+    public static class DictionaryExt
 	{
 		/// <summary>
 		/// 获取与指定的键相关联的值。

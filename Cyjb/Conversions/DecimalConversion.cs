@@ -1,19 +1,15 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示与 <see cref="decimal"/> 相关的类型转换方法。
-	/// </summary>
-	internal class DecimalConversion : Conversion
+    /// <summary>
+    /// 表示与 <see cref="decimal"/> 相关的类型转换方法。
+    /// </summary>
+    internal class DecimalConversion : Conversion
 	{
 		/// <summary>
 		/// 隐式数值转换的实例。

@@ -4,50 +4,47 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 从候选者列表中选择一个成员，并执行实参类型到形参类型的类型转换。
-	/// 在选择时，支持对泛型方法进行选择，并允许进行强制类型转换。
-	/// </summary>
-	/// <example>
-	/// 下面的例子演示了 <see cref="PowerBinder"/> 对泛型方法和强制类型转换的支持。
-	/// <code>
-	/// class TestClass {
-	/// 	public static void TestMethod(int value) { }
-	/// 	public static void TestMethod2&lt;T&gt;(T value) { }
-	/// }
-	/// Type outputType = typeof(TestClass);
-	/// Console.WriteLine(outputType.GetMethod("TestMethod", new Type[] { typeof(long) }));
-	/// Console.WriteLine(outputType.GetMethod("TestMethod", BindingFlags.Static | BindingFlags.Public, 
-	///		PowerBinder.CastBinder, new Type[] { typeof(long) }, null));
-	/// Console.WriteLine(outputType.GetMethod("TestMethod2", new Type[] { typeof(string) }));
-	/// Console.WriteLine(outputType.GetMethod("TestMethod2", BindingFlags.Static | BindingFlags.Public, 
-	///		PowerBinder.DefaultBinder, new Type[] { typeof(string) }, null));
-	/// </code>
-	/// </example>
-	/// <remarks>
-	/// <para><see cref="PowerBinder"/> 类是对 <see cref="Binder"/> 类的扩展，
-	/// 支持泛型方法和强制类型转换，可以有效的扩展反射得到类型成员的过程。</para>
-	/// <para>关于 <see cref="Binder"/> 类的原理，以及 <see cref="PowerBinder"/> 类的实现，
-	/// 可以参见我的博文
-	/// <see href="http://www.cnblogs.com/cyjb/archive/p/PowerBinder.html">
-	/// 《C# 使用 Binder 类自定义反射》</see>。</para>
-	/// <para>关于进行泛型类型推断的原理，可以参考我的博文
-	/// <see href="http://www.cnblogs.com/cyjb/archive/p/GenericArgumentsInferences.html">
-	/// 《C# 泛型方法的类型推断》</see>。</para>
-	/// </remarks>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/PowerBinder.html">
-	/// 《C# 使用 Binder 类自定义反射》</seealso>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/GenericArgumentsInferences.html">
-	/// 《C# 泛型方法的类型推断》</seealso>
-	[Serializable]
+    /// <summary>
+    /// 从候选者列表中选择一个成员，并执行实参类型到形参类型的类型转换。
+    /// 在选择时，支持对泛型方法进行选择，并允许进行强制类型转换。
+    /// </summary>
+    /// <example>
+    /// 下面的例子演示了 <see cref="PowerBinder"/> 对泛型方法和强制类型转换的支持。
+    /// <code>
+    /// class TestClass {
+    /// 	public static void TestMethod(int value) { }
+    /// 	public static void TestMethod2&lt;T&gt;(T value) { }
+    /// }
+    /// Type outputType = typeof(TestClass);
+    /// Console.WriteLine(outputType.GetMethod("TestMethod", new Type[] { typeof(long) }));
+    /// Console.WriteLine(outputType.GetMethod("TestMethod", BindingFlags.Static | BindingFlags.Public, 
+    ///		PowerBinder.CastBinder, new Type[] { typeof(long) }, null));
+    /// Console.WriteLine(outputType.GetMethod("TestMethod2", new Type[] { typeof(string) }));
+    /// Console.WriteLine(outputType.GetMethod("TestMethod2", BindingFlags.Static | BindingFlags.Public, 
+    ///		PowerBinder.DefaultBinder, new Type[] { typeof(string) }, null));
+    /// </code>
+    /// </example>
+    /// <remarks>
+    /// <para><see cref="PowerBinder"/> 类是对 <see cref="Binder"/> 类的扩展，
+    /// 支持泛型方法和强制类型转换，可以有效的扩展反射得到类型成员的过程。</para>
+    /// <para>关于 <see cref="Binder"/> 类的原理，以及 <see cref="PowerBinder"/> 类的实现，
+    /// 可以参见我的博文
+    /// <see href="http://www.cnblogs.com/cyjb/archive/p/PowerBinder.html">
+    /// 《C# 使用 Binder 类自定义反射》</see>。</para>
+    /// <para>关于进行泛型类型推断的原理，可以参考我的博文
+    /// <see href="http://www.cnblogs.com/cyjb/archive/p/GenericArgumentsInferences.html">
+    /// 《C# 泛型方法的类型推断》</see>。</para>
+    /// </remarks>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/PowerBinder.html">
+    /// 《C# 使用 Binder 类自定义反射》</seealso>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/GenericArgumentsInferences.html">
+    /// 《C# 泛型方法的类型推断》</seealso>
+    [Serializable]
 	public sealed class PowerBinder : Binder
 	{
 

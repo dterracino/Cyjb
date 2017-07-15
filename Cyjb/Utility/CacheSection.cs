@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Configuration;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示 cyjb.cache 缓冲池配置节。
-	/// </summary>
-	/// <remarks>cyjb.cache 配置的使用请参见 <see cref="CacheFactory"/>。</remarks>
-	/// <seealso cref="CacheFactory"/>
-	public sealed class CacheSection : ConfigurationSection
+    /// <summary>
+    /// 表示 cyjb.cache 缓冲池配置节。
+    /// </summary>
+    /// <remarks>cyjb.cache 配置的使用请参见 <see cref="CacheFactory"/>。</remarks>
+    /// <seealso cref="CacheFactory"/>
+    public sealed class CacheSection : ConfigurationSection
 	{
 	    /// <summary>
 		/// 获取缓存配置。

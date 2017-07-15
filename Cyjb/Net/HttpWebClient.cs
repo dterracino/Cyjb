@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Net
 {
-	/// <summary>
-	/// 提供使用 HTTP 协议将数据发送到由 URI 标识的资源及从这样的资源接收数据的常用方法。
-	/// </summary>
-	/// <remarks>添加了对 cookie 和一些 HTTP 标头的支持。</remarks>
-	public sealed class HttpWebClient : WebClient
+    /// <summary>
+    /// 提供使用 HTTP 协议将数据发送到由 URI 标识的资源及从这样的资源接收数据的常用方法。
+    /// </summary>
+    /// <remarks>添加了对 cookie 和一些 HTTP 标头的支持。</remarks>
+    public sealed class HttpWebClient : WebClient
 	{
 
 		#region HTTP 标头字段

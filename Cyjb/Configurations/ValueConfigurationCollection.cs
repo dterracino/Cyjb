@@ -3,17 +3,14 @@ using System.Collections;
 using Cyjb.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Configurations
 {
-	/// <summary>
-	/// 表示包含值的配置元素集合。
-	/// </summary>
-	public sealed class ValueConfigurationCollection : ConfigurationElementCollection<ValueConfigurationElement>,
+    /// <summary>
+    /// 表示包含值的配置元素集合。
+    /// </summary>
+    public sealed class ValueConfigurationCollection : ConfigurationElementCollection<ValueConfigurationElement>,
 		IList<string>, IList
 	{
 		/// <summary>

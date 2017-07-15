@@ -1,21 +1,17 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Runtime.CompilerServices
 {
-	/// <summary>
-	/// 表示生命周期与指定对象绑定的弱引用委托。
-	/// </summary>
-	public static class WeakDelegate
+    /// <summary>
+    /// 表示生命周期与指定对象绑定的弱引用委托。
+    /// </summary>
+    public static class WeakDelegate
 	{
 		/// <summary>
 		/// 创建生命周期与委托的类实例绑定的委托。

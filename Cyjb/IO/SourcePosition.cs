@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 表示源文件中的位置信息。
-	/// </summary>
-	/// <remarks>
-	/// 不同源文件的位置之间没有可比性，进行大小比较是没有意义的。
-	/// </remarks>
-	[Serializable, StructLayout(LayoutKind.Auto)]
+    /// <summary>
+    /// 表示源文件中的位置信息。
+    /// </summary>
+    /// <remarks>
+    /// 不同源文件的位置之间没有可比性，进行大小比较是没有意义的。
+    /// </remarks>
+    [Serializable, StructLayout(LayoutKind.Auto)]
 	public struct SourcePosition : IEquatable<SourcePosition>, IComparable<SourcePosition>
 	{
 		/// <summary>

@@ -6,17 +6,15 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
-	/// <summary>
-	/// 为泛型只读集合提供基类。
-	/// </summary>
-	/// <typeparam name="T">集合中元素的类型。</typeparam>
-	[Serializable, DebuggerDisplay("Count = {Count}")]
+    /// <summary>
+    /// 为泛型只读集合提供基类。
+    /// </summary>
+    /// <typeparam name="T">集合中元素的类型。</typeparam>
+    [Serializable, DebuggerDisplay("Count = {Count}")]
 	[DebuggerTypeProxy(typeof(CollectionDebugView<>))]
 	public class ReadOnlyCollection<T> : ICollection<T>, IReadOnlyCollection<T>, ICollection
 	{

@@ -1,18 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 为创建指定键的缓冲池事件提供数据。
-	/// </summary>
-	public sealed class CacheResolveEventArgs : EventArgs
+    /// <summary>
+    /// 为创建指定键的缓冲池事件提供数据。
+    /// </summary>
+    public sealed class CacheResolveEventArgs : EventArgs
 	{
 		/// <summary>
 		/// 缓冲池的键。

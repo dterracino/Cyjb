@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示单精度浮点数的比较器。
-	/// </summary>
-	public sealed class FloatComparer : Comparer<float>
+    /// <summary>
+    /// 表示单精度浮点数的比较器。
+    /// </summary>
+    public sealed class FloatComparer : Comparer<float>
 	{
 		/// <summary>
 		/// 比较时使用的默认精度。

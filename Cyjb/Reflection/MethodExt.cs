@@ -1,19 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 提供 <see cref="MethodBase"/> 及其子类的扩展方法。
-	/// </summary>
-	public static class MethodExt
+    /// <summary>
+    /// 提供 <see cref="MethodBase"/> 及其子类的扩展方法。
+    /// </summary>
+    public static class MethodExt
 	{
 		/// <summary>
 		/// 隐式类型转换方法的名称。

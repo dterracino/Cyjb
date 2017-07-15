@@ -5,16 +5,15 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Collections;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.IO
 {
-	/// <summary>
-	/// 对包含文件或目录路径信息的 <see cref="string"/> 实例执行操作。
-	/// </summary>
-	public static class PathExt
+    /// <summary>
+    /// 对包含文件或目录路径信息的 <see cref="string"/> 实例执行操作。
+    /// </summary>
+    public static class PathExt
 	{
 		/// <summary>
 		/// 在路径中无效的字符集合。

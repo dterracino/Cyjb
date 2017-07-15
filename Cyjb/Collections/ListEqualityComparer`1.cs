@@ -3,19 +3,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 表示根据内容比较 <see cref="System.Collections.Generic.IList{T}"/> 集合的比较器。
-	/// </summary>
-	/// <typeparam name="T">要比较的列表元素的类型。</typeparam>
-	public sealed class ListEqualityComparer<T> : EqualityComparer<IList<T>>
+    /// <summary>
+    /// 表示根据内容比较 <see cref="System.Collections.Generic.IList{T}"/> 集合的比较器。
+    /// </summary>
+    /// <typeparam name="T">要比较的列表元素的类型。</typeparam>
+    public sealed class ListEqualityComparer<T> : EqualityComparer<IList<T>>
 	{
 		/// <summary>
 		/// 默认的比较器。

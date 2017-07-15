@@ -4,15 +4,13 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 泛型形参的界限集集合。
-	/// </summary>
-	internal class TypeBounds
+    /// <summary>
+    /// 泛型形参的界限集集合。
+    /// </summary>
+    internal class TypeBounds
 	{
 		/// <summary>
 		/// 泛型形参及其界限集。

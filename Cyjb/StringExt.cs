@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 提供 <see cref="System.String"/> 类的扩展方法。
-	/// </summary>
-	public static class StringExt
+    /// <summary>
+    /// 提供 <see cref="System.String"/> 类的扩展方法。
+    /// </summary>
+    public static class StringExt
 	{
 
 		#region Escape

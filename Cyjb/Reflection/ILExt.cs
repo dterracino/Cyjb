@@ -1,21 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.Conversions;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 提供提交 IL 指令的扩展方法。
-	/// </summary>
-	public static partial class ILExt
+    /// <summary>
+    /// 提供提交 IL 指令的扩展方法。
+    /// </summary>
+    public static partial class ILExt
 	{
 
 		#region 成员反射信息常量

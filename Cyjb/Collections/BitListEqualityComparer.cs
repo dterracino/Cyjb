@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
-	/// <summary>
-	/// 表示根据内容比较 <see cref="Cyjb.Collections.BitList"/> 集合的比较器。
-	/// </summary>
-	public sealed class BitListEqualityComparer : EqualityComparer<BitList>
+    /// <summary>
+    /// 表示根据内容比较 <see cref="Cyjb.Collections.BitList"/> 集合的比较器。
+    /// </summary>
+    public sealed class BitListEqualityComparer : EqualityComparer<BitList>
 	{
 		/// <summary>
 		/// 默认的比较器。

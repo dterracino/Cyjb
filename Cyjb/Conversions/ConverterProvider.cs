@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 基本的类型转换器的提供者。
-	/// </summary>
-	internal sealed class ConverterProvider : IConverterProvider
+    /// <summary>
+    /// 基本的类型转换器的提供者。
+    /// </summary>
+    internal sealed class ConverterProvider : IConverterProvider
 	{
 		/// <summary>
 		/// 合并指定的两个类型转换器提供者。

@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Cyjb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb
 {
-	/// <summary>
-	/// <see cref="Cyjb.DelegateBuilder"/> 类的单元测试。
-	/// </summary>
-	[TestClass]
+    /// <summary>
+    /// <see cref="Cyjb.DelegateBuilder"/> 类的单元测试。
+    /// </summary>
+    [TestClass]
 	public class UnitTestDelegateBuilder
 	{
 

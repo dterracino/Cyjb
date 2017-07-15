@@ -2,25 +2,22 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 表示使用改进的 LRU（最近最少使用）算法的对象缓冲池，不包含多线程同步。
-	/// </summary>
-	/// <typeparam name="TKey">缓存对象的键的类型。</typeparam>
-	/// <typeparam name="TValue">缓存对象的类型。</typeparam>
-	/// <remarks>
-	/// <para>该类不包含多线程同步，请仅在单线程应用中使用。</para>
-	/// <para>关于改进的 LRU（最近最少使用）算法，可以参考我的博文
-	/// <see href="http://www.cnblogs.com/cyjb/archive/p/LruCache.html">
-	/// 《一个改进 LRU 算法的缓冲池》</see>。</para></remarks>
-	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/LruCache.html">
-	/// 《一个改进 LRU 算法的缓冲池》</seealso>
-	[DebuggerDisplay("Count = {Count}")]
+    /// <summary>
+    /// 表示使用改进的 LRU（最近最少使用）算法的对象缓冲池，不包含多线程同步。
+    /// </summary>
+    /// <typeparam name="TKey">缓存对象的键的类型。</typeparam>
+    /// <typeparam name="TValue">缓存对象的类型。</typeparam>
+    /// <remarks>
+    /// <para>该类不包含多线程同步，请仅在单线程应用中使用。</para>
+    /// <para>关于改进的 LRU（最近最少使用）算法，可以参考我的博文
+    /// <see href="http://www.cnblogs.com/cyjb/archive/p/LruCache.html">
+    /// 《一个改进 LRU 算法的缓冲池》</see>。</para></remarks>
+    /// <seealso href="http://www.cnblogs.com/cyjb/archive/p/LruCache.html">
+    /// 《一个改进 LRU 算法的缓冲池》</seealso>
+    [DebuggerDisplay("Count = {Count}")]
 	public sealed class LruCacheNoSync<TKey, TValue> : ICache<TKey, TValue>
 	{
 		/// <summary>

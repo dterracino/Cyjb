@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 提供数组的扩展方法。
-	/// </summary>
-	public static partial class ArrayExt
+    /// <summary>
+    /// 提供数组的扩展方法。
+    /// </summary>
+    public static partial class ArrayExt
 	{
 
 		#region 截取
@@ -156,7 +153,7 @@ namespace Cyjb
 		/// <typeparam name="T">数组中元素的类型。</typeparam>
 		/// <param name="array">要截取的数组。</param>
 		/// <param name="startIndex">要截取的起始索引。</param>
-		/// <returns>截取得到的数组。如果 <paramref name="startIndex"/> 
+		/// <returns>截取得到的数组。如果 <paramref name="startIndex"/>
 		/// 等于数组的长度，则为空数组。</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="startIndex"/> 指示的位置不在此数组中。</exception>
@@ -194,7 +191,7 @@ namespace Cyjb
 		/// <param name="array">要截取的数组。</param>
 		/// <param name="startIndex">要截取的起始索引。</param>
 		/// <param name="endIndex">要截取的结束索引，但不包括该位置的元素。</param>
-		/// <returns>截取得到的数组。如果 <paramref name="startIndex"/> 等于数组的长度或大于等于 
+		/// <returns>截取得到的数组。如果 <paramref name="startIndex"/> 等于数组的长度或大于等于
 		/// <paramref name="endIndex"/> ，则为空数组。</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="startIndex"/> 或 <paramref name="endIndex"/>
@@ -406,7 +403,7 @@ namespace Cyjb
 		/// <param name="array">要转换为目标类型的一维数组。</param>
 		/// <returns>目标类型的数组，包含从源数组转换而来的元素。</returns>
 		/// <exception cref="ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
-		/// <exception cref="InvalidCastException"><typeparamref name="TInput"/> 类型不能转换到 
+		/// <exception cref="InvalidCastException"><typeparamref name="TInput"/> 类型不能转换到
 		/// <typeparamref name="TOutput"/> 类型。</exception>
 		public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array)
 		{

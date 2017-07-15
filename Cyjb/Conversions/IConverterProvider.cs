@@ -1,17 +1,13 @@
 ﻿using System;
 using Cyjb.Reflection;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 类型转换器的提供者，可以根据输入输出类型生成类型转换器。
-	/// </summary>
-	[ContractClass(typeof(ContractsForIConverterProvider))]
+    /// <summary>
+    /// 类型转换器的提供者，可以根据输入输出类型生成类型转换器。
+    /// </summary>
+    [ContractClass(typeof(ContractsForIConverterProvider))]
 	public interface IConverterProvider
 	{
 		/// <summary>

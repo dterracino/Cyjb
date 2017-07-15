@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb
 {
-	/// <summary>
-	/// 表示文本-值对的集合。
-	/// </summary>
-	/// <typeparam name="TValue">值的数据类型。</typeparam>
-	[Serializable]
+    /// <summary>
+    /// 表示文本-值对的集合。
+    /// </summary>
+    /// <typeparam name="TValue">值的数据类型。</typeparam>
+    [Serializable]
 	public class TextValuePairCollection<TValue> :
 		BindingList<TextValuePair<TValue>>
 	{

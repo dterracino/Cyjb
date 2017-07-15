@@ -5,23 +5,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 类型转换的工厂。
-	/// </summary>
-	internal static class ConversionFactory
+    /// <summary>
+    /// 类型转换的工厂。
+    /// </summary>
+    internal static class ConversionFactory
 	{
 		/// <summary>
 		/// 类型转换器提供者的列表。
 		/// </summary>
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private static readonly ConcurrentDictionary<Type, IConverterProvider> providers =
+		private static readonly ConcurrentDictionary<Type, IConverterProvider> Providers =
 			new ConcurrentDictionary<Type, IConverterProvider>(new[] {
 				new KeyValuePair<Type, IConverterProvider>(StringConverterProvider.Default.OriginType,
 					StringConverterProvider.Default)
@@ -30,81 +28,83 @@ namespace Cyjb.Conversions
 		/// 用户自定义的类型转换器。
 		/// </summary>
 		[DebuggerBrowsable(DebuggerBrowsableState.Never)]
-		private static readonly ConcurrentDictionary<Tuple<Type, Type>, Conversion> userDefinedConverers =
+		private static readonly ConcurrentDictionary<Tuple<Type, Type>, Conversion> UserDefinedConverers =
 			new ConcurrentDictionary<Tuple<Type, Type>, Conversion>();
-		/// <summary>
-		/// 返回将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 类型的类型转换。
-		/// </summary>
-		/// <param name="inputType">要转换的对象的类型。</param>
-		/// <param name="outputType">要将输入对象转换到的类型。</param>
-		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
-		/// 类型的类型转换，如果不存在则为 <c>null</c>。</returns>
-		public static Conversion GetConversion(Type inputType, Type outputType)
-		{
-			Contract.Requires(inputType != null && outputType != null);
-			// 不能转换到或转换自 void 类型。
-			if (inputType == typeof(void) || outputType == typeof(void))
-			{
-				return null;
-			}
-			// 检索已创建的用户自定义类型转换器。
-			var key = new Tuple<Type, Type>(inputType, outputType);
-			Conversion conversion;
-			if (userDefinedConverers.TryGetValue(key, out conversion))
-			{
-				return conversion;
-			}
-			// 判断预定义类型转换。
-			conversion = GetPreDefinedConversionNotVoid(inputType, outputType);
-			if (conversion != null)
-			{
-				return conversion;
-			}
-			// 判断用户自定义类型转换。
-			conversion = GetUserDefinedConversion(inputType, outputType);
-			if (conversion != null)
-			{
-				return conversion;
-			}
-			// 类型转换提供者。
-			IConverterProvider provider;
-			Delegate converterDelegate = null;
-			if (providers.TryGetValue(inputType, out provider))
-			{
-				var dlg = provider.GetConverterTo(outputType);
-				if (provider.IsValidConverterTo(dlg, outputType))
-				{
-					converterDelegate = dlg;
-				}
-			}
-			if (converterDelegate == null && providers.TryGetValue(outputType, out provider))
-			{
-				var dlg = provider.GetConverterFrom(inputType);
-				if (provider.IsValidConverterFrom(dlg, inputType))
-				{
-					converterDelegate = dlg;
-				}
-			}
-			return converterDelegate == null ? null : 
-				userDefinedConverers.GetOrAdd(key, new DelegateConversion(converterDelegate));
-		}
-		/// <summary>
+
+        /// <summary>
+        /// 返回将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 类型的类型转换。
+        /// </summary>
+        /// <param name="inputType">要转换的对象的类型。</param>
+        /// <param name="outputType">要将输入对象转换到的类型。</param>
+        /// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
+        /// 类型的类型转换，如果不存在则为 <c>null</c>。</returns>
+        public static Conversion GetConversion(Type inputType, Type outputType)
+        {
+            Contract.Requires(inputType != null && outputType != null);
+            // 不能转换到或转换自 void 类型。
+            if (inputType == typeof(void) || outputType == typeof(void))
+            {
+                return null;
+            }
+            // 检索已创建的用户自定义类型转换器。
+            var key = new Tuple<Type, Type>(inputType, outputType);
+            Conversion conversion;
+            if (UserDefinedConverers.TryGetValue(key, out conversion))
+            {
+                return conversion;
+            }
+            // 判断预定义类型转换。
+            conversion = GetPreDefinedConversionNotVoid(inputType, outputType);
+            if (conversion != null)
+            {
+                return conversion;
+            }
+            // 判断用户自定义类型转换。
+            conversion = GetUserDefinedConversion(inputType, outputType);
+            if (conversion != null)
+            {
+                return conversion;
+            }
+            // 类型转换提供者。
+            IConverterProvider provider;
+            Delegate converterDelegate = null;
+            if (Providers.TryGetValue(inputType, out provider))
+            {
+                var dlg = provider.GetConverterTo(outputType);
+                if (provider.IsValidConverterTo(dlg, outputType))
+                {
+                    converterDelegate = dlg;
+                }
+            }
+            if (converterDelegate == null && Providers.TryGetValue(outputType, out provider))
+            {
+                var dlg = provider.GetConverterFrom(inputType);
+                if (provider.IsValidConverterFrom(dlg, inputType))
+                {
+                    converterDelegate = dlg;
+                }
+            }
+            return converterDelegate == null ? null : UserDefinedConverers.GetOrAdd(key, new DelegateConversion(converterDelegate));
+        }
+
+        /// <summary>
 		/// 添加指定的类型转换器提供者。
 		/// </summary>
 		/// <param name="provider">要添加的类型转换器提供者。</param>
 		public static void AddConverterProvider(IConverterProvider provider)
 		{
 			Contract.Requires(provider != null && provider.OriginType != null);
-			providers.AddOrUpdate(provider.OriginType, provider, (type, old) => ConverterProvider.Combine(old, provider));
+			Providers.AddOrUpdate(provider.OriginType, provider, (type, old) => ConverterProvider.Combine(old, provider));
 		}
 		/// <summary>
-		/// 返回的将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
+		/// 返回的将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
 		/// 类型的预定义类型转换。
 		/// </summary>
 		/// <param name="inputType">要转换的对象的类型。</param>
 		/// <param name="outputType">要将输入对象转换到的类型。</param>
-		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
+		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
 		/// 类型的预定义类型转换，如果不存在则为 <c>null</c>。</returns>
+		[CanBeNull]
 		public static Conversion GetPreDefinedConversion(Type inputType, Type outputType)
 		{
 			if (inputType == typeof(void) || outputType == typeof(void))
@@ -113,67 +113,68 @@ namespace Cyjb.Conversions
 			}
 			return GetPreDefinedConversionNotVoid(inputType, outputType);
 		}
-		/// <summary>
-		/// 返回的将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
-		/// 类型的预定义类型转换。
-		/// </summary>
-		/// <param name="inputType">要转换的对象的类型，不能是 <see cref="Void"/>。</param>
-		/// <param name="outputType">要将输入对象转换到的类型，不能是 <see cref="Void"/>。</param>
-		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
-		/// 类型的预定义类型转换，如果不存在则为 <c>null</c>。</returns>
-		public static Conversion GetPreDefinedConversionNotVoid(Type inputType, Type outputType)
-		{
-			Contract.Requires(inputType != null && outputType != null &&
-				inputType != typeof(void) && outputType != typeof(void));
-			// 测试相等转换。
-			if (inputType.IsEquivalentTo(outputType))
-			{
-				return IdentityConversion.Default;
-			}
-			if (inputType.IsValueType)
-			{
-				if (outputType.IsValueType)
-				{
-					// 值类型间转换。
-					return GetBetweenValueTypeConversion(inputType, outputType);
-				}
-				// 装箱转换。
-				if (outputType.IsAssignableFrom(inputType))
-				{
-					return BoxConversion.Default;
-				}
-				var inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
-				if (inputUnderlyingType != null && outputType.IsAssignableFrom(inputUnderlyingType))
-				{
-					// 装箱为可空类型的内部类型实现的接口。
-					return BoxConversion.Default;
-				}
-				return null;
-			}
-			if (outputType.IsValueType)
-			{
-				// 拆箱转换。
-				if (inputType.IsAssignableFrom(outputType))
-				{
-					return UnboxConversion.Default;
-				}
-				var outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
-				if (outputUnderlyingType != null && inputType.IsAssignableFrom(outputUnderlyingType))
-				{
-					return UnboxConversion.Default;
-				}
-				return null;
-			}
-			// 隐式引用转换。
-			if (outputType.IsAssignableFrom(inputType))
-			{
-				return IdentityConversion.ImplicitReference;
-			}
-			// 显式引用转换。
-			return GetExplicitRefConversion(inputType, outputType);
-		}
 
-		#region 值类型间转换
+        /// <summary>
+        /// 返回的将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
+        /// 类型的预定义类型转换。
+        /// </summary>
+        /// <param name="inputType">要转换的对象的类型，不能是 <see cref="Void"/>。</param>
+        /// <param name="outputType">要将输入对象转换到的类型，不能是 <see cref="Void"/>。</param>
+        /// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
+        /// 类型的预定义类型转换，如果不存在则为 <c>null</c>。</returns>
+        [CanBeNull]
+        public static Conversion GetPreDefinedConversionNotVoid(Type inputType, Type outputType)
+        {
+            Contract.Requires(inputType != null && outputType != null && inputType != typeof(void) && outputType != typeof(void));
+            // 测试相等转换。
+            if (inputType.IsEquivalentTo(outputType))
+            {
+                return IdentityConversion.Default;
+            }
+            if (inputType.IsValueType)
+            {
+                if (outputType.IsValueType)
+                {
+                    // 值类型间转换。
+                    return GetBetweenValueTypeConversion(inputType, outputType);
+                }
+                // 装箱转换。
+                if (outputType.IsAssignableFrom(inputType))
+                {
+                    return BoxConversion.Default;
+                }
+                var inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
+                if (inputUnderlyingType != null && outputType.IsAssignableFrom(inputUnderlyingType))
+                {
+                    // 装箱为可空类型的内部类型实现的接口。
+                    return BoxConversion.Default;
+                }
+                return null;
+            }
+            if (outputType.IsValueType)
+            {
+                // 拆箱转换。
+                if (inputType.IsAssignableFrom(outputType))
+                {
+                    return UnboxConversion.Default;
+                }
+                var outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
+                if (outputUnderlyingType != null && inputType.IsAssignableFrom(outputUnderlyingType))
+                {
+                    return UnboxConversion.Default;
+                }
+                return null;
+            }
+            // 隐式引用转换。
+            if (outputType.IsAssignableFrom(inputType))
+            {
+                return IdentityConversion.ImplicitReference;
+            }
+            // 显式引用转换。
+            return GetExplicitRefConversion(inputType, outputType);
+        }
+
+        #region 值类型间转换
 
 		/// <summary>
 		/// 返回从值类型转换为值类型的类型转换。
@@ -181,6 +182,7 @@ namespace Cyjb.Conversions
 		/// <param name="inputType">要转换的对象的类型。</param>
 		/// <param name="outputType">要将输入对象转换到的类型。</param>
 		/// <returns>从值类型转换为值类型的类型转换，如果不存在则为 <c>null</c>。</returns>
+		[CanBeNull]
 		private static Conversion GetBetweenValueTypeConversion(Type inputType, Type outputType)
 		{
 			Contract.Requires(inputType != null && outputType != null);
@@ -246,60 +248,61 @@ namespace Cyjb.Conversions
 
 		#region 数值或枚举转换
 
-		/// <summary>
-		/// 返回将对象从数值类型 <paramref name="inputType"/> 转换为数值类型 <paramref name="outputType"/> 
-		/// 的类型转换。
-		/// </summary>
-		/// <param name="inputType">要转换的对象的类型。</param>
-		/// <param name="inputTypeCode">要转换的对象的类型。</param>
-		/// <param name="outputType">要将输入对象转换到的类型。</param>
-		/// <param name="outputTypeCode">要将输入对象转换到的类型。</param>
-		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
-		/// 类型的类型转换，如果不存在则为 <c>null</c>。</returns>
-		private static Conversion GetNumericOrEnumConversion(Type inputType, TypeCode inputTypeCode,
-			Type outputType, TypeCode outputTypeCode)
-		{
-			Contract.Requires(inputType != null && outputType != null);
-			Contract.Requires(Type.GetTypeCode(inputType) == inputTypeCode &&
-				Type.GetTypeCode(outputType) == outputTypeCode);
-			Contract.Requires(inputTypeCode.IsNumeric() && outputTypeCode.IsNumeric());
-			// 处理输入 decimal 类型。
-			if (inputTypeCode == TypeCode.Decimal)
-			{
-				return outputType.IsEnum ? DecimalConversion.ExplicitEnum : DecimalConversion.ExplicitNumeric;
-			}
-			// 处理输出 decimal 类型。
-			if (outputTypeCode == TypeCode.Decimal)
-			{
-				if (inputType.IsEnum)
-				{
-					return DecimalConversion.ExplicitEnum;
-				}
-				if (inputType == typeof(float) || inputType == typeof(double))
-				{
-					return DecimalConversion.ExplicitNumeric;
-				}
-				return DecimalConversion.ImplicitNumeric;
-			}
-			var conversion = GetNumericConversion(inputTypeCode, outputTypeCode);
-			if (inputType.IsEnum || outputType.IsEnum)
-			{
-				// 将类型转换的类型修正为 Enum。
-				var numericConv = conversion as NumericConversion;
-				return numericConv == null ? IdentityConversion.ExplicitEnum :
-					new NumericConversion(ConversionType.Enum, numericConv);
-			}
-			return conversion;
-		}
-		/// <summary>
-		/// 返回将对象从数值类型 <paramref name="inputTypeCode"/> 转换为数值类型 <paramref name="outputTypeCode"/> 
+        /// <summary>
+        /// 返回将对象从数值类型 <paramref name="inputType"/> 转换为数值类型 <paramref name="outputType"/>
+        /// 的类型转换。
+        /// </summary>
+        /// <param name="inputType">要转换的对象的类型。</param>
+        /// <param name="inputTypeCode">要转换的对象的类型。</param>
+        /// <param name="outputType">要将输入对象转换到的类型。</param>
+        /// <param name="outputTypeCode">要将输入对象转换到的类型。</param>
+        /// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
+        /// 类型的类型转换，如果不存在则为 <c>null</c>。</returns>
+        [CanBeNull]
+        private static Conversion GetNumericOrEnumConversion(Type inputType, TypeCode inputTypeCode, Type outputType, TypeCode outputTypeCode)
+        {
+            Contract.Requires(inputType != null && outputType != null);
+            Contract.Requires(Type.GetTypeCode(inputType) == inputTypeCode && Type.GetTypeCode(outputType) == outputTypeCode);
+            Contract.Requires(inputTypeCode.IsNumeric() && outputTypeCode.IsNumeric());
+            // 处理输入 decimal 类型。
+            if (inputTypeCode == TypeCode.Decimal)
+            {
+                return outputType.IsEnum ? DecimalConversion.ExplicitEnum : DecimalConversion.ExplicitNumeric;
+            }
+            // 处理输出 decimal 类型。
+            if (outputTypeCode == TypeCode.Decimal)
+            {
+                if (inputType.IsEnum)
+                {
+                    return DecimalConversion.ExplicitEnum;
+                }
+                if (inputType == typeof(float) || inputType == typeof(double))
+                {
+                    return DecimalConversion.ExplicitNumeric;
+                }
+                return DecimalConversion.ImplicitNumeric;
+            }
+            var conversion = GetNumericConversion(inputTypeCode, outputTypeCode);
+            if (inputType.IsEnum || outputType.IsEnum)
+            {
+                // 将类型转换的类型修正为 Enum。
+                var numericConv = conversion as NumericConversion;
+                return numericConv == null
+                    ? IdentityConversion.ExplicitEnum
+                    : new NumericConversion(ConversionType.Enum, numericConv);
+            }
+            return conversion;
+        }
+
+        /// <summary>
+		/// 返回将对象从数值类型 <paramref name="inputTypeCode"/> 转换为数值类型 <paramref name="outputTypeCode"/>
 		/// 的类型转换。要求类型不能是 <see cref="TypeCode.Decimal"/>。
 		/// </summary>
 		/// <param name="inputTypeCode">要转换的对象的类型。</param>
 		/// <param name="outputTypeCode">要将输入对象转换到的类型。</param>
-		/// <returns>将对象从 <paramref name="inputTypeCode"/> 类型转换为 <paramref name="outputTypeCode"/> 
+		/// <returns>将对象从 <paramref name="inputTypeCode"/> 类型转换为 <paramref name="outputTypeCode"/>
 		/// 类型的类型转换。</returns>
-		[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity")]
+        [CanBeNull]
 		private static Conversion GetNumericConversion(TypeCode inputTypeCode, TypeCode outputTypeCode)
 		{
 			Contract.Requires(inputTypeCode.IsNumeric() && inputTypeCode != TypeCode.Decimal);
@@ -540,12 +543,12 @@ namespace Cyjb.Conversions
 		#endregion // 显式引用类型转换或拆箱转换
 
 		/// <summary>
-		/// 返回的将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
+		/// 返回的将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
 		/// 类型的用户自定义类型转换。
 		/// </summary>
 		/// <param name="inputType">要转换的对象的类型。</param>
 		/// <param name="outputType">要将输入对象转换到的类型。</param>
-		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/> 
+		/// <returns>将对象从 <paramref name="inputType"/> 类型转换为 <paramref name="outputType"/>
 		/// 类型的用户自定义类型转换，如果不存在则为 <c>null</c>。</returns>
 		private static Conversion GetUserDefinedConversion(Type inputType, Type outputType)
 		{
@@ -565,24 +568,24 @@ namespace Cyjb.Conversions
 			var key = new Tuple<Type, Type>(inputType, outputType);
 			if (inputType != methodInputType || outputType != method.ReturnType)
 			{
-				conversion = userDefinedConverers.GetOrAdd(new Tuple<Type, Type>(methodInputType, method.ReturnType),
+				conversion = UserDefinedConverers.GetOrAdd(new Tuple<Type, Type>(methodInputType, method.ReturnType),
 					conversion);
 			}
 			if (inputUnderlyingType != inputType || outputUnderlyingType != outputType)
 			{
-				userDefinedConverers.TryAdd(new Tuple<Type, Type>(inputUnderlyingType, outputUnderlyingType), conversion);
+				UserDefinedConverers.TryAdd(new Tuple<Type, Type>(inputUnderlyingType, outputUnderlyingType), conversion);
 			}
 			if (inputUnderlyingType == inputType || !methodInputType.IsValueType || methodInputType.IsNullable())
 			{
-				return userDefinedConverers.GetOrAdd(key, conversion);
+				return UserDefinedConverers.GetOrAdd(key, conversion);
 			}
 			// 需要将输入的 Nullable<T> 解包。
 			if (outputUnderlyingType != outputType || !outputType.IsValueType)
 			{
 				// outputType 可以为 null（引用类型或 Nullable<T>）。
-				return userDefinedConverers.GetOrAdd(key, BetweenNullableConversion.UserDefined);
+				return UserDefinedConverers.GetOrAdd(key, BetweenNullableConversion.UserDefined);
 			}
-			return userDefinedConverers.GetOrAdd(key, FromNullableConversion.UserDefined);
+			return UserDefinedConverers.GetOrAdd(key, FromNullableConversion.UserDefined);
 		}
 		/// <summary>
 		/// 返回 <paramref name="inputType"/> 类型和 <paramref name="outputType"/> 类型之间的标准转换类型。

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.ComponentModel
 {
-	/// <summary>
-	/// 表示提供属性更改通知的对象。
-	/// </summary>
-	public abstract class ObservableObject : INotifyPropertyChanged, INotifyPropertyChanging
+    /// <summary>
+    /// 表示提供属性更改通知的对象。
+    /// </summary>
+    public abstract class ObservableObject : INotifyPropertyChanged, INotifyPropertyChanging
 	{
 
 		#region INotifyPropertyChanged 成员

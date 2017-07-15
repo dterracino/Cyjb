@@ -2,17 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
-	/// <summary>
-	/// 表示 IL 指令的管理器，提供局部变量管理、闭包等功能。
-	/// </summary>
-	internal class ILManager
+    /// <summary>
+    /// 表示 IL 指令的管理器，提供局部变量管理、闭包等功能。
+    /// </summary>
+    internal class ILManager
 	{
 		/// <summary>
 		/// IL 的指令生成器。

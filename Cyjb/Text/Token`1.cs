@@ -2,21 +2,18 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Cyjb.IO;
 using Cyjb.Utility;
 
 namespace Cyjb.Text
 {
-	/// <summary>
-	/// 表示一个词法单元。在比较时不考虑 <see cref="Token{T}.Value"/> 属性。
-	/// </summary>
-	/// <typeparam name="T">词法单元标识符的类型，必须是一个枚举类型。</typeparam>
-	/// <remarks><typeparamref name="T"/> 必须的枚举类型，使用该类型的特殊值 
-	/// <c>-1</c> 用于表示文件结束，<c>-2</c> 表示语法产生式的错误。</remarks>
-	public class Token<T> : ISourceLocatable, IEquatable<Token<T>>
+    /// <summary>
+    /// 表示一个词法单元。在比较时不考虑 <see cref="Token{T}.Value"/> 属性。
+    /// </summary>
+    /// <typeparam name="T">词法单元标识符的类型，必须是一个枚举类型。</typeparam>
+    /// <remarks><typeparamref name="T"/> 必须的枚举类型，使用该类型的特殊值 
+    /// <c>-1</c> 用于表示文件结束，<c>-2</c> 表示语法产生式的错误。</remarks>
+    public class Token<T> : ISourceLocatable, IEquatable<Token<T>>
 		where T : struct
 	{
 

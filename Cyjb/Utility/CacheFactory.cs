@@ -3,33 +3,30 @@ using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.Contracts;
-using System.Linq;
 using System.Reflection;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
-	/// <summary>
-	/// 允许根据配置文件使用不同的缓冲池配置的工厂类。
-	/// </summary>
-	/// <remarks>
-	/// 配置文件示例：
-	/// <code>
-	/// <configSections>
-	///		<!-- 这里的 Section 名称必须为 cyjb.cache -->
-	///		<section name="cyjb.cache" type="Cyjb.Utility.CacheSection, Cyjb"/>
-	/// </configSections>
-	/// <cyjb.cache>
-	///		<!-- key 是缓冲池的键，cacheType 是缓冲池的类型，option 是缓冲池构造函数参数的名称和相应的值。 -->
-	///		<cache key="Cyjb.EnumDescriptionCache" cacheType="Cyjb.Utility.LruCacheNoSync`2, Cyjb" >
-	///			<option name="maxSize" value="100" />
-	///		</cache>
-	/// </cyjb.cache>
-	/// </code>
-	/// </remarks>
-	public static class CacheFactory
+    /// <summary>
+    /// 允许根据配置文件使用不同的缓冲池配置的工厂类。
+    /// </summary>
+    /// <remarks>
+    /// 配置文件示例：
+    /// <code>
+    /// <configSections>
+    ///		<!-- 这里的 Section 名称必须为 cyjb.cache -->
+    ///		<section name="cyjb.cache" type="Cyjb.Utility.CacheSection, Cyjb"/>
+    /// </configSections>
+    /// <cyjb.cache>
+    ///		<!-- key 是缓冲池的键，cacheType 是缓冲池的类型，option 是缓冲池构造函数参数的名称和相应的值。 -->
+    ///		<cache key="Cyjb.EnumDescriptionCache" cacheType="Cyjb.Utility.LruCacheNoSync`2, Cyjb" >
+    ///			<option name="maxSize" value="100" />
+    ///		</cache>
+    /// </cyjb.cache>
+    /// </code>
+    /// </remarks>
+    public static class CacheFactory
 	{
 		/// <summary>
 		/// 缓冲池配置节的名称。

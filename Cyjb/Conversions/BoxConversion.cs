@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
-	/// <summary>
-	/// 表示装箱转换。
-	/// </summary>
-	internal class BoxConversion : Conversion
+    /// <summary>
+    /// 表示装箱转换。
+    /// </summary>
+    internal class BoxConversion : Conversion
 	{
 		/// <summary>
 		/// <see cref="BoxConversion"/> 的默认实例。

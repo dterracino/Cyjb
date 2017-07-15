@@ -1,4 +1,9 @@
-﻿using Cyjb;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Cyjb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb
@@ -15,7 +20,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestIsHex()
 		{
-			for (char c = '\x00'; c < '\xFF'; c++)
+			for (var c = '\x00'; c < '\xFF'; c++)
 			{
 				switch (c)
 				{

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Configurations
@@ -15,12 +18,7 @@ namespace Cyjb.Configurations
 		ConfigurationElementCollection, IList<TElement>, IList
 		where TElement : ConfigurationElement
 	{
-		/// <summary>
-		/// 初始化 <see cref="ConfigurationElementCollection{TElement}"/> 类的新实例。
-		/// </summary>
-		protected ConfigurationElementCollection() { }
-
-		#region IList<TElement> 成员
+	    #region IList<TElement> 成员
 
 		/// <summary>
 		/// 获取或设置指定索引处的元素。
@@ -38,7 +36,7 @@ namespace Cyjb.Configurations
 			set
 			{
 				// 先添加后删除，如果添加失败，不会导致配置元素被删除。
-				this.BaseAdd(index, value);
+				BaseAdd(index, value);
 				BaseRemoveAt(index + 1);
 			}
 		}
@@ -62,7 +60,7 @@ namespace Cyjb.Configurations
 		/// 不是 <see cref="ConfigurationElementCollection{TElement}"/> 中的有效索引。</exception>
 		public void Insert(int index, TElement item)
 		{
-			this.BaseAdd(index, item);
+			BaseAdd(index, item);
 		}
 		/// <summary>
 		/// 移除指定索引处的 <see cref="ConfigurationElementCollection{TElement}"/> 项。
@@ -111,11 +109,11 @@ namespace Cyjb.Configurations
 			{
 				if (!(value is TElement))
 				{
-					throw CommonExceptions.ArgumentWrongType("value", value, typeof(TElement));
+					throw CommonExceptions.ArgumentWrongType(nameof(value), value, typeof(TElement));
 				}
 				Contract.EndContractBlock();
 				// 先添加后删除，如果添加失败，不会导致配置元素被删除。
-				this.BaseAdd(index, (TElement)value);
+				BaseAdd(index, (TElement)value);
 				BaseRemoveAt(index + 1);
 			}
 		}
@@ -126,13 +124,13 @@ namespace Cyjb.Configurations
 		/// <returns>新元素所插入到的位置，或为 <c>-1</c> 以指示未将该项插入到集合中。</returns>
 		int IList.Add(object value)
 		{
-			int idx = this.Count;
-			TElement item = value as TElement;
+			var idx = Count;
+			var item = value as TElement;
 			if (item == null)
 			{
-				throw CommonExceptions.ArgumentWrongType("value", value, typeof(TElement));
+				throw CommonExceptions.ArgumentWrongType(nameof(value), value, typeof(TElement));
 			}
-			this.BaseAdd(idx, item);
+			BaseAdd(idx, item);
 			return idx;
 		}
 		/// <summary>
@@ -150,8 +148,8 @@ namespace Cyjb.Configurations
 		/// 中找到 <paramref name="value"/>，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		bool IList.Contains(object value)
 		{
-			TElement item = value as TElement;
-			return item != null && this.Contains(item);
+			var item = value as TElement;
+			return item != null && Contains(item);
 		}
 		/// <summary>
 		/// 确定 <see cref="ConfigurationElementCollection{TElement}"/> 中特定项的索引。
@@ -161,7 +159,7 @@ namespace Cyjb.Configurations
 		/// 中找到 <paramref name="value"/>，则为该项的索引；否则为 <c>-1</c>。</returns>
 		int IList.IndexOf(object value)
 		{
-			TElement item = value as TElement;
+			var item = value as TElement;
 			if (item != null)
 			{
 				return BaseIndexOf(item);
@@ -179,10 +177,10 @@ namespace Cyjb.Configurations
 		{
 			if (!(value is TElement))
 			{
-				throw CommonExceptions.ArgumentWrongType("value", value, typeof(TElement));
+				throw CommonExceptions.ArgumentWrongType(nameof(value), value, typeof(TElement));
 			}
 			Contract.EndContractBlock();
-			this.BaseAdd(index, (TElement)value);
+			BaseAdd(index, (TElement)value);
 		}
 		/// <summary>
 		/// 从 <see cref="ConfigurationElementCollection{TElement}"/> 中移除特定对象的第一个匹配项。
@@ -190,10 +188,10 @@ namespace Cyjb.Configurations
 		/// <param name="value">要从 <see cref="ConfigurationElementCollection{TElement}"/> 中移除的对象。</param>
 		void IList.Remove(object value)
 		{
-			TElement item = value as TElement;
+			var item = value as TElement;
 			if (item != null)
 			{
-				this.Remove(item);
+				Remove(item);
 			}
 		}
 		/// <summary>
@@ -204,7 +202,7 @@ namespace Cyjb.Configurations
 		/// 不是 <see cref="ConfigurationElementCollection{TElement}"/> 中的有效索引。</exception>
 		void IList.RemoveAt(int index)
 		{
-			this.RemoveAt(index);
+			RemoveAt(index);
 		}
 
 		#endregion // IList 成员
@@ -226,7 +224,7 @@ namespace Cyjb.Configurations
 		/// <param name="item">要添加到 <see cref="ConfigurationElementCollection{TElement}"/> 的对象。</param>
 		public void Add(TElement item)
 		{
-			this.BaseAdd(item);
+			BaseAdd(item);
 		}
 		/// <summary>
 		/// 从 <see cref="ConfigurationElementCollection{TElement}"/> 中移除所有项。
@@ -277,7 +275,7 @@ namespace Cyjb.Configurations
 		/// <paramref name="item"/>，该方法也会返回 <c>false</c>。</returns>
 		public bool Remove(TElement item)
 		{
-			int idx = BaseIndexOf(item);
+			var idx = BaseIndexOf(item);
 			if (idx < 0)
 			{
 				return false;
@@ -296,7 +294,7 @@ namespace Cyjb.Configurations
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/>。</returns>
 		public new IEnumerator<TElement> GetEnumerator()
 		{
-			IEnumerator enumerator = base.GetEnumerator();
+			var enumerator = base.GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				yield return (TElement)enumerator.Current;

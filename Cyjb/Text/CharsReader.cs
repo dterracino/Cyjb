@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Text
 {
@@ -29,10 +31,10 @@ namespace Cyjb.Text
 		/// <exception cref="ArgumentNullException"><paramref name="chars"/> 为 <c>null</c>。</exception>
 		public CharsReader(IEnumerable<char> chars)
 		{
-			CommonExceptions.CheckArgumentNull(chars, "chars");
+			CommonExceptions.CheckArgumentNull(chars, nameof(chars));
 			Contract.EndContractBlock();
 			this.chars = chars.GetEnumerator();
-			this.nextChar = this.NextChar();
+			nextChar = NextChar();
 		}
 
 		#region IDisposable 成员
@@ -48,10 +50,10 @@ namespace Cyjb.Text
 		/// </overloads>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing && this.chars != null)
+			if (disposing && chars != null)
 			{
-				this.chars.Dispose();
-				this.chars = null;
+				chars.Dispose();
+				chars = null;
 			}
 			base.Dispose(disposing);
 		}
@@ -66,7 +68,7 @@ namespace Cyjb.Text
 		public override int Peek()
 		{
 			CheckDisposed();
-			return this.nextChar;
+			return nextChar;
 		}
 		/// <summary>
 		/// 读取文本读取器中的下一个字符并使该字符的位置提升一个字符。
@@ -80,10 +82,10 @@ namespace Cyjb.Text
 		public override int Read()
 		{
 			CheckDisposed();
-			int result = this.nextChar;
+			var result = nextChar;
 			if (result != -1)
 			{
-				this.nextChar = this.NextChar();
+				nextChar = NextChar();
 			}
 			return result;
 		}
@@ -102,14 +104,14 @@ namespace Cyjb.Text
 		/// 不指定 <paramref name="buffer"/> 中的有效范围。</exception>
 		public override int Read(char[] buffer, int index, int count)
 		{
-			CommonExceptions.CheckArgumentNull(buffer, "buffer");
+			CommonExceptions.CheckArgumentNull(buffer, nameof(buffer));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (count < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("count", count);
+				throw CommonExceptions.ArgumentNegative(nameof(count), count);
 			}
 			if (index + count > buffer.Length)
 			{
@@ -117,21 +119,21 @@ namespace Cyjb.Text
 			}
 			Contract.EndContractBlock();
 			CheckDisposed();
-			if (count == 0 || this.nextChar == -1)
+			if (count == 0 || nextChar == -1)
 			{
 				return count;
 			}
-			int end = index + count;
-			for (int i = index; i < end; i++)
+			var end = index + count;
+			for (var i = index; i < end; i++)
 			{
-				buffer[i] = this.chars.Current;
-				if (!this.chars.MoveNext())
+				buffer[i] = chars.Current;
+				if (!chars.MoveNext())
 				{
-					this.nextChar = -1;
+					nextChar = -1;
 					return i - index;
 				}
 			}
-			this.nextChar = this.chars.Current;
+			nextChar = chars.Current;
 			return count;
 		}
 		/// <summary>
@@ -141,17 +143,17 @@ namespace Cyjb.Text
 		public override String ReadToEnd()
 		{
 			CheckDisposed();
-			if (this.nextChar == -1)
+			if (nextChar == -1)
 			{
 				return string.Empty;
 			}
-			StringBuilder text = new StringBuilder(2);
-			text.Append(this.chars.Current);
-			while (this.chars.MoveNext())
+			var text = new StringBuilder(2);
+			text.Append(chars.Current);
+			while (chars.MoveNext())
 			{
-				text.Append(this.chars.Current);
+				text.Append(chars.Current);
 			}
-			this.nextChar = -1;
+			nextChar = -1;
 			return text.ToString();
 		}
 		/// <summary>
@@ -161,30 +163,30 @@ namespace Cyjb.Text
 		public override String ReadLine()
 		{
 			CheckDisposed();
-			if (this.nextChar == -1)
+			if (nextChar == -1)
 			{
 				return null;
 			}
-			StringBuilder text = new StringBuilder(2);
+			var text = new StringBuilder(2);
 			while (true)
 			{
-				if (this.chars.Current == '\n')
+				if (chars.Current == '\n')
 				{
-					this.nextChar = this.NextChar();
+					nextChar = NextChar();
 					break;
 				}
-				if (this.chars.Current == '\r')
+				if (chars.Current == '\r')
 				{
-					if ((this.nextChar = this.NextChar()) == '\n')
+					if ((nextChar = NextChar()) == '\n')
 					{
-						this.nextChar = this.NextChar();
+						nextChar = NextChar();
 					}
 					break;
 				}
-				text.Append(this.chars.Current);
-				if (!this.chars.MoveNext())
+				text.Append(chars.Current);
+				if (!chars.MoveNext())
 				{
-					this.nextChar = -1;
+					nextChar = -1;
 					break;
 				}
 			}
@@ -196,10 +198,10 @@ namespace Cyjb.Text
 		/// <returns>字符序列中的下一个字符。</returns>
 		private int NextChar()
 		{
-			Contract.Requires(this.chars != null);
-			if (this.chars.MoveNext())
+			Contract.Requires(chars != null);
+			if (chars.MoveNext())
 			{
-				return this.chars.Current;
+				return chars.Current;
 			}
 			return -1;
 		}
@@ -208,7 +210,7 @@ namespace Cyjb.Text
 		/// </summary>
 		private void CheckDisposed()
 		{
-			if (this.chars == null)
+			if (chars == null)
 			{
 				throw CommonExceptions.StreamClosed(typeof(CharsReader));
 			}

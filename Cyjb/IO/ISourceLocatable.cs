@@ -1,5 +1,10 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
@@ -62,7 +67,7 @@ namespace Cyjb.IO
 			ISourceLocatable locatable = this;
 			Contract.Invariant(
 				(locatable.Start.IsUnknown && locatable.End == SourcePosition.Unknown) ||
-				((!locatable.Start.IsUnknown) && locatable.Start < locatable.End));
+				(!locatable.Start.IsUnknown && locatable.Start < locatable.End));
 		}
 	}
 }

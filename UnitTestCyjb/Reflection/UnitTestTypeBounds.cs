@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -121,13 +124,13 @@ namespace UnitTestCyjb.Reflection
 		}
 		private static void TestTypeBounds(string methodName, Type[] types, Type[] expectedArgs)
 		{
-			MethodInfo method = typeof(UnitTestTypeBounds).GetMethod(methodName,
+			var method = typeof(UnitTestTypeBounds).GetMethod(methodName,
 				BindingFlags.Static | BindingFlags.NonPublic);
-			PrivateObject typeBounds = new PrivateObject("Cyjb", "Cyjb.Reflection.TypeBounds",
+			var typeBounds = new PrivateObject("Cyjb", "Cyjb.Reflection.TypeBounds",
 				new object[] { method.GetGenericArguments() });
-			Type[] paramTypes = method.GetParameterTypes();
-			int last = paramTypes.Length - 1;
-			for (int i = 0; i < types.Length; i++)
+			var paramTypes = method.GetParameterTypes();
+			var last = paramTypes.Length - 1;
+			for (var i = 0; i < types.Length; i++)
 			{
 				if (!(bool)typeBounds.Invoke("TypeInferences", paramTypes[i > last ? last : i], types[i]))
 				{
@@ -139,13 +142,13 @@ namespace UnitTestCyjb.Reflection
 		}
 		private static void TestTypeUpperBounds(string methodName, Type[] types, Type[] expectedArgs)
 		{
-			MethodInfo method = typeof(UnitTestTypeBounds).GetMethod(methodName,
+			var method = typeof(UnitTestTypeBounds).GetMethod(methodName,
 				BindingFlags.Static | BindingFlags.NonPublic);
-			PrivateObject typeBounds = new PrivateObject("Cyjb", "Cyjb.Reflection.TypeBounds",
+			var typeBounds = new PrivateObject("Cyjb", "Cyjb.Reflection.TypeBounds",
 				new object[] { method.GetGenericArguments() });
-			Type[] paramTypes = method.GetParameterTypes();
-			int last = paramTypes.Length - 1;
-			for (int i = 0; i < types.Length; i++)
+			var paramTypes = method.GetParameterTypes();
+			var last = paramTypes.Length - 1;
+			for (var i = 0; i < types.Length; i++)
 			{
 				if (!(bool)typeBounds.Invoke("TypeInferences", paramTypes[i > last ? last : i], types[i], true))
 				{

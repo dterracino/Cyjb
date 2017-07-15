@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections;
 using Cyjb.Collections.ObjectModel;
 
@@ -52,7 +53,7 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="path"/> 为 <c>null</c>。</exception>
 		public static bool IsValidPath(string path)
 		{
-			CommonExceptions.CheckArgumentNull(path, "path");
+			CommonExceptions.CheckArgumentNull(path, nameof(path));
 			Contract.EndContractBlock();
 			return path.All(t => !invalidPathChars.Contains(t));
 		}
@@ -80,10 +81,10 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="path"/> 为 <c>null</c>。</exception>
 		public static string GetValidPath(string path, string replaceStr)
 		{
-			CommonExceptions.CheckArgumentNull(path, "path");
+			CommonExceptions.CheckArgumentNull(path, nameof(path));
 			Contract.EndContractBlock();
-			StringBuilder builder = new StringBuilder(path.Length);
-			for (int i = 0; i < path.Length; i++)
+			var builder = new StringBuilder(path.Length);
+			for (var i = 0; i < path.Length; i++)
 			{
 				if (invalidPathChars.Contains(path[i]))
 				{
@@ -105,7 +106,7 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="fileName"/> 为 <c>null</c>。</exception>
 		public static bool IsValidFileName(string fileName)
 		{
-			CommonExceptions.CheckArgumentNull(fileName, "fileName");
+			CommonExceptions.CheckArgumentNull(fileName, nameof(fileName));
 			Contract.EndContractBlock();
 			return fileName.All(t => !invalidFileNameChars.Contains(t));
 		}
@@ -133,10 +134,10 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="fileName"/> 为 <c>null</c>。</exception>
 		public static string GetValidFileName(string fileName, string replaceStr)
 		{
-			CommonExceptions.CheckArgumentNull(fileName, "fileName");
-			StringBuilder builder = new StringBuilder(fileName.Length);
-			int len = fileName.Length;
-			for (int i = 0; i < len; i++)
+			CommonExceptions.CheckArgumentNull(fileName, nameof(fileName));
+			var builder = new StringBuilder(fileName.Length);
+			var len = fileName.Length;
+			for (var i = 0; i < len; i++)
 			{
 				if (invalidFileNameChars.Contains(fileName[i]))
 				{

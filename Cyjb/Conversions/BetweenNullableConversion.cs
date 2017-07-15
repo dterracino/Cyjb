@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Reflection;
-using System.Reflection.Emit;
 using Cyjb.Reflection;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -38,12 +41,12 @@ namespace Cyjb.Conversions
 		public override void Emit(ILGenerator generator, Type inputType, Type outputType, bool isChecked)
 		{
 			Contract.Assume(inputType.IsNullable());
-			Type inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
-			Type outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
+			var inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
+			var outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
 			// 定义变量和标签
-			LocalBuilder inputLocal = generator.GetLocal(inputType);
-			Label trueCase = generator.DefineLabel();
-			Label endConvert = generator.DefineLabel();
+			var inputLocal = generator.GetLocal(inputType);
+			var trueCase = generator.DefineLabel();
+			var endConvert = generator.DefineLabel();
 			// inputLocal = value;
 			generator.Emit(OpCodes.Stloc, inputLocal);
 			// if (input.HasValue)
@@ -72,7 +75,7 @@ namespace Cyjb.Conversions
 				.Emit(generator, inputUnderlyingType, outputUnderlyingType ?? outputType, isChecked);
 			if (outputUnderlyingType != null)
 			{
-				ConstructorInfo ctor = outputType.GetConstructor(new[] { outputUnderlyingType });
+				var ctor = outputType.GetConstructor(new[] { outputUnderlyingType });
 				Contract.Assume(ctor != null);
 				generator.Emit(OpCodes.Newobj, ctor);
 			}

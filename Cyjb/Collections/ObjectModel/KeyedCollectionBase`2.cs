@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -62,7 +65,7 @@ namespace Cyjb.Collections.ObjectModel
 			get
 			{
 				Contract.Ensures(Contract.Result<IDictionary<TKey, TItem>>() != null);
-				return this.dict;
+				return dict;
 			}
 		}
 
@@ -80,9 +83,9 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				CommonExceptions.CheckArgumentNull(key, "key");
+				CommonExceptions.CheckArgumentNull(key, nameof(key));
 				Contract.Ensures(Contract.Result<TItem>() != null);
-				TItem item = this.dict[key];
+				var item = dict[key];
 				Contract.Assume(item != null);
 				return item;
 			}
@@ -96,7 +99,7 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public bool ContainsKey(TKey key)
 		{
-			return key != null && this.dict.ContainsKey(key);
+			return key != null && dict.ContainsKey(key);
 		}
 		/// <summary>
 		/// 从 <see cref="KeyedCollectionBase{TKey,TItem}"/> 中移除具有指定键的元素。
@@ -113,9 +116,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// </overloads>
 		public virtual bool Remove(TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			return this.dict.Remove(key);
+			return dict.Remove(key);
 		}
 		/// <summary>
 		/// 获取具有指定的键的元素。
@@ -128,9 +131,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public bool TryGetValue(TKey key, out TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			return this.dict.TryGetValue(key, out item);
+			return dict.TryGetValue(key, out item);
 		}
 		/// <summary>
 		/// 在派生类中实现时，将从指定元素提取键。
@@ -147,14 +150,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentException"><paramref name="newKey"/> 在字典中已存在。</exception>
 		protected void ChangeItemKey(TItem item, TKey newKey)
 		{
-			Contract.Requires(item != null && this.Contains(item));
-			TKey key = this.GetKeyForItem(item);
+			Contract.Requires(item != null && Contains(item));
+			var key = GetKeyForItem(item);
 			if (EqualityComparer<TKey>.Default.Equals(key, newKey))
 			{
 				return;
 			}
-			this.dict.Add(newKey, item);
-			this.dict.Remove(key);
+			dict.Add(newKey, item);
+			dict.Remove(key);
 		}
 
 		#endregion // 键操作
@@ -169,17 +172,17 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentException">集合中已存在具有相同键的元素。</exception>
 		public override void Add(TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(item, "item");
+			CommonExceptions.CheckArgumentNull(item, nameof(item));
 			Contract.EndContractBlock();
-			TKey key = this.GetKeyForItem(item);
-			this.dict.Add(key, item);
+			var key = GetKeyForItem(item);
+			dict.Add(key, item);
 		}
 		/// <summary>
 		/// 从 <see cref="KeyedCollectionBase{TKey,TItem}"/> 中移除所有元素。
 		/// </summary>
 		public override void Clear()
 		{
-			this.dict.Clear();
+			dict.Clear();
 		}
 		/// <summary>
 		/// 确定 <see cref="KeyedCollectionBase{TKey,TItem}"/> 是否包含指定对象。
@@ -193,9 +196,9 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				return false;
 			}
-			TKey key = this.GetKeyForItem(item);
+			var key = GetKeyForItem(item);
 			TItem newItem;
-			return this.dict.TryGetValue(key, out newItem) &&
+			return dict.TryGetValue(key, out newItem) &&
 				EqualityComparer<TItem>.Default.Equals(newItem, item);
 		}
 		/// <summary>
@@ -208,14 +211,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentNullException"><paramref name="item"/> 为 <c>null</c>。</exception>
 		public override bool Remove(TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(item, "item");
+			CommonExceptions.CheckArgumentNull(item, nameof(item));
 			Contract.EndContractBlock();
-			TKey key = this.GetKeyForItem(item);
+			var key = GetKeyForItem(item);
 			TItem oldItem;
-			if (this.dict.TryGetValue(key, out oldItem) &&
+			if (dict.TryGetValue(key, out oldItem) &&
 				EqualityComparer<TItem>.Default.Equals(item, oldItem))
 			{
-				return this.dict.Remove(key);
+				return dict.Remove(key);
 			}
 			return false;
 		}

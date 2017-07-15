@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -53,10 +56,10 @@ namespace Cyjb
 		/// <exception cref="IndexOutOfRangeException"><paramref name="index"/> 大于等于字符串的长度或小于零。</exception>
 		public static bool IsHex(string str, int index)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (index < 0 || index >= str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			return IsHex(str[index]);
@@ -179,14 +182,14 @@ namespace Cyjb
 		/// <seealso href="http://www.unicode.org/reports/tr11/">Unicode Standard Annex #11 EAST ASIAN WIDTH</seealso>。
 		public static int Width(string str, int index)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (index >= str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= 2);
 			return Width(char.ConvertToUtf32(str, index));

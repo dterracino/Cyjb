@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -26,8 +29,8 @@ namespace UnitTestCyjb.Reflection
 			Assert.AreEqual(typeof(IEnumerable<KeyValuePair<int, string>>), typeof(IEnumerable<>).CloseDefinitionFrom(typeof(Dictionary<int, string>)));
 			Assert.AreEqual(typeof(IDictionary<int, string>), typeof(IDictionary<,>).CloseDefinitionFrom(typeof(Dictionary<int, string>)));
 
-			Type closedType = typeof(TestBaseClass<,>).CloseDefinitionFrom(typeof(TestSubClass<>));
-			Type[] genericArgs = closedType.GetGenericArguments();
+			var closedType = typeof(TestBaseClass<,>).CloseDefinitionFrom(typeof(TestSubClass<>));
+			var genericArgs = closedType.GetGenericArguments();
 			Assert.AreEqual(2, genericArgs.Length);
 			Assert.AreEqual(typeof(int), genericArgs[0]);
 			Assert.IsTrue(genericArgs[1].IsGenericParameter);

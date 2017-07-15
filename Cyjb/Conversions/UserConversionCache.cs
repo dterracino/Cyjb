@@ -1,10 +1,12 @@
 ﻿using System;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.Conversions
@@ -30,7 +32,7 @@ namespace Cyjb.Conversions
 		private static UserConversions GetUserConversions(Type type)
 		{
 			Contract.Requires(type != null);
-			TypeCode typeCode = Type.GetTypeCode(type);
+			var typeCode = Type.GetTypeCode(type);
 			if (typeCode != TypeCode.Object && typeCode != TypeCode.Decimal)
 			{
 				// 其余基本类型都不包含类型转换运算符。
@@ -47,12 +49,12 @@ namespace Cyjb.Conversions
 			}
 			return conversions.GetOrAdd(type, searchType =>
 			{
-				List<UserConversionMethod> list = new List<UserConversionMethod>();
-				MethodInfo[] methods = searchType.GetMethods(TypeExt.PublicStaticFlag);
-				int convertToIndex = 0;
-				for (int i = 0; i < methods.Length; i++)
+				var list = new List<UserConversionMethod>();
+				var methods = searchType.GetMethods(TypeExt.PublicStaticFlag);
+				var convertToIndex = 0;
+				for (var i = 0; i < methods.Length; i++)
 				{
-					MethodInfo method = methods[i];
+					var method = methods[i];
 					if (!method.Name.Equals(MethodExt.ImplicitMethodName, StringComparison.Ordinal) &&
 						!method.Name.Equals(MethodExt.ExplicitMethodName, StringComparison.Ordinal))
 					{
@@ -73,14 +75,14 @@ namespace Cyjb.Conversions
 				// 基类包含的转换，子类也可以使用。
 				if (type.IsClass)
 				{
-					UserConversions baseConv = GetUserConversions(type.BaseType);
+					var baseConv = GetUserConversions(type.BaseType);
 					if (baseConv != null)
 					{
 						if (list.Count == 0)
 						{
 							return baseConv;
 						}
-						int cnt = baseConv.ConvertToIndex;
+						var cnt = baseConv.ConvertToIndex;
 						if (cnt > 0)
 						{
 							list.InsertRange(convertToIndex, baseConv.Methods.Take(cnt));
@@ -111,10 +113,10 @@ namespace Cyjb.Conversions
 		public static MethodInfo GetConversionFrom(Type basicType, Type inputType)
 		{
 			Contract.Requires(inputType != null && basicType != null);
-			UserConversions convs = GetUserConversions(basicType);
-			for (int i = 0; i < convs.ConvertToIndex; i++)
+			var convs = GetUserConversions(basicType);
+			for (var i = 0; i < convs.ConvertToIndex; i++)
 			{
-				UserConversionMethod method = convs.Methods[i];
+				var method = convs.Methods[i];
 				if (method.InputType == inputType)
 				{
 					return method.Method;
@@ -134,11 +136,11 @@ namespace Cyjb.Conversions
 		public static MethodInfo GetConversionTo(Type basicType, Type outputType)
 		{
 			Contract.Requires(outputType != null && basicType != null);
-			UserConversions convs = GetUserConversions(basicType);
+			var convs = GetUserConversions(basicType);
 			Contract.Assume(convs.ConvertToIndex >= 0);
-			for (int i = convs.ConvertToIndex; i < convs.Methods.Length; i++)
+			for (var i = convs.ConvertToIndex; i < convs.Methods.Length; i++)
 			{
-				UserConversionMethod method = convs.Methods[i];
+				var method = convs.Methods[i];
 				if (method.OutputType == outputType)
 				{
 					return method.Method;
@@ -213,21 +215,21 @@ namespace Cyjb.Conversions
 			/// <returns>合适的用户自定义类型转换方法，如果不存在则为 <c>null</c>。</returns>
 			public MethodInfo FindConversion()
 			{
-				UserConversions convs = GetUserConversions(inputType);
+				var convs = GetUserConversions(inputType);
 				if (convs != null)
 				{
 					Contract.Assume(convs.ConvertToIndex >= 0);
-					for (int i = convs.ConvertToIndex; i < convs.Methods.Length; i++)
+					for (var i = convs.ConvertToIndex; i < convs.Methods.Length; i++)
 					{
-						UserConversionMethod method = convs.Methods[i];
-						ConversionType ctype = ConversionFactory.GetStandardConversion(outputType, method.OutputType);
+						var method = convs.Methods[i];
+						var ctype = ConversionFactory.GetStandardConversion(outputType, method.OutputType);
 						if (ctype == ConversionType.None)
 						{
 							continue;
 						}
-						TypeRelation inputRelation = (method.InputType == inputType) ?
+						var inputRelation = method.InputType == inputType ?
 							TypeRelation.Best : TypeRelation.Second;
-						TypeRelation outputRelation = TypeRelation.Best;
+						var outputRelation = TypeRelation.Best;
 						if (ctype >= ConversionType.ExplicitNumeric)
 						{
 							outputRelation = TypeRelation.Second;
@@ -242,17 +244,17 @@ namespace Cyjb.Conversions
 				convs = GetUserConversions(outputType);
 				if (convs != null)
 				{
-					for (int i = 0; i < convs.ConvertToIndex; i++)
+					for (var i = 0; i < convs.ConvertToIndex; i++)
 					{
-						UserConversionMethod method = convs.Methods[i];
-						ConversionType ctype = ConversionFactory.GetStandardConversion(method.InputType, inputType);
+						var method = convs.Methods[i];
+						var ctype = ConversionFactory.GetStandardConversion(method.InputType, inputType);
 						if (ctype == ConversionType.None)
 						{
 							continue;
 						}
-						TypeRelation outputRelation = (method.OutputType == outputType) ?
+						var outputRelation = method.OutputType == outputType ?
 							TypeRelation.Best : TypeRelation.Second;
-						TypeRelation inputRelation = TypeRelation.Best;
+						var inputRelation = TypeRelation.Best;
 						if (ctype >= ConversionType.ExplicitNumeric)
 						{
 							inputRelation = TypeRelation.Second;
@@ -315,7 +317,7 @@ namespace Cyjb.Conversions
 					bestMethod.Reset();
 					return;
 				}
-				ConversionType ctype = ConversionFactory.GetStandardConversion(methodType, bestType);
+				var ctype = ConversionFactory.GetStandardConversion(methodType, bestType);
 				if (ctype == ConversionType.None)
 				{
 					// 找不到类型转换关系，令最佳选择前进至下一级别，并清除类型填充。
@@ -360,7 +362,7 @@ namespace Cyjb.Conversions
 				/// <summary>
 				/// 未知关系。
 				/// </summary>
-				Unknown,
+				Unknown
 			}
 		}
 
@@ -388,7 +390,7 @@ namespace Cyjb.Conversions
 			/// <value>类型转换方法。</value>
 			public MethodInfo Method
 			{
-				get { return this.method; }
+				get { return method; }
 			}
 			/// <summary>
 			/// 获取类型转换方法的输入类型，即方法的参数类型。
@@ -396,7 +398,7 @@ namespace Cyjb.Conversions
 			/// <value>类型转换方法的输入类型，即方法的参数类型。</value>
 			public Type InputType
 			{
-				get { return this.inputType; }
+				get { return inputType; }
 			}
 			/// <summary>
 			/// 获取类型转换方法的目标类型，即方法的返回值类型。
@@ -404,7 +406,7 @@ namespace Cyjb.Conversions
 			/// <value>类型转换方法的目标类型，即方法的返回值类型。</value>
 			public Type OutputType
 			{
-				get { return this.Method.ReturnType; }
+				get { return Method.ReturnType; }
 			}
 			/// <summary>
 			/// 使用指定的类型转换方法初始化 <see cref="UserConversionMethod"/> 类的新实例。
@@ -414,7 +416,7 @@ namespace Cyjb.Conversions
 			{
 				Contract.Requires(method != null && method.GetParametersNoCopy().Length == 1);
 				this.method = method;
-				this.inputType = method.GetParametersNoCopy()[0].ParameterType;
+				inputType = method.GetParametersNoCopy()[0].ParameterType;
 			}
 		}
 		/// <summary>
@@ -439,8 +441,8 @@ namespace Cyjb.Conversions
 			public UserConversions(UserConversionMethod[] methods, int index)
 			{
 				Contract.Requires(methods != null && index >= 0 && index < methods.Length);
-				this.Methods = methods;
-				this.ConvertToIndex = index;
+				Methods = methods;
+				ConvertToIndex = index;
 			}
 		}
 

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
@@ -193,12 +196,12 @@ namespace Cyjb.IO
 				{
 					throw CommonExceptions.ReversedArgument("range.Start", "range.End");
 				}
-				this.start = range.Start;
-				this.end = range.End;
-				ISourceFileLocatable fileRange = range as ISourceFileLocatable;
+				start = range.Start;
+				end = range.End;
+				var fileRange = range as ISourceFileLocatable;
 				if (fileRange != null)
 				{
-					this.fileName = fileRange.FileName;
+					fileName = fileRange.FileName;
 				}
 			}
 			this.isWarning = isWarning;
@@ -215,12 +218,12 @@ namespace Cyjb.IO
 		protected SourceException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			CommonExceptions.CheckArgumentNull(info, "info");
+			CommonExceptions.CheckArgumentNull(info, nameof(info));
 			Contract.EndContractBlock();
-			this.start = (SourcePosition)info.GetValue("Start", typeof(SourcePosition));
-			this.end = (SourcePosition)info.GetValue("End", typeof(SourcePosition));
-			this.fileName = info.GetString("File");
-			this.isWarning = info.GetBoolean("Warn");
+			start = (SourcePosition)info.GetValue("Start", typeof(SourcePosition));
+			end = (SourcePosition)info.GetValue("End", typeof(SourcePosition));
+			fileName = info.GetString("File");
+			isWarning = info.GetBoolean("Warn");
 		}
 
 		#endregion // 构造函数
@@ -229,22 +232,22 @@ namespace Cyjb.IO
 		/// 获取产生异常的源文件起始位置。
 		/// </summary>
 		/// <value>产生异常的源文件起始位置。</value>
-		public SourcePosition Start { get { return this.start; } }
+		public SourcePosition Start { get { return start; } }
 		/// <summary>
 		/// 获取产生异常的源文件结束位置。
 		/// </summary>
 		/// <value>产生异常的源文件结束位置。</value>
-		public SourcePosition End { get { return this.end; } }
+		public SourcePosition End { get { return end; } }
 		/// <summary>
 		/// 获取产生异常的源文件名称。
 		/// </summary>
 		/// <value>产生异常的源文件名称，如果不存在则为 <c>null</c>。</value>
-		public string FileName { get { return this.fileName; } }
+		public string FileName { get { return fileName; } }
 		/// <summary>
 		/// 获取异常表示的是否是警告。
 		/// </summary>
 		/// <value>如果是警告，则为 <c>true</c>；如果是错误则为 <c>false</c>。</value>
-		public bool IsWarning { get { return this.isWarning; } }
+		public bool IsWarning { get { return isWarning; } }
 		/// <summary>
 		/// 获取描述当前异常的消息。的位置
 		/// </summary>
@@ -253,29 +256,29 @@ namespace Cyjb.IO
 		{
 			get
 			{
-				StringBuilder text = new StringBuilder();
+				var text = new StringBuilder();
 				text.Append(IsWarning ? Resources.WarningText : Resources.ErrorText);
 				text.Append(base.Message);
-				bool hasFileName = !string.IsNullOrWhiteSpace(this.fileName);
-				if (hasFileName || !this.start.IsUnknown)
+				var hasFileName = !string.IsNullOrWhiteSpace(fileName);
+				if (hasFileName || !start.IsUnknown)
 				{
 					text.AppendLine();
 					text.Append(Resources.AtText);
 					if (hasFileName)
 					{
 						text.Append(' ');
-						text.Append(this.fileName);
+						text.Append(fileName);
 					}
-					if (!this.start.IsUnknown)
+					if (!start.IsUnknown)
 					{
 						text.Append(hasFileName ? ':' : ' ');
-						if (this.start == this.end)
+						if (start == end)
 						{
-							text.AppendFormat("({0})", this.start);
+							text.AppendFormat("({0})", start);
 						}
 						else
 						{
-							text.AppendFormat("({0})-({1})", this.start, this.end);
+							text.AppendFormat("({0})-({1})", start, end);
 						}
 					}
 				}
@@ -294,13 +297,13 @@ namespace Cyjb.IO
 		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			CommonExceptions.CheckArgumentNull(info, "info");
+			CommonExceptions.CheckArgumentNull(info, nameof(info));
 			Contract.EndContractBlock();
 			base.GetObjectData(info, context);
-			info.AddValue("Start", this.start);
-			info.AddValue("End", this.end);
-			info.AddValue("File", this.fileName);
-			info.AddValue("Warn", this.isWarning);
+			info.AddValue("Start", start);
+			info.AddValue("End", end);
+			info.AddValue("File", fileName);
+			info.AddValue("Warn", isWarning);
 		}
 
 		#endregion // ISerializable 成员

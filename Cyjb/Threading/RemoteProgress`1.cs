@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -21,7 +25,7 @@ namespace Cyjb
 		/// <param name="progress">被包装的进度更新提供程序。</param>
 		public RemoteProgress(IProgress<T> progress)
 		{
-			CommonExceptions.CheckArgumentNull(progress, "progress");
+			CommonExceptions.CheckArgumentNull(progress, nameof(progress));
 			Contract.EndContractBlock();
 			this.progress = progress;
 		}

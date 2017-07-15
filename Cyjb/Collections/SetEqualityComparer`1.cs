@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -35,12 +37,8 @@ namespace Cyjb.Collections
 				return defaultValue;
 			}
 		}
-		/// <summary>
-		/// 初始化 <see cref="SetEqualityComparer{T}"/> 类的新实例。
-		/// </summary>
-		public SetEqualityComparer() { }
 
-		#region EqualityComparer<ISet<T>> 成员
+	    #region EqualityComparer<ISet<T>> 成员
 
 		/// <summary>
 		/// 确定指定的对象是否相等。
@@ -78,7 +76,7 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public override int GetHashCode(ISet<T> obj)
 		{
-			CommonExceptions.CheckArgumentNull(obj, "obj");
+			CommonExceptions.CheckArgumentNull(obj, nameof(obj));
 			Contract.EndContractBlock();
 			// 使用与位置无关的弱哈希。
 			return obj.Count ^ obj.Select(o => o.GetHashCode()).Aggregate((x, y) => x ^ y);

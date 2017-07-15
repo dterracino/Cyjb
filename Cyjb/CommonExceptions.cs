@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.IO;
-using Cyjb.Reflection;
 using Cyjb.Utility;
 using JetBrains.Annotations;
 
@@ -31,8 +34,8 @@ namespace Cyjb
 		public static ArgumentNullException ArgumentBothNull([InvokerParameterName]string firstParamName,
 			[InvokerParameterName]string secondParamName)
 		{
-			CheckArgumentNull(firstParamName, "firstParamName");
-			CheckArgumentNull(secondParamName, "secondParamName");
+			CheckArgumentNull(firstParamName, nameof(firstParamName));
+			CheckArgumentNull(secondParamName, nameof(secondParamName));
 			Contract.Ensures(Contract.Result<ArgumentNullException>() != null);
 			return new ArgumentNullException(Format(Resources.ArgumentBothNull, firstParamName, secondParamName));
 		}
@@ -104,8 +107,8 @@ namespace Cyjb
 		public static ArgumentException ReversedArgument([InvokerParameterName]string firstParam,
 			[InvokerParameterName]string secondParam)
 		{
-			CheckArgumentNull(firstParam, "firstParam");
-			CheckArgumentNull(secondParam, "secondParam");
+			CheckArgumentNull(firstParam, nameof(firstParam));
+			CheckArgumentNull(secondParam, nameof(secondParam));
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
 			return new ArgumentException(Format(Resources.ReversedArgument, firstParam, secondParam));
 		}
@@ -457,9 +460,9 @@ namespace Cyjb
 		public static ArgumentException ArgumentWrongType([InvokerParameterName]string paramName,
 			object actualValue, Type targetType)
 		{
-			CheckArgumentNull(targetType, "targetType");
+			CheckArgumentNull(targetType, nameof(targetType));
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
-			string message = Format(Resources.ArgumentWrongType_Specific, actualValue, targetType);
+			var message = Format(Resources.ArgumentWrongType_Specific, actualValue, targetType);
 			return new ArgumentException(message, paramName);
 		}
 		/// <summary>
@@ -483,8 +486,8 @@ namespace Cyjb
 		internal static ArgumentException EnumTypeDoesNotMatch([InvokerParameterName]string paramName,
 			Type paramType, Type baseType)
 		{
-			CheckArgumentNull(paramType, "paramType");
-			CheckArgumentNull(baseType, "baseType");
+			CheckArgumentNull(paramType, nameof(paramType));
+			CheckArgumentNull(baseType, nameof(baseType));
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
 			return new ArgumentException(Format(Resources.EnumTypeDoesNotMatch, paramType, baseType), paramName);
 		}
@@ -512,8 +515,8 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="toType"/> 为 <c>null</c>。</exception>
 		public static InvalidCastException InvalidCast(Type fromType, Type toType)
 		{
-			CheckArgumentNull(fromType, "fromType");
-			CheckArgumentNull(toType, "toType");
+			CheckArgumentNull(fromType, nameof(fromType));
+			CheckArgumentNull(toType, nameof(toType));
 			Contract.Ensures(Contract.Result<InvalidCastException>() != null);
 			return new InvalidCastException(Format(Resources.InvalidCast_FromTo, fromType, toType));
 		}
@@ -564,7 +567,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="type"/> 为 <c>null</c>。</exception>
 		public static ArgumentException MustBeDelegate(Type type)
 		{
-			CheckArgumentNull(type, "type");
+			CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
 			return new ArgumentException(Format(Resources.MustBeDelegate_Type, type));
 		}
@@ -577,7 +580,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="type"/> 为 <c>null</c>。</exception>
 		public static ArgumentException MustBeDelegate([InvokerParameterName]string paramName, Type type)
 		{
-			CheckArgumentNull(type, "type");
+			CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
 			return new ArgumentException(Format(Resources.MustBeDelegate_Type, type), paramName);
 		}
@@ -637,7 +640,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="type"/> 为 <c>null</c>。</exception>
 		public static ArgumentException MustBeEnum([InvokerParameterName]string paramName, Type type)
 		{
-			CheckArgumentNull(type, "type");
+			CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
 			return new ArgumentException(Format(Resources.MustBeEnum_Type, type), paramName);
 		}
@@ -732,8 +735,8 @@ namespace Cyjb
 		public static ArgumentOutOfRangeException ArgumentOutOfRange([InvokerParameterName]string paramName,
 			object actualValue, object begin, object end)
 		{
-			CheckArgumentNull(begin, "begin");
-			CheckArgumentNull(end, "end");
+			CheckArgumentNull(begin, nameof(begin));
+			CheckArgumentNull(end, nameof(end));
 			Contract.Ensures(Contract.Result<ArgumentOutOfRangeException>() != null);
 			return new ArgumentOutOfRangeException(paramName, actualValue,
 				Format(Resources.ArgumentOutOfRangeBetween, begin, end));
@@ -846,7 +849,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="objectType"/> 为 <c>null</c>。</exception>
 		public static ObjectDisposedException ObjectDisposed(Type objectType)
 		{
-			CheckArgumentNull(objectType, "objectType");
+			CheckArgumentNull(objectType, nameof(objectType));
 			Contract.Ensures(Contract.Result<ObjectDisposedException>() != null);
 			return new ObjectDisposedException(Format(objectType));
 		}
@@ -858,7 +861,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="streamType"/> 为 <c>null</c>。</exception>
 		public static ObjectDisposedException StreamClosed(Type streamType)
 		{
-			CheckArgumentNull(streamType, "streamType");
+			CheckArgumentNull(streamType, nameof(streamType));
 			Contract.Ensures(Contract.Result<ObjectDisposedException>() != null);
 			return new ObjectDisposedException(Format(streamType), Format(Resources.StreamClosed, streamType));
 		}
@@ -1142,7 +1145,7 @@ namespace Cyjb
 		{
 			Contract.Requires(memberName != null);
 			Contract.Ensures(Contract.Result<ArgumentException>() != null);
-			string message = nonPublic ? Resources.PropertyOrFieldNotFound_NonPublic : Resources.PropertyOrFieldNotFound;
+			var message = nonPublic ? Resources.PropertyOrFieldNotFound_NonPublic : Resources.PropertyOrFieldNotFound;
 			return new ArgumentException(Format(message, memberName));
 		}
 		/// <summary>
@@ -1195,7 +1198,7 @@ namespace Cyjb
 		internal static void CheckUnboundGenParam(MemberInfo member, [InvokerParameterName]string paramName)
 		{
 			CheckArgumentNull(member, paramName);
-			Type declaringType = member.DeclaringType;
+			var declaringType = member.DeclaringType;
 			if (declaringType != null && declaringType.ContainsGenericParameters)
 			{
 				throw new ArgumentException(Resources.UnboundGenParam, paramName);
@@ -1302,7 +1305,7 @@ namespace Cyjb
 		{
 			Contract.Requires(element != null);
 			Contract.Ensures(Contract.Result<ConfigurationErrorsException>() != null);
-			string message = Format(Resources.InvalidCacheType, element.CacheType);
+			var message = Format(Resources.InvalidCacheType, element.CacheType);
 			return new ConfigurationErrorsException(message,
 				element.ElementInformation.Source, element.ElementInformation.LineNumber);
 		}
@@ -1316,7 +1319,7 @@ namespace Cyjb
 		{
 			Contract.Requires(element != null);
 			Contract.Ensures(Contract.Result<ConfigurationErrorsException>() != null);
-			string message = Format(Resources.InvalidCacheType, element.CacheType);
+			var message = Format(Resources.InvalidCacheType, element.CacheType);
 			return new ConfigurationErrorsException(message, innerException,
 				element.ElementInformation.Source, element.ElementInformation.LineNumber);
 		}
@@ -1329,7 +1332,7 @@ namespace Cyjb
 		{
 			Contract.Requires(element != null);
 			Contract.Ensures(Contract.Result<ConfigurationErrorsException>() != null);
-			string message = Format(Resources.InvalidCacheType_ICache, element.CacheType);
+			var message = Format(Resources.InvalidCacheType_ICache, element.CacheType);
 			return new ConfigurationErrorsException(message,
 				element.ElementInformation.Source, element.ElementInformation.LineNumber);
 		}
@@ -1342,7 +1345,7 @@ namespace Cyjb
 		{
 			Contract.Requires(element != null);
 			Contract.Ensures(Contract.Result<ConfigurationErrorsException>() != null);
-			string message = Format(Resources.InvalidCacheOptions, element.CacheType);
+			var message = Format(Resources.InvalidCacheOptions, element.CacheType);
 			return new ConfigurationErrorsException(message,
 				element.ElementInformation.Source, element.ElementInformation.LineNumber);
 		}
@@ -1462,7 +1465,7 @@ namespace Cyjb
 		{
 			Contract.Requires(message != null && args != null);
 			Contract.Ensures(Contract.Result<string>() != null);
-			for (int i = 0; i < args.Length; i++)
+			for (var i = 0; i < args.Length; i++)
 			{
 				args[i] = Format(args[i]);
 			}
@@ -1478,7 +1481,7 @@ namespace Cyjb
 			{
 				return "(null)";
 			}
-			Type type = value as Type;
+			var type = value as Type;
 			if (type != null)
 			{
 				return type.FullName();

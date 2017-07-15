@@ -1,8 +1,12 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -53,15 +57,15 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this Type type)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateDefaultConstructorDelegate(type, dlgType);
+			var dlg = CreateDefaultConstructorDelegate(type, dlgType);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(".ctor");
@@ -87,16 +91,16 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this Type type, string name)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateOpenDelegate(type, name, dlgType, BindingFlags.Default);
+			var dlg = CreateOpenDelegate(type, name, dlgType, BindingFlags.Default);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -127,16 +131,16 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this Type type, string name, BindingFlags bindingAttr)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
+			var dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -171,16 +175,16 @@ namespace Cyjb
 			bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
+			var dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
 			if (dlg == null && throwOnBindFailure)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -206,16 +210,16 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问成员。</exception>
 		public static Delegate CreateDelegate(this Type type, string name, Type delegateType)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateOpenDelegate(type, name, delegateType, BindingFlags.Default);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateOpenDelegate(type, name, delegateType, BindingFlags.Default);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -246,16 +250,16 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问成员。</exception>
 		public static Delegate CreateDelegate(Type type, string name, Type delegateType, BindingFlags bindingAttr)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateOpenDelegate(type, name, delegateType, bindingAttr);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateOpenDelegate(type, name, delegateType, bindingAttr);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -290,16 +294,16 @@ namespace Cyjb
 		public static Delegate CreateDelegate(Type type, string name, Type delegateType, BindingFlags bindingAttr,
 			bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateOpenDelegate(type, name, delegateType, bindingAttr);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateOpenDelegate(type, name, delegateType, bindingAttr);
 			if (dlg == null && throwOnBindFailure)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -317,9 +321,9 @@ namespace Cyjb
 		private static Delegate CreateOpenDelegate(Type type, string name, Type delegateType, BindingFlags bindingAttr)
 		{
 			Contract.Requires(type != null && delegateType != null && !string.IsNullOrEmpty(name));
-			MethodInfo invoke = delegateType.GetInvokeMethod();
-			Type[] paramTypes = invoke.GetParameterTypes();
-			MemberFinder finder = new MemberFinder(type, name, FillDefaultFlags(bindingAttr), invoke.ReturnType, paramTypes);
+			var invoke = delegateType.GetInvokeMethod();
+			var paramTypes = invoke.GetParameterTypes();
+			var finder = new MemberFinder(type, name, FillDefaultFlags(bindingAttr), invoke.ReturnType, paramTypes);
 			// 搜索构造函数。
 			if (name.Equals(ConstructorName, StringComparison.Ordinal))
 			{
@@ -327,23 +331,23 @@ namespace Cyjb
 				{
 					return CreateDefaultConstructorDelegate(type, delegateType);
 				}
-				ConstructorInfo ctor = finder.FindConstructor();
+				var ctor = finder.FindConstructor();
 				return ctor == null ? null : CreateOpenDelegate(ctor, delegateType);
 			}
 			// 查找方法。
-			MethodInfo method = finder.FindMethod();
+			var method = finder.FindMethod();
 			if (method != null)
 			{
 				return CreateOpenDelegate(method, delegateType);
 			}
 			// 查找属性。
-			PropertyInfo property = finder.FindProperty();
+			var property = finder.FindProperty();
 			if (property != null)
 			{
 				return CreateOpenDelegate(property, delegateType, false);
 			}
 			// 查找字段。
-			FieldInfo field = finder.FindField();
+			var field = finder.FindField();
 			return field == null ? null : CreateOpenDelegate(field, delegateType);
 		}
 		/// <summary>
@@ -377,21 +381,21 @@ namespace Cyjb
 		{
 			Contract.Requires(type != null && delegateType != null);
 			// 检查委托类型。
-			MethodInfo invoke = delegateType.GetInvokeMethod();
+			var invoke = delegateType.GetInvokeMethod();
 			if (invoke.GetParametersNoCopy().Length != 0)
 			{
 				return null;
 			}
-			Type returnType = invoke.ReturnType;
+			var returnType = invoke.ReturnType;
 			if (!returnType.IsExplicitFrom(type))
 			{
 				return null;
 			}
 			// 构造动态委托。
-			DynamicMethod dlgMethod = new DynamicMethod("DefaultConstructorDelegate", returnType, Type.EmptyTypes, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var dlgMethod = new DynamicMethod("DefaultConstructorDelegate", returnType, Type.EmptyTypes, true);
+			var il = dlgMethod.GetILGenerator();
 			Contract.Assume(il != null);
-			Converter converter = il.GetConversion(type, returnType, ConversionType.Explicit);
+			var converter = il.GetConversion(type, returnType, ConversionType.Explicit);
 			il.EmitNew(type);
 			converter.Emit(true);
 			il.Emit(OpCodes.Ret);
@@ -426,18 +430,18 @@ namespace Cyjb
 		public static Lazy<TDelegate> CreateDelegateLazy<TDelegate>(this Type type, string name)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<Lazy<TDelegate>>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			return new Lazy<TDelegate>(() =>
 			{
-				Delegate dlg = CreateOpenDelegate(type, name, dlgType, BindingFlags.Default);
+				var dlg = CreateOpenDelegate(type, name, dlgType, BindingFlags.Default);
 				if (dlg == null)
 				{
 					throw CommonExceptions.TypeMemberNotFound("name");
@@ -469,18 +473,18 @@ namespace Cyjb
 		public static Lazy<TDelegate> CreateDelegateLazy<TDelegate>(this Type type, string name, BindingFlags bindingAttr)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<Lazy<TDelegate>>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			return new Lazy<TDelegate>(() =>
 			{
-				Delegate dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
+				var dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
 				if (dlg == null)
 				{
 					throw CommonExceptions.TypeMemberNotFound("name");
@@ -516,18 +520,18 @@ namespace Cyjb
 			bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<Lazy<TDelegate>>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			return new Lazy<TDelegate>(() =>
 			{
-				Delegate dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
+				var dlg = CreateOpenDelegate(type, name, dlgType, bindingAttr);
 				if (dlg == null && throwOnBindFailure)
 				{
 					throw CommonExceptions.TypeMemberNotFound("name");
@@ -561,16 +565,16 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this Type type, string name, object firstArgument)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, BindingFlags.Default);
+			var dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, BindingFlags.Default);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -604,16 +608,16 @@ namespace Cyjb
 			BindingFlags bindingAttr)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
+			var dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -650,16 +654,16 @@ namespace Cyjb
 			BindingFlags bindingAttr, bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
+			var dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
 			if (dlg == null && throwOnBindFailure)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -688,16 +692,16 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问成员。</exception>
 		public static Delegate CreateDelegate(Type type, string name, Type delegateType, object firstArgument)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateClosedDelegate(type, name, delegateType, firstArgument, BindingFlags.Default);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateClosedDelegate(type, name, delegateType, firstArgument, BindingFlags.Default);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -731,16 +735,16 @@ namespace Cyjb
 		public static Delegate CreateDelegate(Type type, string name, Type delegateType, object firstArgument,
 			BindingFlags bindingAttr)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateClosedDelegate(type, name, delegateType, firstArgument, bindingAttr);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateClosedDelegate(type, name, delegateType, firstArgument, bindingAttr);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -777,16 +781,16 @@ namespace Cyjb
 		public static Delegate CreateDelegate(Type type, string name, Type delegateType, object firstArgument,
 			BindingFlags bindingAttr, bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateClosedDelegate(type, name, delegateType, firstArgument, bindingAttr);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateClosedDelegate(type, name, delegateType, firstArgument, bindingAttr);
 			if (dlg == null && throwOnBindFailure)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -807,12 +811,12 @@ namespace Cyjb
 			BindingFlags bindingAttr)
 		{
 			Contract.Requires(type != null && delegateType != null && !string.IsNullOrEmpty(name));
-			MethodInfo invoke = delegateType.GetInvokeMethod();
-			Type[] paramTypes = invoke.GetParameterTypes();
+			var invoke = delegateType.GetInvokeMethod();
+			var paramTypes = invoke.GetParameterTypes();
 			bindingAttr = FillDefaultFlags(bindingAttr);
-			MemberFinder openFinder = new MemberFinder(type, name, bindingAttr, invoke.ReturnType, paramTypes);
-			Type[] typesWithFirstArg = paramTypes.Insert(0, firstArgument == null ? typeof(object) : firstArgument.GetType());
-			MemberFinder closedFinder = new MemberFinder(type, name, bindingAttr, invoke.ReturnType, typesWithFirstArg);
+			var openFinder = new MemberFinder(type, name, bindingAttr, invoke.ReturnType, paramTypes);
+			var typesWithFirstArg = paramTypes.Insert(0, firstArgument == null ? typeof(object) : firstArgument.GetType());
+			var closedFinder = new MemberFinder(type, name, bindingAttr, invoke.ReturnType, typesWithFirstArg);
 			// 搜索构造函数。
 			if (name.Equals(ConstructorName, StringComparison.Ordinal))
 			{
@@ -821,7 +825,7 @@ namespace Cyjb
 				{
 					if (paramTypes.Length == 0)
 					{
-						Delegate dlg = CreateDefaultConstructorDelegate(type, delegateType);
+						var dlg = CreateDefaultConstructorDelegate(type, delegateType);
 						if (dlg != null)
 						{
 							return dlg;
@@ -856,7 +860,7 @@ namespace Cyjb
 				return CreateClosedDelegate(property, delegateType, firstArgument, false, true);
 			}
 			// 查找字段。
-			FieldInfo field = openFinder.FindField();
+			var field = openFinder.FindField();
 			return field == null ? null : CreateClosedDelegate(field, delegateType, firstArgument);
 		}
 
@@ -890,18 +894,18 @@ namespace Cyjb
 		public static Lazy<TDelegate> CreateDelegateLazy<TDelegate>(this Type type, string name, object firstArgument)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<Lazy<TDelegate>>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			return new Lazy<TDelegate>(() =>
 			{
-				Delegate dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, BindingFlags.Default);
+				var dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, BindingFlags.Default);
 				if (dlg == null)
 				{
 					throw CommonExceptions.TypeMemberNotFound("name");
@@ -936,18 +940,18 @@ namespace Cyjb
 			BindingFlags bindingAttr)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<Lazy<TDelegate>>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			return new Lazy<TDelegate>(() =>
 			{
-				Delegate dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
+				var dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
 				if (dlg == null)
 				{
 					throw CommonExceptions.TypeMemberNotFound("name");
@@ -985,18 +989,18 @@ namespace Cyjb
 			BindingFlags bindingAttr, bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<Lazy<TDelegate>>() != null);
 			if (type.ContainsGenericParameters)
 			{
-				throw CommonExceptions.UnboundGenParam("type");
+				throw CommonExceptions.UnboundGenParam(nameof(type));
 			}
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			return new Lazy<TDelegate>(() =>
 			{
-				Delegate dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
+				var dlg = CreateClosedDelegate(type, name, dlgType, firstArgument, bindingAttr);
 				if (dlg == null && throwOnBindFailure)
 				{
 					throw CommonExceptions.TypeMemberNotFound("name");
@@ -1027,12 +1031,12 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(object target, string name)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
-			Delegate dlg = CreateClosedDelegate(target.GetType(), name, dlgType, target, BindingFlags.Instance);
+			var dlg = CreateClosedDelegate(target.GetType(), name, dlgType, target, BindingFlags.Instance);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -1062,14 +1066,14 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(object target, string name, BindingFlags bindingAttr)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			bindingAttr &= ~BindingFlags.Static;
 			bindingAttr |= BindingFlags.Instance;
-			Delegate dlg = CreateClosedDelegate(target.GetType(), name, dlgType, target, bindingAttr);
+			var dlg = CreateClosedDelegate(target.GetType(), name, dlgType, target, bindingAttr);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -1103,14 +1107,14 @@ namespace Cyjb
 			bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(dlgType);
 			bindingAttr &= ~BindingFlags.Static;
 			bindingAttr |= BindingFlags.Instance;
-			Delegate dlg = CreateClosedDelegate(target.GetType(), name, dlgType, target, bindingAttr);
+			var dlg = CreateClosedDelegate(target.GetType(), name, dlgType, target, bindingAttr);
 			if (dlg == null && throwOnBindFailure)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -1135,12 +1139,12 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问成员。</exception>
 		public static Delegate CreateDelegate(object target, string name, Type delegateType)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			Delegate dlg = CreateClosedDelegate(target.GetType(), name, delegateType, target, BindingFlags.Instance);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			var dlg = CreateClosedDelegate(target.GetType(), name, delegateType, target, BindingFlags.Instance);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -1170,14 +1174,14 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问成员。</exception>
 		public static Delegate CreateDelegate(object target, string name, Type delegateType, BindingFlags bindingAttr)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
 			bindingAttr &= ~BindingFlags.Static;
 			bindingAttr |= BindingFlags.Instance;
-			Delegate dlg = CreateClosedDelegate(target.GetType(), name, delegateType, target, bindingAttr);
+			var dlg = CreateClosedDelegate(target.GetType(), name, delegateType, target, bindingAttr);
 			if (dlg == null)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -1211,14 +1215,14 @@ namespace Cyjb
 		public static Delegate CreateDelegate(object target, string name, Type delegateType, BindingFlags bindingAttr,
 			bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
 			bindingAttr &= ~BindingFlags.Static;
 			bindingAttr |= BindingFlags.Instance;
-			Delegate dlg = CreateClosedDelegate(target.GetType(), name, delegateType, target, bindingAttr);
+			var dlg = CreateClosedDelegate(target.GetType(), name, delegateType, target, bindingAttr);
 			if (dlg == null && throwOnBindFailure)
 			{
 				throw CommonExceptions.TypeMemberNotFound(name);
@@ -1294,19 +1298,19 @@ namespace Cyjb
 				bindingAttr &= ~FindScopeFlags;
 				if (this.bindingAttr.HasFlag(BindingFlags.Static))
 				{
-					this.staticParamTypes = paramTypes;
-					this.staticBindingAttr = bindingAttr | BindingFlags.Static;
+					staticParamTypes = paramTypes;
+					staticBindingAttr = bindingAttr | BindingFlags.Static;
 				}
 				if (this.bindingAttr.HasFlag(BindingFlags.Instance) && paramTypes.Length > 0 &&
 					(paramTypes[0] == null || type.IsExplicitFrom(paramTypes[0])))
 				{
-					this.instanceParamTypes = paramTypes.Slice(1);
-					this.instanceBindingAttr = bindingAttr | BindingFlags.Instance;
+					instanceParamTypes = paramTypes.Slice(1);
+					instanceBindingAttr = bindingAttr | BindingFlags.Instance;
 				}
 				this.paramTypes = paramTypes;
 				if (!this.bindingAttr.HasFlag(BindingFlags.ExactBinding))
 				{
-					this.binder = PowerBinder.Explicit;
+					binder = PowerBinder.Explicit;
 				}
 			}
 			/// <summary>
@@ -1328,7 +1332,7 @@ namespace Cyjb
 					// 查找静态方法。
 					if (staticParamTypes != null)
 					{
-						MethodInfo method = type.GetMethod(name, staticBindingAttr, binder, staticParamTypes, null);
+						var method = type.GetMethod(name, staticBindingAttr, binder, staticParamTypes, null);
 						if (method != null && CheckReturnType(method.ReturnType))
 						{
 							return method;
@@ -1337,7 +1341,7 @@ namespace Cyjb
 					// 查找实例方法。
 					if (instanceParamTypes != null)
 					{
-						MethodInfo method = type.GetMethod(name, instanceBindingAttr, binder, instanceParamTypes, null);
+						var method = type.GetMethod(name, instanceBindingAttr, binder, instanceParamTypes, null);
 						if (method != null && CheckReturnType(method.ReturnType))
 						{
 							return method;
@@ -1357,7 +1361,7 @@ namespace Cyjb
 					// 查找静态属性。
 					if (staticParamTypes != null)
 					{
-						PropertyInfo property = GetProperty(staticBindingAttr, staticParamTypes);
+						var property = GetProperty(staticBindingAttr, staticParamTypes);
 						if (property != null)
 						{
 							return property;
@@ -1366,7 +1370,7 @@ namespace Cyjb
 					// 查找实例属性。
 					if (instanceParamTypes != null)
 					{
-						PropertyInfo property = GetProperty(instanceBindingAttr, instanceParamTypes);
+						var property = GetProperty(instanceBindingAttr, instanceParamTypes);
 						if (property != null)
 						{
 							return property;
@@ -1383,7 +1387,7 @@ namespace Cyjb
 			{
 				if ((bindingAttr & FindFieldFlags) != BindingFlags.Default)
 				{
-					FieldInfo field = type.GetField(name, bindingAttr);
+					var field = type.GetField(name, bindingAttr);
 					if (field != null)
 					{
 						return field;

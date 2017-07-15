@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -46,7 +49,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (list != null)
 			{
-				this.items = list as IList<T> ?? new List<T>(list);
+				items = list as IList<T> ?? new List<T>(list);
 			}
 		}
 		/// <summary>
@@ -67,8 +70,8 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="item">要插入的对象。</param>
 		protected virtual void InsertItem(int index, T item)
 		{
-			Contract.Requires(index >= 0 && index <= this.Count);
-			this.items.Insert(index, item);
+			Contract.Requires(index >= 0 && index <= Count);
+			items.Insert(index, item);
 		}
 		/// <summary>
 		/// 移除 <see cref="ListBase{T}"/> 的指定索引处的元素。
@@ -76,8 +79,8 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="index">要移除的元素的从零开始的索引。</param>
 		protected virtual void RemoveItem(int index)
 		{
-			Contract.Requires(index >= 0 && index < this.Count);
-			this.items.RemoveAt(index);
+			Contract.Requires(index >= 0 && index < Count);
+			items.RemoveAt(index);
 		}
 		/// <summary>
 		/// 替换指定索引处的元素。
@@ -86,8 +89,8 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="item">位于指定索引处的元素的新值。</param>
 		protected virtual void SetItemAt(int index, T item)
 		{
-			Contract.Requires(index >= 0 && index < this.Count);
-			this.items[index] = item;
+			Contract.Requires(index >= 0 && index < Count);
+			items[index] = item;
 		}
 		/// <summary>
 		/// 返回指定索引处的元素。
@@ -97,8 +100,8 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		protected virtual T GetItemAt(int index)
 		{
-			Contract.Requires(index >= 0 && index < this.Count);
-			return this.items[index];
+			Contract.Requires(index >= 0 && index < Count);
+			return items[index];
 		}
 
 		#endregion // ListBase<T> 成员
@@ -118,11 +121,11 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				if (index < 0)
 				{
-					throw CommonExceptions.ArgumentNegative("index", index);
+					throw CommonExceptions.ArgumentNegative(nameof(index), index);
 				}
-				if (index > this.Count)
+				if (index > Count)
 				{
-					throw CommonExceptions.ArgumentOutOfRange("index", index);
+					throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 				}
 				Contract.EndContractBlock();
 				return GetItemAt(index);
@@ -131,14 +134,14 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				if (index < 0)
 				{
-					throw CommonExceptions.ArgumentNegative("index", index);
+					throw CommonExceptions.ArgumentNegative(nameof(index), index);
 				}
-				if (index > this.Count)
+				if (index > Count)
 				{
-					throw CommonExceptions.ArgumentOutOfRange("index", index);
+					throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 				}
 				Contract.EndContractBlock();
-				this.SetItemAt(index, value);
+				SetItemAt(index, value);
 			}
 		}
 		/// <summary>
@@ -149,7 +152,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 则为该对象的索引；否则为 <c>-1</c>。</returns>
 		public virtual int IndexOf(T item)
 		{
-			return this.items.IndexOf(item);
+			return items.IndexOf(item);
 		}
 		/// <summary>
 		/// 将元素插入 <see cref="ListBase{T}"/> 的指定索引处。
@@ -162,14 +165,14 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.Count)
+			if (index > Count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
-			this.InsertItem(index, item);
+			InsertItem(index, item);
 		}
 		/// <summary>
 		/// 移除 <see cref="ListBase{T}"/> 的指定索引处的元素。
@@ -181,14 +184,14 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.Count)
+			if (index > Count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
-			this.RemoveItem(index);
+			RemoveItem(index);
 		}
 
 		#endregion // IList<T> 成员
@@ -230,33 +233,33 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				if (index < 0)
 				{
-					throw CommonExceptions.ArgumentNegative("index", index);
+					throw CommonExceptions.ArgumentNegative(nameof(index), index);
 				}
-				if (index > this.Count)
+				if (index > Count)
 				{
-					throw CommonExceptions.ArgumentOutOfRange("index", index);
+					throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 				}
 				Contract.EndContractBlock();
-				return this.GetItemAt(index);
+				return GetItemAt(index);
 			}
 			set
 			{
 				if (index < 0)
 				{
-					throw CommonExceptions.ArgumentNegative("index", index);
+					throw CommonExceptions.ArgumentNegative(nameof(index), index);
 				}
-				if (index > this.Count)
+				if (index > Count)
 				{
-					throw CommonExceptions.ArgumentOutOfRange("index", index);
+					throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 				}
 				Contract.EndContractBlock();
 				try
 				{
-					this.SetItemAt(index, (T)value);
+					SetItemAt(index, (T)value);
 				}
 				catch (InvalidCastException)
 				{
-					throw CommonExceptions.ArgumentWrongType("value", value, typeof(T));
+					throw CommonExceptions.ArgumentWrongType(nameof(value), value, typeof(T));
 				}
 			}
 		}
@@ -273,13 +276,13 @@ namespace Cyjb.Collections.ObjectModel
 				Contract.Result<int>() <= Contract.OldValue(Count));
 			try
 			{
-				int idx = this.Count;
-				this.InsertItem(idx, (T)value);
+				var idx = Count;
+				InsertItem(idx, (T)value);
 				return idx;
 			}
 			catch (InvalidCastException)
 			{
-				throw CommonExceptions.ArgumentWrongType("value", value, typeof(T));
+				throw CommonExceptions.ArgumentWrongType(nameof(value), value, typeof(T));
 			}
 		}
 		/// <summary>
@@ -290,7 +293,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		bool IList.Contains(object value)
 		{
-			return CollectionHelper.IsCompatible<T>(value) && this.Contains((T)value);
+			return CollectionHelper.IsCompatible<T>(value) && Contains((T)value);
 		}
 		/// <summary>
 		/// 确定 <see cref="ListBase{T}"/> 中指定对象的索引。
@@ -302,7 +305,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (CollectionHelper.IsCompatible<T>(value))
 			{
-				return this.IndexOf((T)value);
+				return IndexOf((T)value);
 			}
 			return -1;
 		}
@@ -319,20 +322,20 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.Count)
+			if (index > Count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			try
 			{
-				this.InsertItem(index, (T)value);
+				InsertItem(index, (T)value);
 			}
 			catch (InvalidCastException)
 			{
-				throw CommonExceptions.ArgumentWrongType("value", value, typeof(T));
+				throw CommonExceptions.ArgumentWrongType(nameof(value), value, typeof(T));
 			}
 		}
 		/// <summary>
@@ -343,7 +346,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (CollectionHelper.IsCompatible<T>(value))
 			{
-				this.Remove((T)value);
+				Remove((T)value);
 			}
 		}
 		/// <summary>
@@ -356,14 +359,14 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.Count)
+			if (index > Count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
-			this.RemoveItem(index);
+			RemoveItem(index);
 		}
 
 		#endregion // IList 成员
@@ -376,7 +379,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value><see cref="ListBase{T}"/> 中包含的元素数。</value>
 		public virtual int Count
 		{
-			get { return this.items.Count; }
+			get { return items.Count; }
 		}
 		/// <summary>
 		/// 获取一个值，该值指示 <see cref="ListBase{T}"/> 是否为只读。
@@ -394,14 +397,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="item">要添加到 <see cref="ListBase{T}"/> 的末尾的对象。</param>
 		public void Add(T item)
 		{
-			this.InsertItem(this.Count, item);
+			InsertItem(Count, item);
 		}
 		/// <summary>
 		/// 从 <see cref="ListBase{T}"/> 中移除所有元素。
 		/// </summary>
 		public virtual void Clear()
 		{
-			this.items.Clear();
+			items.Clear();
 		}
 		/// <summary>
 		/// 确定 <see cref="ListBase{T}"/> 是否包含指定对象。
@@ -411,7 +414,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public virtual bool Contains(T item)
 		{
-			return this.IndexOf(item) >= 0;
+			return IndexOf(item) >= 0;
 		}
 		/// <summary>
 		/// 从特定的 <see cref="System.Array"/> 索引处开始，
@@ -443,12 +446,12 @@ namespace Cyjb.Collections.ObjectModel
 		/// 中没有找到 <paramref name="item"/>，该方法也会返回 <c>false</c>。</returns>
 		public virtual bool Remove(T item)
 		{
-			int idx = this.IndexOf(item);
+			var idx = IndexOf(item);
 			if (idx < 0)
 			{
 				return false;
 			}
-			this.RemoveItem(idx);
+			RemoveItem(idx);
 			return true;
 		}
 
@@ -475,11 +478,11 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				if (this.syncRoot == null)
+				if (syncRoot == null)
 				{
-					CollectionHelper.CreateSyncRoot(this.items, ref this.syncRoot);
+					CollectionHelper.CreateSyncRoot(items, ref syncRoot);
 				}
-				return this.syncRoot;
+				return syncRoot;
 			}
 		}
 		/// <summary>
@@ -512,7 +515,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/> 对象。</returns>
 		public virtual IEnumerator<T> GetEnumerator()
 		{
-			return this.items.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		#endregion // IEnumerable<T> 成员
@@ -525,7 +528,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/> 对象。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员

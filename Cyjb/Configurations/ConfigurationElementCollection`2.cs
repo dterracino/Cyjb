@@ -1,5 +1,10 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Configurations
 {
@@ -11,11 +16,7 @@ namespace Cyjb.Configurations
 	public abstract class ConfigurationElementCollection<TKey, TElement> : ConfigurationElementCollection<TElement>
 		where TElement : ConfigurationElement
 	{
-		/// <summary>
-		/// 初始化 <see cref="ConfigurationElementCollection{TKey,TElement}"/> 类的新实例。
-		/// </summary>
-		protected ConfigurationElementCollection() { }
-		/// <summary>
+	    /// <summary>
 		/// 基于所提供的键，从集合中移除 <see cref="ConfigurationElement"/> 对象。
 		/// </summary>
 		/// <param name="key">要移除的 <see cref="ConfigurationElement"/> 
@@ -44,23 +45,23 @@ namespace Cyjb.Configurations
 			get { return BaseGet(key) as TElement; }
 			set
 			{
-				CommonExceptions.CheckArgumentNull(value, "value");
+				CommonExceptions.CheckArgumentNull(value, nameof(value));
 				Contract.EndContractBlock();
-				ConfigurationElement item = BaseGet(key);
+				var item = BaseGet(key);
 				if (item != null)
 				{
 					BaseRemove(key);
 				}
 				try
 				{
-					this.BaseAdd(value);
+					BaseAdd(value);
 				}
 				catch
 				{
 					// 出错了，撤销删除。
 					if (item != null)
 					{
-						this.BaseAdd(item);
+						BaseAdd(item);
 					}
 					throw;
 				}

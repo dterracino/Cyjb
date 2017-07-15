@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -61,7 +64,7 @@ namespace Cyjb.Collections.ObjectModel
 			get
 			{
 				Contract.Ensures(Contract.Result<IDictionary<TKey, TItem>>() != null);
-				return this.dict;
+				return dict;
 			}
 		}
 
@@ -79,9 +82,9 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				CommonExceptions.CheckArgumentNull(key, "key");
+				CommonExceptions.CheckArgumentNull(key, nameof(key));
 				Contract.Ensures(Contract.Result<TItem>() != null);
-				return this.dict[key];
+				return dict[key];
 			}
 		}
 		/// <summary>
@@ -94,7 +97,7 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public bool ContainsKey(TKey key)
 		{
-			return key != null && this.dict.ContainsKey(key);
+			return key != null && dict.ContainsKey(key);
 		}
 		/// <summary>
 		/// 获取具有指定的键的元素。
@@ -107,9 +110,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public bool TryGetValue(TKey key, out TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			return this.dict.TryGetValue(key, out item);
+			return dict.TryGetValue(key, out item);
 		}
 		/// <summary>
 		/// 在派生类中实现时，将从指定元素提取键。
@@ -126,15 +129,15 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentException"><paramref name="newKey"/> 在字典中已存在。</exception>
 		protected void ChangeItemKey(TItem item, TKey newKey)
 		{
-			Contract.Requires(this.Contains(item));
-			TKey key = this.GetKeyForItem(item);
+			Contract.Requires(Contains(item));
+			var key = GetKeyForItem(item);
 			Contract.Assert(key != null);
 			if (EqualityComparer<TKey>.Default.Equals(key, newKey))
 			{
 				return;
 			}
-			this.dict.Remove(key);
-			this.dict.Add(newKey, item);
+			dict.Remove(key);
+			dict.Add(newKey, item);
 		}
 
 		#endregion // 键操作
@@ -153,10 +156,10 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				return false;
 			}
-			TKey key = this.GetKeyForItem(item);
+			var key = GetKeyForItem(item);
 			Contract.Assert(key != null);
 			TItem newItem;
-			return this.dict.TryGetValue(key, out newItem) &&
+			return dict.TryGetValue(key, out newItem) &&
 				EqualityComparer<TItem>.Default.Equals(newItem, item);
 		}
 

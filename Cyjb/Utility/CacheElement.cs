@@ -1,4 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -7,11 +12,7 @@ namespace Cyjb.Utility
 	/// </summary>
 	public sealed class CacheElement : ConfigurationElement
 	{
-		/// <summary>
-		/// 初始化 <see cref="CacheElement"/> 类的新实例。
-		/// </summary>
-		public CacheElement() { }
-		/// <summary>
+	    /// <summary>
 		/// 获取或设置缓冲池配置的键。
 		/// </summary>
 		/// <value>缓冲池配置的键。</value>

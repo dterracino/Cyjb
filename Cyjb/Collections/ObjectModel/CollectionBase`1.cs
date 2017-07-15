@@ -2,6 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -45,7 +48,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (collection != null)
 			{
-				this.items = collection as ICollection<T> ?? new List<T>(collection);
+				items = collection as ICollection<T> ?? new List<T>(collection);
 			}
 		}
 		/// <summary>
@@ -65,7 +68,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value><see cref="CollectionBase{T}"/> 中包含的元素数。</value>
 		public virtual int Count
 		{
-			get { return this.items.Count; }
+			get { return items.Count; }
 		}
 		/// <summary>
 		/// 获取一个值，该值指示 <see cref="CollectionBase{T}"/> 是否为只读。
@@ -83,14 +86,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="item">要添加到 <see cref="CollectionBase{T}"/> 的对象。</param>
 		public virtual void Add(T item)
 		{
-			this.items.Add(item);
+			items.Add(item);
 		}
 		/// <summary>
 		/// 从 <see cref="CollectionBase{T}"/> 中移除所有元素。
 		/// </summary>
 		public virtual void Clear()
 		{
-			this.items.Clear();
+			items.Clear();
 		}
 		/// <summary>
 		/// 确定 <see cref="CollectionBase{T}"/> 是否包含指定对象。
@@ -100,7 +103,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public virtual bool Contains(T item)
 		{
-			return this.items.Contains(item);
+			return items.Contains(item);
 		}
 		/// <summary>
 		/// 从特定的 <see cref="Array"/> 索引处开始，将 <see cref="CollectionBase{T}"/> 
@@ -130,7 +133,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 中没有找到 <paramref name="item"/>，该方法也会返回 <c>false</c>。</returns>
 		public virtual bool Remove(T item)
 		{
-			return this.items.Remove(item);
+			return items.Remove(item);
 		}
 
 		#endregion // ICollection<T> 成员
@@ -156,11 +159,11 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				if (this.syncRoot == null)
+				if (syncRoot == null)
 				{
-					CollectionHelper.CreateSyncRoot(this.items, ref this.syncRoot);
+					CollectionHelper.CreateSyncRoot(items, ref syncRoot);
 				}
-				return this.syncRoot;
+				return syncRoot;
 			}
 		}
 		/// <summary>
@@ -193,7 +196,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/> 对象。</returns>
 		public virtual IEnumerator<T> GetEnumerator()
 		{
-			return this.items.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		#endregion // IEnumerable<T> 成员
@@ -206,7 +209,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/> 对象。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员

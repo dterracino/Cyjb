@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -32,12 +35,8 @@ namespace Cyjb.Collections
 				return defaultValue;
 			}
 		}
-		/// <summary>
-		/// 初始化 <see cref="BitListEqualityComparer"/> 类的新实例。
-		/// </summary>
-		public BitListEqualityComparer() { }
 
-		#region EqualityComparer<BitList> 成员
+	    #region EqualityComparer<BitList> 成员
 
 		/// <summary>
 		/// 确定指定的对象是否相等。
@@ -75,7 +74,7 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public override int GetHashCode(BitList obj)
 		{
-			CommonExceptions.CheckArgumentNull(obj, "obj");
+			CommonExceptions.CheckArgumentNull(obj, nameof(obj));
 			Contract.EndContractBlock();
 			return obj.GetContentHashCode();
 		}

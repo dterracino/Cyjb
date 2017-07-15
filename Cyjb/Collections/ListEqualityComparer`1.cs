@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.Collections
@@ -49,7 +52,7 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public ListEqualityComparer()
 		{
-			this.comparer = EqualityComparer<T>.Default;
+			comparer = EqualityComparer<T>.Default;
 		}
 		/// <summary>
 		/// 使用指定的元素比较器初始化 <see cref="ListEqualityComparer{T}"/> 类的新实例。
@@ -87,12 +90,12 @@ namespace Cyjb.Collections
 			{
 				return true;
 			}
-			int cnt = x.Count;
+			var cnt = x.Count;
 			if (cnt != y.Count)
 			{
 				return false;
 			}
-			for (int i = 0; i < cnt; i++)
+			for (var i = 0; i < cnt; i++)
 			{
 				if (!comparer.Equals(x[i], y[i]))
 				{
@@ -114,7 +117,7 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public override int GetHashCode(IList<T> obj)
 		{
-			CommonExceptions.CheckArgumentNull(obj, "obj");
+			CommonExceptions.CheckArgumentNull(obj, nameof(obj));
 			Contract.EndContractBlock();
 			return Hash.Combine(obj.Count, obj);
 		}

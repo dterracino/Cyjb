@@ -1,4 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -11,14 +16,14 @@ namespace UnitTestCyjb
 	public class UnitTestTextValuePair
 	{
 		/// <summary>
-		/// 测试 <see cref="TextValuePair{T}"/> 的构造函数，
+		/// 测试 <see cref="TextValuePair{TValue}"/> 的构造函数，
 		/// <see cref="TextValuePair{T}.Text"/> 属性和
 		/// <see cref="TextValuePair{T}.Value"/> 属性。
 		/// </summary>
 		[TestMethod]
 		public void TestProperty()
 		{
-			TextValuePair<GenericParameterHelper> target = new TextValuePair<GenericParameterHelper>();
+			var target = new TextValuePair<GenericParameterHelper>();
 			Assert.AreEqual(target.Text, default(string), "测试 Text 默认值失败。");
 			Assert.AreEqual(target.Value, default(GenericParameterHelper), "测试 Value 默认值失败。");
 			target.Text = "TT";
@@ -37,10 +42,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestTextEvent()
 		{
-			TextValuePair<GenericParameterHelper> target = new TextValuePair<GenericParameterHelper>("AA", null);
-			bool changing = false;
-			bool changed = false;
-			bool error = false;
+			var target = new TextValuePair<GenericParameterHelper>("AA", null);
+			var changing = false;
+			var changed = false;
+			var error = false;
 			target.PropertyChanging += (sender, e) =>
 			{
 				if (e.PropertyName == "Text")
@@ -75,12 +80,12 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestValueEvent()
 		{
-			GenericParameterHelper para = new GenericParameterHelper();
-			TextValuePair<GenericParameterHelper> target =
+			var para = new GenericParameterHelper();
+			var target =
 				new TextValuePair<GenericParameterHelper>("AA", null);
-			bool changing = false;
-			bool changed = false;
-			bool error = false;
+			var changing = false;
+			var changed = false;
+			var error = false;
 			target.PropertyChanging += (sender, e) =>
 			{
 				if (e.PropertyName == "Value")
@@ -114,10 +119,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestEqual()
 		{
-			GenericParameterHelper value = new GenericParameterHelper();
-			TextValuePair<GenericParameterHelper> pair1 =
+			var value = new GenericParameterHelper();
+			var pair1 =
 				new TextValuePair<GenericParameterHelper>();
-			TextValuePair<GenericParameterHelper> pair2 =
+			var pair2 =
 				new TextValuePair<GenericParameterHelper>();
 			Assert.IsTrue(pair1.Equals(pair2));
 			Assert.IsTrue(pair1 == pair2);
@@ -147,12 +152,12 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestEditableObjectText()
 		{
-			TextValuePair<GenericParameterHelper> target =
+			var target =
 				new TextValuePair<GenericParameterHelper>("AA", null);
-			IEditableObject obj = (IEditableObject)target;
-			bool changing = false;
-			bool changed = false;
-			bool error = false;
+			var obj = (IEditableObject)target;
+			var changing = false;
+			var changed = false;
+			var error = false;
 			target.PropertyChanging += (sender, e) =>
 			{
 				if (e.PropertyName == "Text")
@@ -227,14 +232,14 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestEditableObjectValue()
 		{
-			GenericParameterHelper para1 = new GenericParameterHelper(1);
-			GenericParameterHelper para2 = new GenericParameterHelper(2);
-			TextValuePair<GenericParameterHelper> target =
+			var para1 = new GenericParameterHelper(1);
+			var para2 = new GenericParameterHelper(2);
+			var target =
 				new TextValuePair<GenericParameterHelper>("", para1);
-			IEditableObject obj = (IEditableObject)target;
-			bool changing = false;
-			bool changed = false;
-			bool error = false;
+			var obj = (IEditableObject)target;
+			var changing = false;
+			var changed = false;
+			var error = false;
 			target.PropertyChanging += (sender, e) =>
 			{
 				if (e.PropertyName == "Value")
@@ -310,14 +315,14 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestEditableObjectTextAndValue()
 		{
-			GenericParameterHelper para1 = new GenericParameterHelper(1);
-			GenericParameterHelper para2 = new GenericParameterHelper(2);
-			TextValuePair<GenericParameterHelper> target =
+			var para1 = new GenericParameterHelper(1);
+			var para2 = new GenericParameterHelper(2);
+			var target =
 				new TextValuePair<GenericParameterHelper>("AA", para1);
-			IEditableObject obj = (IEditableObject)target;
-			bool changing = false;
-			bool changed = false;
-			bool error = false;
+			var obj = (IEditableObject)target;
+			var changing = false;
+			var changed = false;
+			var error = false;
 			target.PropertyChanging += (sender, e) =>
 			{
 				if (e.PropertyName == string.Empty)

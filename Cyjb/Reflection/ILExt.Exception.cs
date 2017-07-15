@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
@@ -34,7 +38,7 @@ namespace Cyjb.Reflection
 		internal static void EmitCheckArgumentNull(this ILGenerator il, int index, string paramName)
 		{
 			Contract.Requires(il != null);
-			Label trueLabel = il.DefineLabel();
+			var trueLabel = il.DefineLabel();
 			il.EmitLoadArg(index);
 			il.Emit(OpCodes.Brtrue, trueLabel);
 			il.EmitConstant(paramName);
@@ -50,7 +54,7 @@ namespace Cyjb.Reflection
 		internal static void EmitCheckTargetParameterCount(this ILGenerator il, int length)
 		{
 			Contract.Requires(il != null);
-			Label trueLabel = il.DefineLabel();
+			var trueLabel = il.DefineLabel();
 			il.Emit(OpCodes.Ldlen);
 			il.EmitConstant(length);
 			il.Emit(OpCodes.Ceq);

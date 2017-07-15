@@ -1,4 +1,10 @@
-﻿namespace Cyjb.IO
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Cyjb.IO
 {
 	/// <summary>
 	/// 表示可在指定源文件中定位的对象。

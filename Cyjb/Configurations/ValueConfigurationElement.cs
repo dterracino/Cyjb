@@ -1,4 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Configurations
 {
@@ -17,7 +22,7 @@ namespace Cyjb.Configurations
 		/// <param name="value">配置元素的值。</param>
 		public ValueConfigurationElement(string value)
 		{
-			this.Value = value;
+			Value = value;
 		}
 		/// <summary>
 		/// 获取或设置配置元素的值。

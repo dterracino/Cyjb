@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -29,7 +33,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -37,7 +41,7 @@ namespace Cyjb
 			{
 				return System.Convert.ToSByte(value, fromBase);
 			}
-			uint uValue = StringToUInt32(value, fromBase);
+			var uValue = StringToUInt32(value, fromBase);
 			// fromBase 总是不为 10。
 			if (uValue <= byte.MaxValue)
 			{
@@ -64,7 +68,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -72,7 +76,7 @@ namespace Cyjb
 			{
 				return System.Convert.ToByte(value, fromBase);
 			}
-			uint uValue = StringToUInt32(value, fromBase);
+			var uValue = StringToUInt32(value, fromBase);
 			if (uValue > byte.MaxValue)
 			{
 				throw CommonExceptions.OverflowByte();
@@ -98,7 +102,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -106,7 +110,7 @@ namespace Cyjb
 			{
 				return System.Convert.ToInt16(value, fromBase);
 			}
-			uint uValue = StringToUInt32(value, fromBase);
+			var uValue = StringToUInt32(value, fromBase);
 			// fromBase 总是不为 10。
 			if (uValue <= ushort.MaxValue)
 			{
@@ -134,7 +138,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -142,7 +146,7 @@ namespace Cyjb
 			{
 				return System.Convert.ToUInt16(value, fromBase);
 			}
-			uint uValue = StringToUInt32(value, fromBase);
+			var uValue = StringToUInt32(value, fromBase);
 			if (uValue > ushort.MaxValue)
 			{
 				throw CommonExceptions.OverflowUInt16();
@@ -168,7 +172,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -198,7 +202,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -227,7 +231,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -257,7 +261,7 @@ namespace Cyjb
 		{
 			if (fromBase < 2 || fromBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("fromBase", fromBase);
+				throw CommonExceptions.InvalidBase(nameof(fromBase), fromBase);
 			}
 			Contract.EndContractBlock();
 			// 使用内置方法，会快一些。
@@ -296,10 +300,10 @@ namespace Cyjb
 				throw CommonExceptions.NegativeUnsigned();
 			}
 			uint result = 0;
-			uint uBase = (uint)fromBase;
-			for (int i = 0; i < value.Length; i++)
+			var uBase = (uint)fromBase;
+			for (var i = 0; i < value.Length; i++)
 			{
-				int t = GetBaseValue(value[i], fromBase);
+				var t = GetBaseValue(value[i], fromBase);
 				if (t < 0)
 				{
 					if (i == 0)
@@ -308,7 +312,7 @@ namespace Cyjb
 					}
 					throw CommonExceptions.ExtraJunkAtEnd();
 				}
-				uint next = unchecked(result * uBase + (uint)t);
+				var next = unchecked(result * uBase + (uint)t);
 				// 判断是否超出 UInt32 的范围。
 				if (next < result)
 				{
@@ -347,10 +351,10 @@ namespace Cyjb
 				throw CommonExceptions.NegativeUnsigned();
 			}
 			ulong result = 0;
-			ulong ulBase = (ulong)fromBase;
-			for (int i = 0; i < value.Length; i++)
+			var ulBase = (ulong)fromBase;
+			for (var i = 0; i < value.Length; i++)
 			{
-				int t = GetBaseValue(value[i], fromBase);
+				var t = GetBaseValue(value[i], fromBase);
 				if (t < 0)
 				{
 					if (i == 0)
@@ -359,7 +363,7 @@ namespace Cyjb
 					}
 					throw CommonExceptions.ExtraJunkAtEnd();
 				}
-				ulong next = unchecked(result * ulBase + (uint)t);
+				var next = unchecked(result * ulBase + (uint)t);
 				// 判断是否超出 UInt64 的范围。
 				if (next < result)
 				{
@@ -381,7 +385,7 @@ namespace Cyjb
 		{
 			Contract.Requires(fromBase >= 2 && fromBase <= 36);
 			Contract.Ensures(Contract.Result<int>() >= -1);
-			int value = -1;
+			var value = -1;
 			if (ch < 'A')
 			{
 				if (ch >= '0' && ch <= '9')
@@ -428,10 +432,10 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			bool neg = false;
+			var neg = false;
 			ulong ulValue;
 			if (value < 0 && toBase == 10)
 			{
@@ -444,8 +448,8 @@ namespace Cyjb
 				// 这里必须保证位数相同。
 				ulValue = (byte)value;
 			}
-			char[] buffer = new char[8];
-			int idx = ConvertBase(buffer, ulValue, toBase);
+			var buffer = new char[8];
+			var idx = ConvertBase(buffer, ulValue, toBase);
 			if (neg)
 			{
 				buffer[--idx] = '-';
@@ -464,10 +468,10 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			bool neg = false;
+			var neg = false;
 			ulong ulValue;
 			if (value < 0 && toBase == 10)
 			{
@@ -480,8 +484,8 @@ namespace Cyjb
 				// 这里必须保证位数相同。
 				ulValue = (ushort)value;
 			}
-			char[] buffer = new char[16];
-			int idx = ConvertBase(buffer, ulValue, toBase);
+			var buffer = new char[16];
+			var idx = ConvertBase(buffer, ulValue, toBase);
 			if (neg)
 			{
 				buffer[--idx] = '-';
@@ -500,10 +504,10 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			bool neg = false;
+			var neg = false;
 			ulong ulValue;
 			if (value < 0 && toBase == 10)
 			{
@@ -516,8 +520,8 @@ namespace Cyjb
 				// 这里必须保证位数相同。
 				ulValue = (uint)value;
 			}
-			char[] buffer = new char[32];
-			int idx = ConvertBase(buffer, ulValue, toBase);
+			var buffer = new char[32];
+			var idx = ConvertBase(buffer, ulValue, toBase);
 			if (neg)
 			{
 				buffer[--idx] = '-';
@@ -536,10 +540,10 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			bool neg = false;
+			var neg = false;
 			ulong ulValue;
 			if (value < 0 && toBase == 10)
 			{
@@ -551,8 +555,8 @@ namespace Cyjb
 			{
 				ulValue = (ulong)value;
 			}
-			char[] buffer = new char[64];
-			int idx = ConvertBase(buffer, ulValue, toBase);
+			var buffer = new char[64];
+			var idx = ConvertBase(buffer, ulValue, toBase);
 			if (neg)
 			{
 				buffer[--idx] = '-';
@@ -571,11 +575,11 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			char[] buffer = new char[8];
-			int idx = ConvertBase(buffer, value, toBase);
+			var buffer = new char[8];
+			var idx = ConvertBase(buffer, value, toBase);
 			return new string(buffer, idx, buffer.Length - idx);
 		}
 		/// <summary>
@@ -591,11 +595,11 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			char[] buffer = new char[16];
-			int idx = ConvertBase(buffer, value, toBase);
+			var buffer = new char[16];
+			var idx = ConvertBase(buffer, value, toBase);
 			return new string(buffer, idx, buffer.Length - idx);
 		}
 		/// <summary>
@@ -612,11 +616,11 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			char[] buffer = new char[32];
-			int idx = ConvertBase(buffer, value, toBase);
+			var buffer = new char[32];
+			var idx = ConvertBase(buffer, value, toBase);
 			return new string(buffer, idx, buffer.Length - idx);
 		}
 		/// <summary>
@@ -632,11 +636,11 @@ namespace Cyjb
 		{
 			if (toBase < 2 || toBase > 36)
 			{
-				throw CommonExceptions.InvalidBase("toBase", toBase);
+				throw CommonExceptions.InvalidBase(nameof(toBase), toBase);
 			}
 			Contract.EndContractBlock();
-			char[] buffer = new char[64];
-			int idx = ConvertBase(buffer, value, toBase);
+			var buffer = new char[64];
+			var idx = ConvertBase(buffer, value, toBase);
 			return new string(buffer, idx, buffer.Length - idx);
 		}
 		/// <summary>
@@ -652,12 +656,12 @@ namespace Cyjb
 			Contract.Requires(toBase >= 2 && toBase <= 36);
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() < buffer.Length);
 			// 从后向前转换，不必反转字符串。
-			uint uBase = (uint)toBase;
-			int idx = buffer.Length - 1;
+			var uBase = (uint)toBase;
+			var idx = buffer.Length - 1;
 			do
 			{
-				uint quot = value / uBase;
-				int rem = (int)(value - quot * uBase);
+				var quot = value / uBase;
+				var rem = (int)(value - quot * uBase);
 				Contract.Assume(rem >= 0);
 				buffer[idx--] = CharExt.BaseDigits[rem];
 				value = quot;
@@ -677,12 +681,12 @@ namespace Cyjb
 			Contract.Requires(toBase >= 2 && toBase <= 36);
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() < buffer.Length);
 			// 从后向前转换，不必反转字符串。
-			ulong ulBase = (ulong)toBase;
-			int idx = buffer.Length - 1;
+			var ulBase = (ulong)toBase;
+			var idx = buffer.Length - 1;
 			do
 			{
-				ulong quot = value / ulBase;
-				int rem = (int)(value - quot * ulBase);
+				var quot = value / ulBase;
+				var rem = (int)(value - quot * ulBase);
 				Contract.Assume(rem >= 0);
 				buffer[idx--] = CharExt.BaseDigits[rem];
 				value = quot;

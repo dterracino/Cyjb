@@ -1,11 +1,13 @@
 ﻿using System;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Globalization;
-using System.Reflection;
-using Cyjb.Reflection;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb
@@ -18,7 +20,7 @@ namespace Cyjb
 	/// <see href="http://www.cnblogs.com/cyjb/archive/p/EnumDescription.html">
 	/// C# 获取与解析枚举类型的 DescriptionAttribute</see></para>
 	/// <para>枚举缓存的键为 Cyjb.EnumDescriptionCache，默认使用上限为 <c>256</c> 的 
-	/// <see cref="LruCache{TKey, TValue}"/>。关于如何设置缓存，可以参见 <see cref="CacheFactory"/>。</para>
+	/// <see cref="LruCache{TKey,TValue}"/>。关于如何设置缓存，可以参见 <see cref="CacheFactory"/>。</para>
 	/// </remarks>
 	/// <seealso href="http://www.cnblogs.com/cyjb/archive/p/EnumDescription.html">
 	/// C# 获取与解析枚举类型的 DescriptionAttribute</seealso>
@@ -41,13 +43,13 @@ namespace Cyjb
 		/// 因此，如果多个枚举成员具有相同的值，应用程序代码决不应依赖于返回特定成员名称的方法。</remarks>
 		public static string GetName<TValue>(Type enumType, TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckEnumType(enumType, "enumType");
-			ulong ulValue = ToUInt64(value);
-			EnumCache cache = GetEnumCache(enumType);
-			int idx = Array.BinarySearch(cache.Values, ulValue);
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
+			var ulValue = ToUInt64(value);
+			var cache = GetEnumCache(enumType);
+			var idx = Array.BinarySearch(cache.Values, ulValue);
 			return idx >= 0 ? cache.Names[idx] : null;
 		}
 
@@ -74,13 +76,13 @@ namespace Cyjb
 		/// </overloads>
 		public static string GetDescription(Type enumType, object value)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckEnumType(enumType, "enumType");
-			ulong ulValue = ToUInt64(value);
-			EnumCache cache = GetEnumCache(enumType);
-			int idx = Array.BinarySearch(cache.Values, ulValue);
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
+			var ulValue = ToUInt64(value);
+			var cache = GetEnumCache(enumType);
+			var idx = Array.BinarySearch(cache.Values, ulValue);
 			return idx >= 0 ? cache.Descriptions[idx] : null;
 		}
 		/// <summary>
@@ -100,13 +102,13 @@ namespace Cyjb
 		/// 因此，如果多个枚举成员具有相同的值，应用程序代码决不应依赖于返回特定成员描述的方法。</remarks>
 		public static string GetDescription<TValue>(Type enumType, TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckEnumType(enumType, "enumType");
-			ulong ulValue = ToUInt64(value);
-			EnumCache cache = GetEnumCache(enumType);
-			int idx = Array.BinarySearch(cache.Values, ulValue);
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
+			var ulValue = ToUInt64(value);
+			var cache = GetEnumCache(enumType);
+			var idx = Array.BinarySearch(cache.Values, ulValue);
 			return idx >= 0 ? cache.Descriptions[idx] : null;
 		}
 		/// <summary>
@@ -118,14 +120,14 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static string ToDescription(this Enum value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<string>() != null);
-			Type enumType = value.GetType();
-			ulong ulongValue = ToUInt64((object)value);
+			var enumType = value.GetType();
+			var ulongValue = ToUInt64((object)value);
 			// 寻找枚举值的组合。
-			EnumCache cache = GetEnumCache(enumType);
-			int idx = Array.BinarySearch(cache.Values, ulongValue);
-			string[] names = cache.Descriptions;
+			var cache = GetEnumCache(enumType);
+			var idx = Array.BinarySearch(cache.Values, ulongValue);
+			var names = cache.Descriptions;
 			if (idx >= 0)
 			{
 				// 枚举值已定义，直接返回相应的名称。
@@ -136,11 +138,11 @@ namespace Cyjb
 			{
 				return ToStringValue(enumType, ulongValue);
 			}
-			List<string> list = new List<string>();
+			var list = new List<string>();
 			// 从后向前寻找匹配的二进制。
-			for (int i = cache.Values.Length - 1; i >= 0 && ulongValue != 0UL; i--)
+			for (var i = cache.Values.Length - 1; i >= 0 && ulongValue != 0UL; i--)
 			{
-				ulong enumValue = cache.Values[i];
+				var enumValue = cache.Values[i];
 				if (enumValue == 0UL)
 				{
 					continue;
@@ -170,11 +172,11 @@ namespace Cyjb
 			Contract.Requires(enumType != null);
 			Contract.Ensures(Contract.Result<string>() != null);
 			// 最高位不为 0，需要根据原先的类型是否是有符号数字，决定是否输出负号。
-			if ((value >> 63) > 0 || enumType.IsUnsigned())
+			if (value >> 63 > 0 || enumType.IsUnsigned())
 			{
 				return value.ToString(CultureInfo.InvariantCulture);
 			}
-			long longValue = unchecked((long)value);
+			var longValue = unchecked((long)value);
 			return longValue.ToString(CultureInfo.InvariantCulture);
 		}
 
@@ -208,9 +210,9 @@ namespace Cyjb
 		/// </overloads>
 		public static TextValuePairCollection GetNameValues(Type enumType)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
 			Contract.Ensures(Contract.Result<TextValuePairCollection>() != null);
-			CommonExceptions.CheckEnumType(enumType, "enumType");
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
 			return GetTextValues(enumType, false);
 		}
 		/// <summary>
@@ -241,9 +243,9 @@ namespace Cyjb
 		/// </overloads>
 		public static TextValuePairCollection GetDescValues(Type enumType)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
 			Contract.Ensures(Contract.Result<TextValuePairCollection>() != null);
-			CommonExceptions.CheckEnumType(enumType, "enumType");
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
 			return GetTextValues(enumType, true);
 		}
 		/// <summary>
@@ -270,14 +272,14 @@ namespace Cyjb
 		{
 			Contract.Requires(enumType != null && enumType.IsEnum);
 			Contract.Ensures(Contract.Result<TextValuePairCollection>() != null);
-			TextValuePairCollection list = new TextValuePairCollection();
-			EnumCache cache = GetEnumCache(enumType);
-			ulong[] values = cache.Values;
-			string[] names = useDescription ? cache.Descriptions : cache.Names;
+			var list = new TextValuePairCollection();
+			var cache = GetEnumCache(enumType);
+			var values = cache.Values;
+			var names = useDescription ? cache.Descriptions : cache.Names;
 			Contract.Assume(names != null);
 			Contract.Assume(names.Length == values.Length);
-			Converter<object, object> converter = Convert.GetConverter(typeof(ulong), enumType);
-			for (int i = 0; i < values.Length; i++)
+			var converter = Convert.GetConverter(typeof(ulong), enumType);
+			for (var i = 0; i < values.Length; i++)
 			{
 				list.Add(names[i], converter(values[i]));
 			}
@@ -293,14 +295,14 @@ namespace Cyjb
 		{
 			Contract.Requires(typeof(TEnum).IsEnum);
 			Contract.Ensures(Contract.Result<TextValuePairCollection<TEnum>>() != null);
-			TextValuePairCollection<TEnum> enumList = new TextValuePairCollection<TEnum>();
-			EnumCache cache = GetEnumCache(typeof(TEnum));
-			ulong[] values = cache.Values;
-			string[] names = useDescription ? cache.Descriptions : cache.Names;
+			var enumList = new TextValuePairCollection<TEnum>();
+			var cache = GetEnumCache(typeof(TEnum));
+			var values = cache.Values;
+			var names = useDescription ? cache.Descriptions : cache.Names;
 			Contract.Assume(names != null);
 			Contract.Assume(names.Length == values.Length);
-			Converter<ulong, TEnum> converter = Convert.GetConverter<ulong, TEnum>();
-			for (int i = 0; i < values.Length; i++)
+			var converter = Convert.GetConverter<ulong, TEnum>();
+			for (var i = 0; i < values.Length; i++)
 			{
 				enumList.Add(names[i], converter(values[i]));
 			}
@@ -332,7 +334,7 @@ namespace Cyjb
 		/// </overloads>
 		public static TEnum Parse<TEnum>(string value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			return (TEnum)Enum.Parse(typeof(TEnum), value);
 		}
@@ -353,7 +355,7 @@ namespace Cyjb
 		/// 基础类型的范围。</exception>
 		public static TEnum Parse<TEnum>(string value, bool ignoreCase)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			return (TEnum)Enum.Parse(typeof(TEnum), value, ignoreCase);
 		}
@@ -378,11 +380,11 @@ namespace Cyjb
 		/// </overloads>
 		public static object ParseEx(Type enumType, string value)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckEnumType(enumType, "enumType");
-			ulong ulValue = ParseToULong(enumType, value, false);
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
+			var ulValue = ParseToULong(enumType, value, false);
 			if (enumType.IsUnsigned())
 			{
 				return Convert.ChangeType(ulValue, enumType);
@@ -407,11 +409,11 @@ namespace Cyjb
 		/// 基础类型的范围。</exception>
 		public static object ParseEx(Type enumType, string value, bool ignoreCase)
 		{
-			CommonExceptions.CheckArgumentNull(enumType, "enumType");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(enumType, nameof(enumType));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckEnumType(enumType, "enumType");
-			ulong ulValue = ParseToULong(enumType, value, ignoreCase);
+			CommonExceptions.CheckEnumType(enumType, nameof(enumType));
+			var ulValue = ParseToULong(enumType, value, ignoreCase);
 			if (enumType.IsUnsigned())
 			{
 				return Convert.ChangeType(ulValue, enumType);
@@ -433,10 +435,10 @@ namespace Cyjb
 		/// 基础类型的范围。</exception>
 		public static TEnum ParseEx<TEnum>(string value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			CommonExceptions.CheckEnumType(typeof(TEnum));
-			ulong ulValue = ParseToULong(typeof(TEnum), value, false);
+			var ulValue = ParseToULong(typeof(TEnum), value, false);
 			if (typeof(TEnum).IsUnsigned())
 			{
 				return Convert.ChangeType<ulong, TEnum>(ulValue);
@@ -460,10 +462,10 @@ namespace Cyjb
 		/// 基础类型的范围。</exception>
 		public static TEnum ParseEx<TEnum>(string value, bool ignoreCase)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			CommonExceptions.CheckEnumType(typeof(TEnum));
-			ulong ulValue = ParseToULong(typeof(TEnum), value, ignoreCase);
+			var ulValue = ParseToULong(typeof(TEnum), value, ignoreCase);
 			if (typeof(TEnum).IsUnsigned())
 			{
 				return Convert.ChangeType<ulong, TEnum>(ulValue);
@@ -490,7 +492,7 @@ namespace Cyjb
 			value = value.Trim();
 			if (value.Length == 0)
 			{
-				throw CommonExceptions.MustContainValidInfo("value");
+				throw CommonExceptions.MustContainValidInfo(nameof(value));
 			}
 			// 尝试对数字进行解析，这样可避免之后的字符串比较。
 			ulong tmpValue;
@@ -499,26 +501,26 @@ namespace Cyjb
 				return tmpValue;
 			}
 			// 尝试对描述信息进行解析。
-			EnumCache cache = GetEnumCache(enumType);
-			StringComparison comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-			ulong ulValue = 0UL;
-			int start = 0;
+			var cache = GetEnumCache(enumType);
+			var comparison = ignoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+			var ulValue = 0UL;
+			var start = 0;
 			do
 			{
 				// 去除前导空白。
 				while (char.IsWhiteSpace(value, start)) { start++; }
-				int idx = value.IndexOf(',', start);
+				var idx = value.IndexOf(',', start);
 				if (idx < 0) { idx = value.Length; }
 				if (idx == start)
 				{
 					start = idx + 1;
 					continue;
 				}
-				int nIdx = idx - 1;
+				var nIdx = idx - 1;
 				// 去除后面的空白。
 				while (char.IsWhiteSpace(value, nIdx)) { nIdx--; }
 				Contract.Assume(nIdx >= start);
-				string str = value.Substring(start, nIdx - start + 1);
+				var str = value.Substring(start, nIdx - start + 1);
 				start = idx + 1;
 				// 尝试识别为名称、描述或数字。
 				if (!TryParseString(str, cache, comparison, ref tmpValue) &&
@@ -539,7 +541,7 @@ namespace Cyjb
 		private static bool TryParseString(string str, out ulong value)
 		{
 			Contract.Requires(!string.IsNullOrEmpty(str));
-			char firstChar = str[0];
+			var firstChar = str[0];
 			if (char.IsDigit(firstChar) || firstChar == '+')
 			{
 				return ulong.TryParse(str, out value);
@@ -568,7 +570,7 @@ namespace Cyjb
 		{
 			Contract.Requires(str != null && cache != null);
 			// 比较常数值的名称。
-			for (int i = 0; i < cache.Names.Length; i++)
+			for (var i = 0; i < cache.Names.Length; i++)
 			{
 				if (string.Equals(str, cache.Names[i], comparison))
 				{
@@ -581,7 +583,7 @@ namespace Cyjb
 				return false;
 			}
 			// 比较常数值的描述信息。
-			for (int i = 0; i < cache.Descriptions.Length; i++)
+			for (var i = 0; i < cache.Descriptions.Length; i++)
 			{
 				if (string.Equals(str, cache.Descriptions[i], comparison))
 				{
@@ -606,14 +608,14 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Naming", "CA1726:UsePreferredTerms", MessageId = "Flag")]
 		public static bool AnyFlag(this Enum baseEnum, Enum value)
 		{
-			CommonExceptions.CheckArgumentNull(baseEnum, "baseEnum");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(baseEnum, nameof(baseEnum));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			if (baseEnum.GetType() != value.GetType())
 			{
-				throw CommonExceptions.EnumTypeDoesNotMatch("value", value.GetType(), baseEnum.GetType());
+				throw CommonExceptions.EnumTypeDoesNotMatch(nameof(value), value.GetType(), baseEnum.GetType());
 			}
-			return ((ToUInt64((object)baseEnum) & ToUInt64((object)value)) != 0);
+			return (ToUInt64((object)baseEnum) & ToUInt64((object)value)) != 0;
 		}
 		/// <summary>
 		/// 获取 <see cref="ulong"/> 类型的枚举值，<see cref="long"/> 会隐式转换为 <see cref="ulong"/>。
@@ -671,29 +673,29 @@ namespace Cyjb
 			{
 				// 返回枚举类型的值、常数名称和相应描述的列表。
 				// 直接使用反射获取数据，而不是 Enum 类的相关方法。
-				FieldInfo[] fields = type.GetFields(TypeExt.StaticFlag);
-				int length = fields.Length;
-				ulong[] values = new ulong[length];
-				for (int i = 0; i < length; i++)
+				var fields = type.GetFields(TypeExt.StaticFlag);
+				var length = fields.Length;
+				var values = new ulong[length];
+				for (var i = 0; i < length; i++)
 				{
 					values[i] = ToUInt64(fields[i].GetRawConstantValue());
 				}
 				// 按照二进制大小排序。
 				Array.Sort(values, fields);
 				// 获取常数名称和相应描述。
-				string[] names = new string[length];
-				string[] descs = new string[length];
-				bool hasDesc = false;
-				for (int i = 0; i < length; i++)
+				var names = new string[length];
+				var descs = new string[length];
+				var hasDesc = false;
+				for (var i = 0; i < length; i++)
 				{
-					FieldInfo fieldInfo = fields[i];
+					var fieldInfo = fields[i];
 					// 获取常数名称。
 					names[i] = descs[i] = fieldInfo.Name;
 					// 尝试获取描述。
-					object[] attrs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
-					for (int j = 0; j < attrs.Length; j++)
+					var attrs = fieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
+					for (var j = 0; j < attrs.Length; j++)
 					{
-						DescriptionAttribute desc = attrs[j] as DescriptionAttribute;
+						var desc = attrs[j] as DescriptionAttribute;
 						if (desc != null)
 						{
 							descs[i] = desc.Description;
@@ -708,7 +710,7 @@ namespace Cyjb
 					descs = names;
 				}
 				// 将是否包含 FlagsAttribute 一并缓存，能有效的提高性能。
-				bool hasFlags = type.IsDefined(typeof(FlagsAttribute), false);
+				var hasFlags = type.IsDefined(typeof(FlagsAttribute), false);
 				return new EnumCache(hasFlags, hasDesc, values, names, descs);
 			});
 		}
@@ -749,11 +751,11 @@ namespace Cyjb
 			{
 				Contract.Requires(values != null && names != null && descs != null &&
 					values.Length == names.Length && values.Length == descs.Length);
-				this.HasFlags = hasFlags;
-				this.HasDescription = hasDesc;
-				this.Values = values;
-				this.Names = names;
-				this.Descriptions = descs;
+				HasFlags = hasFlags;
+				HasDescription = hasDesc;
+				Values = values;
+				Names = names;
+				Descriptions = descs;
 			}
 		}
 

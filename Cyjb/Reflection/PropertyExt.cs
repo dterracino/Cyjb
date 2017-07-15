@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
@@ -20,15 +24,15 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="property"/> 为 <c>null</c>。</exception>
 		public static Type[] GetIndexParameterTypes(this PropertyInfo property)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.Ensures(Contract.Result<Type[]>() != null);
-			ParameterInfo[] parameters = property.GetIndexParameters();
+			var parameters = property.GetIndexParameters();
 			if (parameters.Length == 0)
 			{
 				return Type.EmptyTypes;
 			}
-			Type[] types = new Type[parameters.Length];
-			for (int i = 0; i < types.Length; i++)
+			var types = new Type[parameters.Length];
+			for (var i = 0; i < types.Length; i++)
 			{
 				types[i] = parameters[i].ParameterType;
 			}
@@ -57,7 +61,7 @@ namespace Cyjb.Reflection
 		/// <seealso cref="MethodInfo.GetBaseDefinition"/>
 		public static PropertyInfo GetBaseDefinition(this PropertyInfo property)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.Ensures(Contract.Result<PropertyInfo>() != null);
 			MethodInfo method;
 			if (property.CanRead)
@@ -72,15 +76,15 @@ namespace Cyjb.Reflection
 			{
 				return property;
 			}
-			MethodInfo baseMethod = method.GetBaseDefinition();
+			var baseMethod = method.GetBaseDefinition();
 			if (baseMethod == method)
 			{
 				return property;
 			}
 			// 找到方法对应的属性。
-			Type baseType = method.DeclaringType;
+			var baseType = method.DeclaringType;
 			Contract.Assume(baseType != null);
-			PropertyInfo baseProperty = baseType.GetProperty(property.Name, TypeExt.AllMemberFlag | BindingFlags.ExactBinding,
+			var baseProperty = baseType.GetProperty(property.Name, TypeExt.AllMemberFlag | BindingFlags.ExactBinding,
 				null, property.PropertyType, property.GetIndexParameterTypes(), null);
 			return baseProperty ?? property;
 		}

@@ -1,7 +1,11 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Reflection;
 using Cyjb.Reflection;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -26,11 +30,11 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this PropertyInfo property)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateOpenDelegate(property, type, true) as TDelegate;
 		}
 		/// <summary>
@@ -52,11 +56,11 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this PropertyInfo property, bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.EndContractBlock();
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateOpenDelegate(property, type, throwOnBindFailure) as TDelegate;
 		}
 		/// <summary>
@@ -75,11 +79,11 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="property"/>。</exception>
 		public static Delegate CreateDelegate(this PropertyInfo property, Type delegateType)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateOpenDelegate(property, delegateType, true);
 		}
 		/// <summary>
@@ -101,11 +105,11 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="property"/>。</exception>
 		public static Delegate CreateDelegate(this PropertyInfo property, Type delegateType, bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateOpenDelegate(property, delegateType, throwOnBindFailure);
 		}
 		/// <summary>
@@ -122,7 +126,7 @@ namespace Cyjb
 		private static Delegate CreateOpenDelegate(PropertyInfo property, Type delegateType, bool throwOnBindFailure)
 		{
 			Contract.Requires(property != null && delegateType != null);
-			MethodInfo invoke = delegateType.GetInvokeMethod();
+			var invoke = delegateType.GetInvokeMethod();
 			// 判断是获取属性还是设置属性。
 			MethodInfo method;
 			if (invoke.ReturnType == typeof(void))
@@ -132,7 +136,7 @@ namespace Cyjb
 				{
 					if (throwOnBindFailure)
 					{
-						throw CommonExceptions.BindTargetPropertyNoSet("property");
+						throw CommonExceptions.BindTargetPropertyNoSet(nameof(property));
 					}
 					return null;
 				}
@@ -144,16 +148,16 @@ namespace Cyjb
 				{
 					if (throwOnBindFailure)
 					{
-						throw CommonExceptions.BindTargetPropertyNoGet("property");
+						throw CommonExceptions.BindTargetPropertyNoGet(nameof(property));
 					}
 					return null;
 				}
 			}
 			// 创建委托。
-			Delegate dlg = CreateOpenDelegate(method, delegateType);
+			var dlg = CreateOpenDelegate(method, delegateType);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetProperty("property");
+				throw CommonExceptions.BindTargetProperty(nameof(property));
 			}
 			return dlg;
 		}
@@ -178,11 +182,11 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this PropertyInfo property, object firstArgument)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateClosedDelegate(property, type, firstArgument, true, false) as TDelegate;
 		}
 		/// <summary>
@@ -205,11 +209,11 @@ namespace Cyjb
 			bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.EndContractBlock();
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateClosedDelegate(property, type, firstArgument, throwOnBindFailure, false) as TDelegate;
 		}
 		/// <summary>
@@ -228,11 +232,11 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="property"/>。</exception>
 		public static Delegate CreateDelegate(this PropertyInfo property, Type delegateType, object firstArgument)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateClosedDelegate(property, delegateType, firstArgument, true, false);
 		}
 		/// <summary>
@@ -255,11 +259,11 @@ namespace Cyjb
 		public static Delegate CreateDelegate(this PropertyInfo property, Type delegateType, object firstArgument,
 			bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(property, "property");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(property, nameof(property));
 			return CreateClosedDelegate(property, delegateType, firstArgument, throwOnBindFailure, false);
 		}
 		/// <summary>
@@ -279,7 +283,7 @@ namespace Cyjb
 			bool throwOnBindFailure, bool ensureClosed)
 		{
 			Contract.Requires(property != null && delegateType != null);
-			MethodInfo invoke = delegateType.GetInvokeMethod();
+			var invoke = delegateType.GetInvokeMethod();
 			// 判断是获取属性还是设置属性。
 			MethodInfo method;
 			if (invoke.ReturnType == typeof(void))
@@ -289,7 +293,7 @@ namespace Cyjb
 				{
 					if (throwOnBindFailure)
 					{
-						throw CommonExceptions.BindTargetPropertyNoSet("property");
+						throw CommonExceptions.BindTargetPropertyNoSet(nameof(property));
 					}
 					return null;
 				}
@@ -301,16 +305,16 @@ namespace Cyjb
 				{
 					if (throwOnBindFailure)
 					{
-						throw CommonExceptions.BindTargetPropertyNoGet("property");
+						throw CommonExceptions.BindTargetPropertyNoGet(nameof(property));
 					}
 					return null;
 				}
 			}
 			// 创建委托。
-			Delegate dlg = CreateClosedDelegate(method, delegateType, firstArgument, ensureClosed);
+			var dlg = CreateClosedDelegate(method, delegateType, firstArgument, ensureClosed);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetProperty("property");
+				throw CommonExceptions.BindTargetProperty(nameof(property));
 			}
 			return dlg;
 		}

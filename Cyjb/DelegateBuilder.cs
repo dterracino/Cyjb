@@ -1,8 +1,12 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -73,19 +77,19 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="method"/>。</exception>
 		public static MethodInvoker CreateDelegate(this MethodInfo method)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.Ensures(Contract.Result<MethodInvoker>() != null);
 			if (method.ContainsGenericParameters)
 			{
 				// 不能对开放构造方法执行绑定。
-				throw CommonExceptions.BindOpenConstructedMethod("method");
+				throw CommonExceptions.BindOpenConstructedMethod(nameof(method));
 			}
-			DynamicMethod dlgMethod = new DynamicMethod("MethodInvoker", typeof(object),
+			var dlgMethod = new DynamicMethod("MethodInvoker", typeof(object),
 				new[] { typeof(object), typeof(object[]) }, method.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var il = dlgMethod.GetILGenerator();
 			Contract.Assume(il != null);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
-			int len = parameters.Length;
+			var parameters = method.GetParametersNoCopy();
+			var len = parameters.Length;
 			// 参数数量检测。
 			if (len > 0)
 			{
@@ -98,23 +102,23 @@ namespace Cyjb
 			{
 				il.EmitLoadInstance(method, typeof(object), true);
 			}
-			bool optimizeTailcall = true;
+			var optimizeTailcall = true;
 			// 加载方法参数。
-			for (int i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
 				il.Emit(OpCodes.Ldarg_1);
 				il.EmitInt(i);
-				Type paramType = parameters[i].ParameterType;
+				var paramType = parameters[i].ParameterType;
 				if (paramType.IsByRef)
 				{
 					paramType = paramType.GetElementType();
-					Converter converter = il.GetConversion(typeof(object), paramType, ConversionType.Explicit);
+					var converter = il.GetConversion(typeof(object), paramType, ConversionType.Explicit);
 					Console.WriteLine(converter);
 					if (converter.NeedEmit)
 					{
 						il.Emit(OpCodes.Ldelem_Ref);
 						converter.Emit(true);
-						LocalBuilder local = il.DeclareLocal(paramType);
+						var local = il.DeclareLocal(paramType);
 						il.Emit(OpCodes.Stloc, local);
 						il.Emit(OpCodes.Ldloca, local);
 						optimizeTailcall = false;
@@ -144,14 +148,14 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="ctor"/>。</exception>
 		public static InstanceCreator CreateDelegate(this ConstructorInfo ctor)
 		{
-			CommonExceptions.CheckArgumentNull(ctor, "ctor");
+			CommonExceptions.CheckArgumentNull(ctor, nameof(ctor));
 			Contract.EndContractBlock();
-			DynamicMethod dlgMethod = new DynamicMethod("InstanceCreator", typeof(object),
+			var dlgMethod = new DynamicMethod("InstanceCreator", typeof(object),
 				new[] { typeof(object[]) }, ctor.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var il = dlgMethod.GetILGenerator();
 			Contract.Assume(il != null);
-			ParameterInfo[] parameters = ctor.GetParametersNoCopy();
-			int len = parameters.Length;
+			var parameters = ctor.GetParametersNoCopy();
+			var len = parameters.Length;
 			// 参数数量检测。
 			if (len > 0)
 			{
@@ -160,7 +164,7 @@ namespace Cyjb
 				il.EmitCheckTargetParameterCount(parameters.Length);
 			}
 			// 加载方法参数。
-			for (int i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
 				il.Emit(OpCodes.Ldarg_0);
 				il.EmitInt(i);
@@ -168,7 +172,7 @@ namespace Cyjb
 				il.EmitConversion(typeof(object), parameters[i].ParameterType, true, ConversionType.Explicit);
 			}
 			// 对实例进行类型转换。
-			Converter converter = il.GetConversion(ctor.DeclaringType, typeof(object), ConversionType.Explicit);
+			var converter = il.GetConversion(ctor.DeclaringType, typeof(object), ConversionType.Explicit);
 			il.Emit(OpCodes.Newobj, ctor);
 			converter.Emit(true);
 			il.Emit(OpCodes.Ret);
@@ -184,18 +188,18 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="type"/> 包含泛型参数。</exception>
 		public static InstanceCreator CreateInstanceCreator(this Type type)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.EndContractBlock();
 			if (type.ContainsGenericParameters)
 			{
 				throw CommonExceptions.TypeContainsGenericParameters(type);
 			}
-			DynamicMethod dlgMethod = new DynamicMethod("InstanceCreator", typeof(object),
+			var dlgMethod = new DynamicMethod("InstanceCreator", typeof(object),
 				new[] { typeof(object[]) }, type.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var il = dlgMethod.GetILGenerator();
 			Contract.Assume(il != null);
 			// 对实例进行类型转换。
-			Converter converter = il.GetConversion(type, typeof(object), ConversionType.Explicit);
+			var converter = il.GetConversion(type, typeof(object), ConversionType.Explicit);
 			il.EmitNew(type);
 			converter.Emit(true);
 			il.Emit(OpCodes.Ret);
@@ -224,14 +228,14 @@ namespace Cyjb
 		public static TDelegate Wrap<TDelegate>(this Delegate dlg)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(dlg, "dlg");
+			CommonExceptions.CheckArgumentNull(dlg, nameof(dlg));
 			Contract.EndContractBlock();
-			TDelegate typedDlg = dlg as TDelegate;
+			var typedDlg = dlg as TDelegate;
 			if (typedDlg != null)
 			{
 				return typedDlg;
 			}
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
 			return CreateClosedDelegate(dlg.Method, type, dlg.Target, false) as TDelegate;
 		}
@@ -248,14 +252,14 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问成员。</exception>
 		public static Delegate Wrap(this Delegate dlg, Type delegateType)
 		{
-			CommonExceptions.CheckArgumentNull(dlg, "dlg");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(dlg, nameof(dlg));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
 			if (delegateType.IsInstanceOfType(dlg))
 			{
 				return dlg;
 			}
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
 			return CreateClosedDelegate(dlg.Method, delegateType, dlg.Target, false);
 		}
 

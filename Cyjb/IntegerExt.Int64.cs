@@ -1,4 +1,9 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -111,7 +116,7 @@ namespace Cyjb
 			if (value >= 10000L) { return 4; }
 			if (value >= 1000L) { return 3; }
 			if (value >= 100L) { return 2; }
-			return (value >= 10L) ? 1 : 0;
+			return value >= 10L ? 1 : 0;
 		}
 		/// <summary>
 		/// 计算指定整数的二进制表示中末尾连续 <c>0</c> 的个数。
@@ -121,7 +126,7 @@ namespace Cyjb
 		public static int CountTrailingZeroBits(this long value)
 		{
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= 64);
-			return multiplyDeBruijnBitPosition64[((ulong)((value & -value) * 0x26752B916FC7B0DL)) >> 58];
+			return multiplyDeBruijnBitPosition64[(ulong)((value & -value) * 0x26752B916FC7B0DL) >> 58];
 		}
 		/// <summary>
 		/// 计算指定整数的二进制表示中末尾连续 <c>1</c> 的个数。
@@ -164,7 +169,7 @@ namespace Cyjb
 		/// </para></remarks>
 		public static long NextBitPermutation(this long value)
 		{
-			long t = value | (value - 1);
+			var t = value | (value - 1);
 			return (t + 1L) | (((~t & -~t) - 1L) >> (value.CountTrailingZeroBits() + 1));
 		}
 

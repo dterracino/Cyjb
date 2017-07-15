@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -46,7 +49,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (set != null)
 			{
-				this.items = set as ISet<T> ?? new HashSet<T>(set);
+				items = set as ISet<T> ?? new HashSet<T>(set);
 			}
 		}
 		/// <summary>
@@ -68,7 +71,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 如果该元素已在集合内，则为 <c>false</c>。</returns>
 		protected virtual bool AddItem(T item)
 		{
-			return this.items.Add(item);
+			return items.Add(item);
 		}
 
 		#endregion // SetBase<T> 成员
@@ -83,7 +86,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 如果该元素已在集合内，则为 <c>false</c>。</returns>
 		public bool Add(T item)
 		{
-			return this.AddItem(item);
+			return AddItem(item);
 		}
 		/// <summary>
 		/// 从当前集合内移除指定集合中的所有元素。
@@ -93,9 +96,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// <paramref name="other"/> 为 <c>null</c>。</exception>
 		public virtual void ExceptWith(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			this.items.ExceptWith(other);
+			items.ExceptWith(other);
 		}
 		/// <summary>
 		/// 修改当前集合，使该集合仅包含指定集合中也存在的元素。
@@ -105,9 +108,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// <paramref name="other"/> 为 <c>null</c>。</exception>
 		public virtual void IntersectWith(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			this.items.IntersectWith(other);
+			items.IntersectWith(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的真子集合。
@@ -120,9 +123,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsProperSubsetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsProperSubsetOf(other);
+			return items.IsProperSubsetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的真超集合。
@@ -135,9 +138,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsProperSupersetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsProperSubsetOf(other);
+			return items.IsProperSubsetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的子集合。
@@ -150,9 +153,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsSubsetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsSubsetOf(other);
+			return items.IsSubsetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的超集合。
@@ -165,9 +168,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsSupersetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsSupersetOf(other);
+			return items.IsSupersetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否与指定的集合重叠。
@@ -180,9 +183,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool Overlaps(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.Overlaps(other);
+			return items.Overlaps(other);
 		}
 		/// <summary>
 		/// 确定当前集合与指定的集合中是否包含相同的元素。
@@ -195,9 +198,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool SetEquals(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.SetEquals(other);
+			return items.SetEquals(other);
 		}
 		/// <summary>
 		/// 修改当前集合，使该集合仅包含当前集合或指定集合中存在的元素（但不可包含两者共有的元素）。
@@ -207,9 +210,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// <paramref name="other"/> 为 <c>null</c>。</exception>
 		public virtual void SymmetricExceptWith(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			this.items.SymmetricExceptWith(other);
+			items.SymmetricExceptWith(other);
 		}
 		/// <summary>
 		/// 修改当前集合，使该集合包含当前集合和指定集合中同时存在的所有元素。
@@ -219,9 +222,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// <paramref name="other"/> 为 <c>null</c>。</exception>
 		public virtual void UnionWith(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			this.items.UnionWith(other);
+			items.UnionWith(other);
 		}
 
 		#endregion
@@ -234,7 +237,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value><see cref="SetBase{T}"/> 中包含的元素数。</value>
 		public virtual int Count
 		{
-			get { return this.items.Count; }
+			get { return items.Count; }
 		}
 		/// <summary>
 		/// 获取一个值，该值指示 <see cref="SetBase{T}"/> 是否为只读。
@@ -251,14 +254,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="item">要添加到 <see cref="SetBase{T}"/> 的对象。</param>
 		void ICollection<T>.Add(T item)
 		{
-			this.AddItem(item);
+			AddItem(item);
 		}
 		/// <summary>
 		/// 从 <see cref="SetBase{T}"/> 中移除所有元素。
 		/// </summary>
 		public virtual void Clear()
 		{
-			this.items.Clear();
+			items.Clear();
 		}
 		/// <summary>
 		/// 确定 <see cref="SetBase{T}"/> 是否包含特定值。
@@ -269,7 +272,7 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool Contains(T item)
 		{
-			return this.items.Contains(item);
+			return items.Contains(item);
 		}
 		/// <summary>
 		/// 从特定的 <see cref="Array"/> 索引处开始，将 <see cref="SetBase{T}"/> 
@@ -301,7 +304,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 中没有找到 <paramref name="item"/>，该方法也会返回 <c>false</c>。</returns>
 		public virtual bool Remove(T item)
 		{
-			return this.items.Remove(item);
+			return items.Remove(item);
 		}
 
 		#endregion // ICollection<T> 成员
@@ -327,11 +330,11 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				if (this.syncRoot == null)
+				if (syncRoot == null)
 				{
-					CollectionHelper.CreateSyncRoot(this.items, ref this.syncRoot);
+					CollectionHelper.CreateSyncRoot(items, ref syncRoot);
 				}
-				return this.syncRoot;
+				return syncRoot;
 			}
 		}
 		/// <summary>
@@ -366,7 +369,7 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual IEnumerator<T> GetEnumerator()
 		{
-			return this.items.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		#endregion // IEnumerable<T> 成员
@@ -379,7 +382,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/>。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员

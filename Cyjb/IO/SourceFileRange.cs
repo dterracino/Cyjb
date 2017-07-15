@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.IO
@@ -47,7 +50,7 @@ namespace Cyjb.IO
 		public SourceFileRange(string fileName, SourcePosition loc)
 		{
 			this.fileName = fileName;
-			this.start = this.end = loc;
+			start = end = loc;
 		}
 		/// <summary>
 		/// 使用指定的源文件名称和范围初始化 <see cref="SourceFileRange"/> 类的新实例。
@@ -65,7 +68,7 @@ namespace Cyjb.IO
 			}
 			if (!start.IsUnknown && start > end)
 			{
-				throw CommonExceptions.ReversedArgument("start", "end");
+				throw CommonExceptions.ReversedArgument(nameof(start), nameof(end));
 			}
 			Contract.EndContractBlock();
 			this.fileName = fileName;
@@ -80,37 +83,37 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentException"><paramref name="range"/> 表的不是有效的范围。</exception>
 		public SourceFileRange(string fileName, ISourceLocatable range)
 		{
-			CommonExceptions.CheckSourceLocatable(range, "range");
+			CommonExceptions.CheckSourceLocatable(range, nameof(range));
 			Contract.EndContractBlock();
 			this.fileName = fileName;
 			if (range != null)
 			{
-				this.start = range.Start;
-				this.end = range.End;
+				start = range.Start;
+				end = range.End;
 			}
 		}
 		/// <summary>
 		/// 获取源文件的名称。
 		/// </summary>
 		/// <value>源文件的名称。</value>
-		public string FileName { get { return this.fileName; } }
+		public string FileName { get { return fileName; } }
 		/// <summary>
 		/// 获取在源文件中的起始位置。
 		/// </summary>
 		/// <value>源文件中的起始位置。</value>
-		public SourcePosition Start { get { return this.start; } }
+		public SourcePosition Start { get { return start; } }
 		/// <summary>
 		/// 获取在源文件中的结束位置。
 		/// </summary>
 		/// <value>源文件中的结束位置。</value>
-		public SourcePosition End { get { return this.end; } }
+		public SourcePosition End { get { return end; } }
 		/// <summary>
 		/// 获取当前范围在源文件中的字符长度。
 		/// </summary>
 		/// <value>当前范围在源文件中的字符长度。</value>
 		public int Length
 		{
-			get { return this.IsUnknown ? 0 : this.end.Index - this.start.Index + 1; }
+			get { return IsUnknown ? 0 : end.Index - start.Index + 1; }
 		}
 		/// <summary>
 		/// 获取当前范围是否表示未知范围。
@@ -118,7 +121,7 @@ namespace Cyjb.IO
 		/// <value>如果当前范围表示未知范围，则为 <c>true</c>；否则为 <c>false</c>。</value>
 		public bool IsUnknown
 		{
-			get { return this.start.IsUnknown; }
+			get { return start.IsUnknown; }
 		}
 
 		#region 范围操作
@@ -137,9 +140,9 @@ namespace Cyjb.IO
 		/// </override>
 		public bool Contains(ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
-			return (!this.IsUnknown) && this.start <= locatable.Start && this.end >= locatable.End;
+			return !IsUnknown && start <= locatable.Start && end >= locatable.End;
 		}
 		/// <summary>
 		/// 返回指定的位置是否完全包含在当前范围中。
@@ -149,11 +152,11 @@ namespace Cyjb.IO
 		/// 对于未知的范围，也会返回 <c>false</c>。</returns>
 		public bool Contains(SourcePosition location)
 		{
-			if (location.IsUnknown || this.IsUnknown)
+			if (location.IsUnknown || IsUnknown)
 			{
 				return false;
 			}
-			return this.end.Index >= location.Index && this.start.Index <= location.Index;
+			return end.Index >= location.Index && start.Index <= location.Index;
 		}
 		/// <summary>
 		/// 返回指定的索引是否完全包含在当前范围中。
@@ -168,11 +171,11 @@ namespace Cyjb.IO
 		/// </overloads>
 		public bool Contains(int index)
 		{
-			if (index < 0 || this.IsUnknown)
+			if (index < 0 || IsUnknown)
 			{
 				return false;
 			}
-			return this.end.Index >= index && this.start.Index <= index;
+			return end.Index >= index && start.Index <= index;
 		}
 		/// <summary>
 		/// 返回指定的行列位置是否完全包含在当前范围中。
@@ -185,21 +188,21 @@ namespace Cyjb.IO
 		/// 小于 <c>0</c>。</exception>
 		public bool Contains(int line, int col)
 		{
-			if (line < 1 || col < 1 || this.IsUnknown)
+			if (line < 1 || col < 1 || IsUnknown)
 			{
 				return false;
 			}
-			if (this.start.Line == this.end.Line)
+			if (start.Line == end.Line)
 			{
-				return this.start.Line == line && this.start.Col <= col && this.end.Col >= col;
+				return start.Line == line && start.Col <= col && end.Col >= col;
 			}
-			if (this.start.Line == line)
+			if (start.Line == line)
 			{
-				return this.start.Col <= col;
+				return start.Col <= col;
 			}
-			if (this.end.Line == line)
+			if (end.Line == line)
 			{
-				return this.end.Col >= col;
+				return end.Col >= col;
 			}
 			return true;
 		}
@@ -212,9 +215,9 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="locatable"/> 为 <c>null</c>。</exception>
 		public bool OverlapsWith(ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
-			return (!this.IsUnknown) && this.start <= locatable.End && this.end >= locatable.Start;
+			return !IsUnknown && start <= locatable.End && end >= locatable.Start;
 		}
 		/// <summary>
 		/// 返回当前范围与指定 <see cref="ISourceLocatable"/> 的重叠范围。
@@ -224,15 +227,15 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="locatable"/> 为 <c>null</c>。</exception>
 		public SourceFileRange Overlap(ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
-			SourcePosition maxStart = this.start > locatable.Start ? this.start : locatable.Start;
-			SourcePosition minEnd = this.end < locatable.End ? this.end : locatable.End;
+			var maxStart = start > locatable.Start ? start : locatable.Start;
+			var minEnd = end < locatable.End ? end : locatable.End;
 			if (maxStart == SourcePosition.Unknown || maxStart > minEnd)
 			{
 				maxStart = minEnd = SourcePosition.Unknown;
 			}
-			return new SourceFileRange(this.fileName, maxStart, minEnd);
+			return new SourceFileRange(fileName, maxStart, minEnd);
 		}
 
 		#endregion // 范围操作
@@ -252,7 +255,7 @@ namespace Cyjb.IO
 		/// </overloads>
 		public static SourceFileRange Merge(string fileName, params ISourceLocatable[] ranges)
 		{
-			CommonExceptions.CheckArgumentNull(fileName, "fileName");
+			CommonExceptions.CheckArgumentNull(fileName, nameof(fileName));
 			Contract.EndContractBlock();
 			return Merge(fileName, ranges as IEnumerable<ISourceLocatable>);
 		}
@@ -269,16 +272,16 @@ namespace Cyjb.IO
 			{
 				return new SourceFileRange(fileName, SourcePosition.Unknown, SourcePosition.Unknown);
 			}
-			SourcePosition finalStart = SourcePosition.Unknown;
-			SourcePosition finalEnd = SourcePosition.Unknown;
-			foreach (ISourceLocatable loc in ranges)
+			var finalStart = SourcePosition.Unknown;
+			var finalEnd = SourcePosition.Unknown;
+			foreach (var loc in ranges)
 			{
 				if (loc == null)
 				{
 					continue;
 				}
-				SourcePosition start = loc.Start;
-				SourcePosition end = loc.End;
+				var start = loc.Start;
+				var end = loc.End;
 				if (start.IsUnknown || end.IsUnknown)
 				{
 					continue;
@@ -324,17 +327,17 @@ namespace Cyjb.IO
 			{
 				return 1;
 			}
-			int cmp = string.CompareOrdinal(this.fileName, other.fileName);
+			var cmp = string.CompareOrdinal(fileName, other.fileName);
 			if (cmp != 0)
 			{
 				return cmp;
 			}
-			cmp = this.start.CompareTo(other.start);
+			cmp = start.CompareTo(other.start);
 			if (cmp != 0)
 			{
 				return cmp;
 			}
-			return this.end.CompareTo(other.end);
+			return end.CompareTo(other.end);
 		}
 
 		#endregion // IComparable<SourceFileRange> 成员
@@ -362,8 +365,8 @@ namespace Cyjb.IO
 			{
 				return false;
 			}
-			return this.start == other.start && this.end == other.end &&
-				string.Equals(this.fileName, other.fileName, StringComparison.Ordinal);
+			return start == other.start && end == other.end &&
+				string.Equals(fileName, other.fileName, StringComparison.Ordinal);
 		}
 
 		#endregion // IEquatable<SourceFileRange> 成员
@@ -378,12 +381,12 @@ namespace Cyjb.IO
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public override bool Equals(object obj)
 		{
-			SourceFileRange range = obj as SourceFileRange;
+			var range = obj as SourceFileRange;
 			if (ReferenceEquals(range, null))
 			{
 				return false;
 			}
-			return this.Equals(range);
+			return Equals(range);
 		}
 		/// <summary>
 		/// 用于 <see cref="SourceFileRange"/> 类型的哈希函数。
@@ -391,7 +394,7 @@ namespace Cyjb.IO
 		/// <returns>当前 <see cref="SourceFileRange"/> 的哈希代码。</returns>
 		public override int GetHashCode()
 		{
-			return Hash.Combine(Hash.Combine(this.start.GetHashCode(), this.end), this.fileName);
+			return Hash.Combine(Hash.Combine(start.GetHashCode(), end), fileName);
 		}
 		/// <summary>
 		/// 返回当前对象的字符串表示形式。
@@ -399,7 +402,7 @@ namespace Cyjb.IO
 		/// <returns>当前对象的字符串表示形式。</returns>
 		public override string ToString()
 		{
-			return string.Concat(this.fileName, ": (", this.start, ")-(", this.end, ")");
+			return string.Concat(fileName, ": (", start, ")-(", end, ")");
 		}
 
 		#endregion // object 成员

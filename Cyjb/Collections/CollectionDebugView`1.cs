@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -23,7 +26,7 @@ namespace Cyjb.Collections
 		public CollectionDebugView(ICollection<T> sourceCollection)
 		{
 			Contract.Requires(sourceCollection != null);
-			this.source = sourceCollection;
+			source = sourceCollection;
 		}
 		/// <summary>
 		/// 获取源集合中的所有项。
@@ -32,7 +35,7 @@ namespace Cyjb.Collections
 		[DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
 		public T[] Items
 		{
-			get { return this.source.ToArray(); }
+			get { return source.ToArray(); }
 		}
 	}
 }

@@ -1,8 +1,12 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -27,15 +31,15 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this FieldInfo field)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateOpenDelegate(field, type);
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateOpenDelegate(field, type);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg as TDelegate;
 		}
@@ -58,15 +62,15 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this FieldInfo field, bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateOpenDelegate(field, type);
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateOpenDelegate(field, type);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg as TDelegate;
 		}
@@ -86,15 +90,15 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="field"/>。</exception>
 		public static Delegate CreateDelegate(this FieldInfo field, Type delegateType)
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateOpenDelegate(field, delegateType);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateOpenDelegate(field, delegateType);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg;
 		}
@@ -117,15 +121,15 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="field"/>。</exception>
 		public static Delegate CreateDelegate(this FieldInfo field, Type delegateType, bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateOpenDelegate(field, delegateType);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateOpenDelegate(field, delegateType);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg;
 		}
@@ -141,12 +145,12 @@ namespace Cyjb
 		private static Delegate CreateOpenDelegate(FieldInfo field, Type delegateType)
 		{
 			Contract.Requires(field != null && delegateType != null);
-			MethodInfo invoke = delegateType.GetInvokeMethod();
-			Type[] types = invoke.GetParameterTypes();
-			Type returnType = invoke.ReturnType;
-			DynamicMethod dlgMethod = new DynamicMethod("FieldDelegate", returnType, types, field.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
-			int index = 0;
+			var invoke = delegateType.GetInvokeMethod();
+			var types = invoke.GetParameterTypes();
+			var returnType = invoke.ReturnType;
+			var dlgMethod = new DynamicMethod("FieldDelegate", returnType, types, field.Module, true);
+			var il = dlgMethod.GetILGenerator();
+			var index = 0;
 			if (!field.IsStatic)
 			{
 				if (!il.EmitFieldInstance(field, types))
@@ -174,7 +178,7 @@ namespace Cyjb
 			{
 				return false;
 			}
-			Type instanceType = types[0];
+			var instanceType = types[0];
 			Contract.Assume(instanceType != null);
 			if (!field.DeclaringType.IsExplicitFrom(instanceType))
 			{
@@ -195,7 +199,7 @@ namespace Cyjb
 		private static bool EmitAccessField(this ILGenerator il, FieldInfo field, Type[] types, Type returnType, int index)
 		{
 			Contract.Requires(il != null && field != null && types != null && returnType != null);
-			Type fieldType = field.FieldType;
+			var fieldType = field.FieldType;
 			if (returnType == typeof(void))
 			{
 				// 设置字段值。
@@ -203,7 +207,7 @@ namespace Cyjb
 				{
 					return false;
 				}
-				Type valueType = types[index];
+				var valueType = types[index];
 				Contract.Assume(valueType != null);
 				if (!fieldType.IsExplicitFrom(valueType))
 				{
@@ -245,15 +249,15 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this FieldInfo field, object firstArgument)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateClosedDelegate(field, type, firstArgument);
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateClosedDelegate(field, type, firstArgument);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg as TDelegate;
 		}
@@ -277,15 +281,15 @@ namespace Cyjb
 			bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateClosedDelegate(field, type, firstArgument);
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateClosedDelegate(field, type, firstArgument);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg as TDelegate;
 		}
@@ -305,15 +309,15 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="field"/>。</exception>
 		public static Delegate CreateDelegate(this FieldInfo field, Type delegateType, object firstArgument)
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateClosedDelegate(field, delegateType, firstArgument);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateClosedDelegate(field, delegateType, firstArgument);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg;
 		}
@@ -337,15 +341,15 @@ namespace Cyjb
 		public static Delegate CreateDelegate(this FieldInfo field, Type delegateType, object firstArgument,
 			bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(field, "field");
-			Delegate dlg = CreateClosedDelegate(field, delegateType, firstArgument);
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(field, nameof(field));
+			var dlg = CreateClosedDelegate(field, delegateType, firstArgument);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetField("field");
+				throw CommonExceptions.BindTargetField(nameof(field));
 			}
 			return dlg;
 		}
@@ -364,14 +368,14 @@ namespace Cyjb
 			if (firstArgument == null)
 			{
 				// 开放方法。
-				Delegate dlg = CreateOpenDelegate(field, delegateType);
+				var dlg = CreateOpenDelegate(field, delegateType);
 				if (dlg != null)
 				{
 					return dlg;
 				}
 			}
 			// 提前对 firstArgument 进行类型转换。
-			Type firstArgType = field.IsStatic ? field.FieldType : field.DeclaringType;
+			var firstArgType = field.IsStatic ? field.FieldType : field.DeclaringType;
 			Contract.Assume(firstArgType != null);
 			if (firstArgument != null)
 			{
@@ -385,10 +389,10 @@ namespace Cyjb
 			{
 				return null;
 			}
-			MethodInfo invoke = delegateType.GetInvokeMethod();
-			Type[] types = invoke.GetParameterTypes();
-			Type returnType = invoke.ReturnType;
-			bool needLoadFirstArg = false;
+			var invoke = delegateType.GetInvokeMethod();
+			var types = invoke.GetParameterTypes();
+			var returnType = invoke.ReturnType;
+			var needLoadFirstArg = false;
 			if (!ILExt.CanEmitConstant(firstArgument))
 			{
 				// 需要添加作为实例的形参。
@@ -396,12 +400,12 @@ namespace Cyjb
 				// CreateDelegate 方法传入的 firstArgument 不能为值类型，除非形参类型是 object。
 				types = types.Insert(0, firstArgType.IsValueType ? typeof(object) : firstArgType);
 			}
-			DynamicMethod dlgMethod = new DynamicMethod("FieldDelegate", returnType, types, field.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var dlgMethod = new DynamicMethod("FieldDelegate", returnType, types, field.Module, true);
+			var il = dlgMethod.GetILGenerator();
 			if (needLoadFirstArg)
 			{
 				// 需要传入第一个参数。
-				int index = 0;
+				var index = 0;
 				if (!field.IsStatic)
 				{
 					if (!il.EmitFieldInstance(field, types))

@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,7 +20,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestCreateFromDelegates()
 		{
-			Func<object, string> switcher = MethodSwitcher.Create<Func<object, string>>(
+			var switcher = MethodSwitcher.Create<Func<object, string>>(
 				(Func<int, string>)TestClass.StaticMethod,
 				(Func<string, string>)TestClass.StaticMethod,
 				(Func<int[], string>)TestClass.StaticMethod,
@@ -32,9 +36,9 @@ namespace UnitTestCyjb
 			Assert.AreEqual(TestClass.StaticMethod(valIntArr), switcher(valIntArr));
 			var valLongArr = new long[2];
 			Assert.AreEqual(TestClass.StaticMethod(valLongArr), switcher(valLongArr));
-			string[] valStrArr = new string[3];
+			var valStrArr = new string[3];
 			Assert.AreEqual(TestClass.StaticMethod(valStrArr), switcher(valStrArr));
-			object valObj = new object();
+			var valObj = new object();
 			Assert.AreEqual(TestClass.StaticMethod(valObj), switcher(valObj));
 		}
 		/// <summary>
@@ -43,7 +47,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestCreateFromType()
 		{
-			Func<object, string> switcher = MethodSwitcher.Create<Func<object, string>>(typeof (TestClass));
+			var switcher = MethodSwitcher.Create<Func<object, string>>(typeof (TestClass));
 			var valInt = 10;
 			Assert.AreEqual(TestClass.StaticMethod(valInt), switcher(valInt));
 			var valLong = 10;
@@ -54,9 +58,9 @@ namespace UnitTestCyjb
 			Assert.AreEqual(TestClass.StaticMethod(valIntArr), switcher(valIntArr));
 			var valLongArr = new long[2];
 			Assert.AreEqual(TestClass.StaticMethod(valLongArr), switcher(valLongArr));
-			string[] valStrArr = new string[3];
+			var valStrArr = new string[3];
 			Assert.AreEqual(TestClass.StaticMethod(valStrArr), switcher(valStrArr));
-			object valObj = new object();
+			var valObj = new object();
 			Assert.AreEqual(TestClass.StaticMethod(valObj), switcher(valObj));
 		}
 		/// <summary>
@@ -65,9 +69,9 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestCreateFromObject()
 		{
-			TestClass obj = new TestClass();
+			var obj = new TestClass();
 			obj.Value = "XXX";
-			Func<object, string> switcher = MethodSwitcher.Create<Func<object, string>>(obj, "Ins");
+			var switcher = MethodSwitcher.Create<Func<object, string>>(obj, "Ins");
 			var valInt = 10;
 			Assert.AreEqual(obj.InstanceMethod(valInt), switcher(valInt));
 			var valLong = 10;
@@ -78,9 +82,9 @@ namespace UnitTestCyjb
 			Assert.AreEqual(obj.InstanceMethod(valIntArr), switcher(valIntArr));
 			var valLongArr = new long[2];
 			Assert.AreEqual(obj.InstanceMethod(valLongArr), switcher(valLongArr));
-			string[] valStrArr = new string[3];
+			var valStrArr = new string[3];
 			Assert.AreEqual(obj.InstanceMethod(valStrArr), switcher(valStrArr));
-			object valObj = new object();
+			var valObj = new object();
 			Assert.AreEqual(obj.InstanceMethod(valObj), switcher(valObj));
 		}
 		private class TestClass

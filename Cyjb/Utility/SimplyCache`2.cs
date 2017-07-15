@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -19,11 +23,8 @@ namespace Cyjb.Utility
 		/// 缓存对象的字典。
 		/// </summary>
 		private readonly ConcurrentDictionary<TKey, TValue> cacheDict = new ConcurrentDictionary<TKey, TValue>();
-		/// <summary>
-		/// 初始化 <see cref="SimplyCache{TKey,TValue}"/> 类的新实例。
-		/// </summary>
-		public SimplyCache() { }
-		/// <summary>
+
+	    /// <summary>
 		/// 获取实际包含在缓存中的对象数目。
 		/// </summary>
 		/// <value>实际包含在缓存中的对象数目。</value>
@@ -39,16 +40,16 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public void Add(TKey key, TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			this.cacheDict[key] = value;
+			cacheDict[key] = value;
 		}
 		/// <summary>
 		/// 清空缓存中的所有对象。
 		/// </summary>
 		public void Clear()
 		{
-			this.cacheDict.Clear();
+			cacheDict.Clear();
 		}
 		/// <summary>
 		/// 确定缓存中是否包含指定的键。
@@ -58,7 +59,7 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public bool Contains(TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			return cacheDict.ContainsKey(key);
 		}
@@ -78,8 +79,8 @@ namespace Cyjb.Utility
 		/// </overloads>
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(valueFactory, "valueFactory");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(valueFactory, nameof(valueFactory));
 			Contract.EndContractBlock();
 			return cacheDict.GetOrAdd(key, valueFactory);
 		}
@@ -96,8 +97,8 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="valueFactory"/> 为 <c>null</c>。</exception>
 		public TValue GetOrAdd<TArg>(TKey key, TArg arg, Func<TKey, TArg, TValue> valueFactory)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(valueFactory, "valueFactory");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(valueFactory, nameof(valueFactory));
 			Contract.EndContractBlock();
 			return cacheDict.GetOrAdd(key, k => valueFactory(k, arg));
 		}
@@ -116,8 +117,8 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="valueFactory"/> 为 <c>null</c>。</exception>
 		public TValue GetOrAdd<TArg0, TArg1>(TKey key, TArg0 arg0, TArg1 arg1, Func<TKey, TArg0, TArg1, TValue> valueFactory)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(valueFactory, "valueFactory");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(valueFactory, nameof(valueFactory));
 			Contract.EndContractBlock();
 			return cacheDict.GetOrAdd(key, k => valueFactory(k, arg0, arg1));
 		}
@@ -128,7 +129,7 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public void Remove(TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			TValue value;
 			cacheDict.TryRemove(key, out value);
@@ -144,7 +145,7 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public bool TryGet(TKey key, out TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			return cacheDict.TryGetValue(key, out value);
 		}

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections;
+using Cyjb.Collections;
 using System.Collections.Generic;
 using System.Configuration;
-using Cyjb.Collections;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Configurations
@@ -70,13 +73,13 @@ namespace Cyjb.Configurations
 		{
 			get
 			{
-				ValueConfigurationElement element = BaseGet(index) as ValueConfigurationElement;
+				var element = BaseGet(index) as ValueConfigurationElement;
 				return element == null ? null : element.Value;
 			}
 			set
 			{
 				// 先添加后删除，如果添加失败，不会导致配置元素被删除。
-				this.BaseAdd(index, new ValueConfigurationElement(value));
+				BaseAdd(index, new ValueConfigurationElement(value));
 				BaseRemoveAt(index + 1);
 			}
 		}
@@ -93,10 +96,10 @@ namespace Cyjb.Configurations
 		/// </overloads>
 		public int IndexOf(string value)
 		{
-			int cnt = this.Count;
-			for (int i = 0; i < cnt; i++)
+			var cnt = Count;
+			for (var i = 0; i < cnt; i++)
 			{
-				ValueConfigurationElement element = BaseGet(i) as ValueConfigurationElement;
+				var element = BaseGet(i) as ValueConfigurationElement;
 				if (element != null && element.Value == value)
 				{
 					return i;
@@ -118,7 +121,7 @@ namespace Cyjb.Configurations
 		/// </overloads>
 		public void Insert(int index, string value)
 		{
-			this.BaseAdd(index, new ValueConfigurationElement(value));
+			BaseAdd(index, new ValueConfigurationElement(value));
 		}
 
 		#endregion // IList<string> 成员
@@ -137,16 +140,16 @@ namespace Cyjb.Configurations
 			get { return this[index]; }
 			set
 			{
-				string str = value as string;
+				var str = value as string;
 				if (str != null)
 				{
 					this[index] = str;
 					return;
 				}
-				ValueConfigurationElement element = value as ValueConfigurationElement;
+				var element = value as ValueConfigurationElement;
 				if (element == null)
 				{
-					throw CommonExceptions.ArgumentWrongType("value");
+					throw CommonExceptions.ArgumentWrongType(nameof(value));
 				}
 				base[index] = element;
 			}
@@ -158,19 +161,19 @@ namespace Cyjb.Configurations
 		/// <returns>新元素所插入到的位置，或为 <c>-1</c> 以指示未将该项插入到集合中。</returns>
 		int IList.Add(object value)
 		{
-			int idx = this.Count;
-			string str = value as string;
+			var idx = Count;
+			var str = value as string;
 			if (str != null)
 			{
-				this.Add(str);
+				Add(str);
 				return idx;
 			}
-			ValueConfigurationElement element = value as ValueConfigurationElement;
+			var element = value as ValueConfigurationElement;
 			if (element == null)
 			{
-				throw CommonExceptions.ArgumentWrongType("value");
+				throw CommonExceptions.ArgumentWrongType(nameof(value));
 			}
-			this.BaseAdd(idx, element);
+			BaseAdd(idx, element);
 			return idx;
 		}
 		/// <summary>
@@ -181,8 +184,8 @@ namespace Cyjb.Configurations
 		/// 中找到 <paramref name="value"/>，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		bool IList.Contains(object value)
 		{
-			string item = value as string;
-			return item != null && this.Contains(item);
+			var item = value as string;
+			return item != null && Contains(item);
 		}
 		/// <summary>
 		/// 确定 <see cref="ValueConfigurationCollection"/> 中特定项的索引。
@@ -192,15 +195,15 @@ namespace Cyjb.Configurations
 		/// 中找到 <paramref name="value"/>，则为该项的索引；否则为 <c>-1</c>。</returns>
 		int IList.IndexOf(object value)
 		{
-			string str = value as string;
+			var str = value as string;
 			if (str != null)
 			{
-				return this.IndexOf(str);
+				return IndexOf(str);
 			}
-			ValueConfigurationElement element = value as ValueConfigurationElement;
+			var element = value as ValueConfigurationElement;
 			if (element != null)
 			{
-				return this.BaseIndexOf(element);
+				return BaseIndexOf(element);
 			}
 			return -1;
 		}
@@ -213,18 +216,18 @@ namespace Cyjb.Configurations
 		/// 不是 <see cref="ValueConfigurationCollection"/> 中的有效索引。</exception>
 		void IList.Insert(int index, object value)
 		{
-			string str = value as string;
+			var str = value as string;
 			if (str != null)
 			{
-				this.Insert(index, str);
+				Insert(index, str);
 				return;
 			}
-			ValueConfigurationElement element = value as ValueConfigurationElement;
+			var element = value as ValueConfigurationElement;
 			if (element == null)
 			{
-				throw CommonExceptions.ArgumentWrongType("value");
+				throw CommonExceptions.ArgumentWrongType(nameof(value));
 			}
-			this.BaseAdd(index, element);
+			BaseAdd(index, element);
 		}
 		/// <summary>
 		/// 从 <see cref="ValueConfigurationCollection"/> 中移除特定对象的第一个匹配项。
@@ -232,10 +235,10 @@ namespace Cyjb.Configurations
 		/// <param name="value">要从 <see cref="ValueConfigurationCollection"/> 中移除的对象。</param>
 		void IList.Remove(object value)
 		{
-			string item = value as string;
+			var item = value as string;
 			if (item != null)
 			{
-				this.Remove(item);
+				Remove(item);
 			}
 		}
 
@@ -263,7 +266,7 @@ namespace Cyjb.Configurations
 		/// </overloads>
 		public void Add(string value)
 		{
-			this.BaseAdd(new ValueConfigurationElement(value));
+			BaseAdd(new ValueConfigurationElement(value));
 		}
 		/// <summary>
 		/// 确定 <see cref="ValueConfigurationCollection"/> 是否包含特定值。
@@ -272,7 +275,7 @@ namespace Cyjb.Configurations
 		/// <returns>如果包含特定值，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public bool Contains(string item)
 		{
-			return this.IndexOf(item) >= 0;
+			return IndexOf(item) >= 0;
 		}
 		/// <summary>
 		/// 从特定的 <see cref="Array"/> 索引处开始，将 <see cref="ValueConfigurationCollection"/> 
@@ -307,7 +310,7 @@ namespace Cyjb.Configurations
 		/// <paramref name="item"/>，该方法也会返回 <c>false</c>。</returns>
 		public bool Remove(string item)
 		{
-			int idx = this.IndexOf(item);
+			var idx = IndexOf(item);
 			if (idx < 0)
 			{
 				return false;
@@ -326,7 +329,7 @@ namespace Cyjb.Configurations
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/>。</returns>
 		public new IEnumerator<string> GetEnumerator()
 		{
-			IEnumerator<ValueConfigurationElement> enumerator = base.GetEnumerator();
+			var enumerator = base.GetEnumerator();
 			while (enumerator.MoveNext())
 			{
 				yield return enumerator.Current.Value;

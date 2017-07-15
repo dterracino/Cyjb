@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb
@@ -30,8 +32,8 @@ namespace UnitTestCyjb
 			}
 			else
 			{
-				HashSet<T> expectedSet = new HashSet<T>(expected);
-				HashSet<T> actualSet = new HashSet<T>(expected);
+				var expectedSet = new HashSet<T>(expected);
+				var actualSet = new HashSet<T>(expected);
 				if (!expectedSet.SetEquals(actualSet))
 				{
 					Assert.Fail("期望得到 {{{0}}}，而实际得到的是 {{{1}}}",
@@ -59,7 +61,7 @@ namespace UnitTestCyjb
 			}
 			else
 			{
-				for (int i = 0; i < expected.Length; i++)
+				for (var i = 0; i < expected.Length; i++)
 				{
 					if (!EqualityComparer<T>.Default.Equals(expected[i], actual[i]))
 					{

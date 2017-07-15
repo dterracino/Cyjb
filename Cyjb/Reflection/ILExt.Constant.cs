@@ -1,8 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
@@ -57,7 +61,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, bool value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.Emit(value ? OpCodes.Ldc_I4_1 : OpCodes.Ldc_I4_0);
 		}
@@ -69,7 +73,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, char value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt(value);
 			il.Emit(OpCodes.Conv_U2);
@@ -83,7 +87,7 @@ namespace Cyjb.Reflection
 		[CLSCompliant(false)]
 		public static void EmitConstant(this ILGenerator il, sbyte value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt(value);
 			il.Emit(OpCodes.Conv_I1);
@@ -96,7 +100,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, byte value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt(value);
 			il.Emit(OpCodes.Conv_U1);
@@ -108,7 +112,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, short value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt(value);
 			il.Emit(OpCodes.Conv_I2);
@@ -122,7 +126,7 @@ namespace Cyjb.Reflection
 		[CLSCompliant(false)]
 		public static void EmitConstant(this ILGenerator il, ushort value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt(value);
 			il.Emit(OpCodes.Conv_U2);
@@ -135,7 +139,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, int value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt(value);
 		}
@@ -148,7 +152,7 @@ namespace Cyjb.Reflection
 		[CLSCompliant(false)]
 		public static void EmitConstant(this ILGenerator il, uint value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.EmitInt((int)value);
 		}
@@ -160,7 +164,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, long value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.Emit(OpCodes.Ldc_I8, value);
 		}
@@ -173,7 +177,7 @@ namespace Cyjb.Reflection
 		[CLSCompliant(false)]
 		public static void EmitConstant(this ILGenerator il, ulong value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.Emit(OpCodes.Ldc_I8, (long)value);
 		}
@@ -185,7 +189,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, float value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.Emit(OpCodes.Ldc_R4, value);
 		}
@@ -197,7 +201,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, double value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			il.Emit(OpCodes.Ldc_R8, value);
 		}
@@ -209,26 +213,26 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, decimal value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			if (decimal.Truncate(value) == value)
 			{
 				if (int.MinValue <= value && value <= int.MaxValue)
 				{
-					int intValue = decimal.ToInt32(value);
+					var intValue = decimal.ToInt32(value);
 					il.EmitConstant(intValue);
 					il.Emit(OpCodes.Newobj, decimalCtorInt);
 					return;
 				}
 				if (long.MinValue <= value && value <= long.MaxValue)
 				{
-					long longValue = Decimal.ToInt64(value);
+					var longValue = Decimal.ToInt64(value);
 					il.EmitConstant(longValue);
 					il.Emit(OpCodes.Newobj, decimalCtorLong);
 					return;
 				}
 			}
-			int[] bits = Decimal.GetBits(value);
+			var bits = Decimal.GetBits(value);
 			il.EmitConstant(bits[0]);
 			il.EmitConstant(bits[1]);
 			il.EmitConstant(bits[2]);
@@ -244,7 +248,7 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="il"/> 为 <c>null</c>。</exception>
 		public static void EmitConstant(this ILGenerator il, string value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			if (value == null)
 			{
@@ -288,22 +292,22 @@ namespace Cyjb.Reflection
 			{
 				type = value.GetType();
 			}
-			TypeCode typeCode = Type.GetTypeCode(type);
+			var typeCode = Type.GetTypeCode(type);
 			if (typeCode != TypeCode.DateTime && typeCode != TypeCode.DBNull && typeCode != TypeCode.Object)
 			{
 				return true;
 			}
-			Type typeValue = value as Type;
+			var typeValue = value as Type;
 			if (typeValue != null && (typeValue.IsGenericParameter || typeValue.IsVisible))
 			{
 				return true;
 			}
-			MethodBase method = value as MethodBase;
+			var method = value as MethodBase;
 			if (method == null)
 			{
 				return false;
 			}
-			Type declaringType = method.DeclaringType;
+			var declaringType = method.DeclaringType;
 			return declaringType == null || declaringType.IsGenericParameter || declaringType.IsVisible;
 		}
 		/// <summary>
@@ -320,7 +324,7 @@ namespace Cyjb.Reflection
 		/// </overloads>
 		public static bool EmitConstant(this ILGenerator il, object value)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			return il.EmitConstant(value, value == null ? null : value.GetType());
 		}
@@ -335,7 +339,7 @@ namespace Cyjb.Reflection
 		/// <remarks>如果 <paramref name="value"/> 为 <c>null</c>，那么会写入 <paramref name="type"/> 类型的默认值。</remarks>
 		public static bool EmitConstant(this ILGenerator il, object value, Type type)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			Contract.EndContractBlock();
 			if (value == null)
 			{
@@ -350,7 +354,7 @@ namespace Cyjb.Reflection
 			{
 				return true;
 			}
-			Type typeValue = value as Type;
+			var typeValue = value as Type;
 			if (typeValue != null && (typeValue.IsGenericParameter || typeValue.IsVisible))
 			{
 				il.Emit(OpCodes.Ldtoken, type);
@@ -361,12 +365,12 @@ namespace Cyjb.Reflection
 				}
 				return true;
 			}
-			MethodBase method = value as MethodBase;
+			var method = value as MethodBase;
 			if (method == null)
 			{
 				return false;
 			}
-			Type declaringType = method.DeclaringType;
+			var declaringType = method.DeclaringType;
 			if (declaringType != null && !declaringType.IsGenericParameter && !declaringType.IsVisible)
 			{
 				return false;
@@ -459,7 +463,7 @@ namespace Cyjb.Reflection
 					if (type.IsValueType)
 					{
 						// 需要每次使用新的变量。
-						LocalBuilder lb = il.DeclareLocal(type);
+						var lb = il.DeclareLocal(type);
 						il.Emit(OpCodes.Ldloca, lb);
 						il.Emit(OpCodes.Initobj, type);
 						il.Emit(OpCodes.Ldloc, lb);

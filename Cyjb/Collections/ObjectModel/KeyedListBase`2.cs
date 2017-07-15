@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -106,20 +109,20 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (dictionaryCreationThreshold < -1)
 			{
-				throw CommonExceptions.InvalidThreshold("dictionaryCreationThreshold", dictionaryCreationThreshold);
+				throw CommonExceptions.InvalidThreshold(nameof(dictionaryCreationThreshold), dictionaryCreationThreshold);
 			}
 			this.comparer = comparer ?? EqualityComparer<TKey>.Default;
-			this.threshold = dictionaryCreationThreshold == -1 ? int.MaxValue : dictionaryCreationThreshold;
-			int cnt = this.Items.Count;
-			for (int i = 0; i < cnt; i++)
+			threshold = dictionaryCreationThreshold == -1 ? int.MaxValue : dictionaryCreationThreshold;
+			var cnt = Items.Count;
+			for (var i = 0; i < cnt; i++)
 			{
-				TItem item = this.Items[i];
+				var item = Items[i];
 				if (item == null)
 				{
-					throw CommonExceptions.CollectionItemNull("list");
+					throw CommonExceptions.CollectionItemNull(nameof(list));
 				}
-				TKey key = this.GetKeyForItem(this.Items[i]);
-				this.AddKey(key, this.Items[i]);
+				var key = GetKeyForItem(Items[i]);
+				AddKey(key, Items[i]);
 			}
 		}
 
@@ -131,7 +134,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value>用于确定列表中的键是否相等的泛型相等比较器。</value>
 		public IEqualityComparer<TKey> Comparer
 		{
-			get { return this.comparer; }
+			get { return comparer; }
 		}
 		/// <summary>
 		/// 获取 <see cref="KeyedListBase{TKey,TItem}"/> 的查找字典。
@@ -139,7 +142,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value><see cref="KeyedListBase{TKey,TItem}"/> 的查找字典。</value>
 		protected IDictionary<TKey, TItem> Dictionary
 		{
-			get { return this.dict; }
+			get { return dict; }
 		}
 
 		#region 键操作
@@ -161,10 +164,10 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				CommonExceptions.CheckArgumentNull(key, "key");
+				CommonExceptions.CheckArgumentNull(key, nameof(key));
 				Contract.Ensures(Contract.Result<TItem>() != null);
 				TItem item;
-				if (this.TryGetValue(key, out item))
+				if (TryGetValue(key, out item))
 				{
 					Contract.Assume(item != null);
 					return item;
@@ -186,7 +189,7 @@ namespace Cyjb.Collections.ObjectModel
 				return false;
 			}
 			TItem item;
-			return this.TryGetValue(key, out item);
+			return TryGetValue(key, out item);
 		}
 		/// <summary>
 		/// 确定 <see cref="KeyedListBase{TKey,TItem}"/> 中具有特定键的元素的索引。
@@ -206,22 +209,22 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				return -1;
 			}
-			if (this.dict != null)
+			if (dict != null)
 			{
 				TItem item;
-				if (this.dict.TryGetValue(key, out item))
+				if (dict.TryGetValue(key, out item))
 				{
-					return this.IndexOf(item);
+					return IndexOf(item);
 				}
 				return -1;
 			}
-			int cnt = this.Count;
-			for (int i = 0; i < cnt; i++)
+			var cnt = Count;
+			for (var i = 0; i < cnt; i++)
 			{
-				TItem item = this.GetItemAt(i);
+				var item = GetItemAt(i);
 				Contract.Assume(item != null);
-				TKey itemKey = this.GetKeyForItem(item);
-				if (this.comparer.Equals(itemKey, key))
+				var itemKey = GetKeyForItem(item);
+				if (comparer.Equals(itemKey, key))
 				{
 					return i;
 				}
@@ -243,14 +246,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// </overloads>
 		public bool Remove(TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			int index = this.IndexOf(key);
+			var index = IndexOf(key);
 			if (index < 0)
 			{
 				return false;
 			}
-			this.RemoveItem(index);
+			RemoveItem(index);
 			return true;
 		}
 		/// <summary>
@@ -264,19 +267,19 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public bool TryGetValue(TKey key, out TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			if (this.dict != null)
+			if (dict != null)
 			{
-				return this.dict.TryGetValue(key, out item);
+				return dict.TryGetValue(key, out item);
 			}
-			int cnt = this.Count;
-			for (int i = 0; i < cnt; i++)
+			var cnt = Count;
+			for (var i = 0; i < cnt; i++)
 			{
-				item = this.GetItemAt(i);
+				item = GetItemAt(i);
 				Contract.Assume(item != null);
-				TKey itemKey = this.GetKeyForItem(item);
-				if (this.comparer.Equals(itemKey, key))
+				var itemKey = GetKeyForItem(item);
+				if (comparer.Equals(itemKey, key))
 				{
 					return true;
 				}
@@ -299,18 +302,18 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentException"><paramref name="newKey"/> 在字典中已存在。</exception>
 		protected void ChangeItemKey(TItem item, TKey newKey)
 		{
-			Contract.Requires(item != null && this.Contains(item));
-			if (this.dict == null)
+			Contract.Requires(item != null && Contains(item));
+			if (dict == null)
 			{
 				return;
 			}
-			TKey key = this.GetKeyForItem(item);
-			if (this.comparer.Equals(key, newKey))
+			var key = GetKeyForItem(item);
+			if (comparer.Equals(key, newKey))
 			{
 				return;
 			}
-			this.dict.Remove(key);
-			this.dict.Add(newKey, item);
+			dict.Remove(key);
+			dict.Add(newKey, item);
 		}
 
 		#endregion // 键操作
@@ -325,10 +328,10 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentNullException"><paramref name="item"/> 为 <c>null</c>。</exception>
 		protected override void InsertItem(int index, TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(item, "item");
+			CommonExceptions.CheckArgumentNull(item, nameof(item));
 			Contract.EndContractBlock();
-			TKey key = this.GetKeyForItem(item);
-			this.AddKey(key, item);
+			var key = GetKeyForItem(item);
+			AddKey(key, item);
 			base.InsertItem(index, item);
 		}
 		/// <summary>
@@ -337,10 +340,10 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="index">要移除的元素的从零开始的索引。</param>
 		protected override void RemoveItem(int index)
 		{
-			TItem item = this.GetItemAt(index);
+			var item = GetItemAt(index);
 			Contract.Assume(item != null);
-			TKey key = this.GetKeyForItem(item);
-			this.RemoveKey(key);
+			var key = GetKeyForItem(item);
+			RemoveKey(key);
 			base.RemoveItem(index);
 		}
 		/// <summary>
@@ -351,22 +354,22 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentNullException"><paramref name="item"/> 为 <c>null</c>。</exception>
 		protected override void SetItemAt(int index, TItem item)
 		{
-			CommonExceptions.CheckArgumentNull(item, "item");
+			CommonExceptions.CheckArgumentNull(item, nameof(item));
 			Contract.EndContractBlock();
-			TItem oldItem = this.GetItemAt(index);
+			var oldItem = GetItemAt(index);
 			Contract.Assume(oldItem != null);
-			TKey oldKey = this.GetKeyForItem(oldItem);
-			TKey key = this.GetKeyForItem(item);
-			if (this.dict != null)
+			var oldKey = GetKeyForItem(oldItem);
+			var key = GetKeyForItem(item);
+			if (dict != null)
 			{
-				if (this.comparer.Equals(oldKey, key))
+				if (comparer.Equals(oldKey, key))
 				{
-					this.dict[key] = item;
+					dict[key] = item;
 				}
 				else
 				{
-					this.dict.Remove(oldKey);
-					this.dict.Add(key, item);
+					dict.Remove(oldKey);
+					dict.Add(key, item);
 				}
 			}
 			base.SetItemAt(index, item);
@@ -382,9 +385,9 @@ namespace Cyjb.Collections.ObjectModel
 		public override void Clear()
 		{
 			base.Clear();
-			if (this.dict != null)
+			if (dict != null)
 			{
-				this.dict.Clear();
+				dict.Clear();
 			}
 		}
 		/// <summary>
@@ -400,13 +403,13 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				return false;
 			}
-			if (this.dict == null)
+			if (dict == null)
 			{
-				return this.IndexOf(item) >= 0;
+				return IndexOf(item) >= 0;
 			}
-			TKey key = this.GetKeyForItem(item);
+			var key = GetKeyForItem(item);
 			TItem newItem;
-			return this.dict.TryGetValue(key, out newItem) &&
+			return dict.TryGetValue(key, out newItem) &&
 				EqualityComparer<TItem>.Default.Equals(newItem, item);
 		}
 
@@ -422,18 +425,18 @@ namespace Cyjb.Collections.ObjectModel
 		/// <exception cref="ArgumentException"><paramref name="key"/> 在列表中已存在。</exception>
 		protected void AddKey(TKey key, TItem item)
 		{
-			if (this.dict != null)
+			if (dict != null)
 			{
-				this.dict.Add(key, item);
+				dict.Add(key, item);
 			}
-			else if (this.Count >= this.threshold)
+			else if (Count >= threshold)
 			{
-				this.CreateDictionary();
-				this.dict.Add(key, item);
+				CreateDictionary();
+				dict.Add(key, item);
 			}
-			else if (this.ContainsKey(key))
+			else if (ContainsKey(key))
 			{
-				throw CommonExceptions.KeyDuplicate("key");
+				throw CommonExceptions.KeyDuplicate(nameof(key));
 			}
 		}
 		/// <summary>
@@ -442,9 +445,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="key">要移除的键。</param>
 		protected void RemoveKey(TKey key)
 		{
-			if (this.dict != null)
+			if (dict != null)
 			{
-				this.dict.Remove(key);
+				dict.Remove(key);
 			}
 		}
 		/// <summary>
@@ -452,14 +455,14 @@ namespace Cyjb.Collections.ObjectModel
 		/// </summary>
 		private void CreateDictionary()
 		{
-			this.dict = new Dictionary<TKey, TItem>(this.comparer);
-			int cnt = this.Count;
-			for (int i = 0; i < cnt; i++)
+			dict = new Dictionary<TKey, TItem>(comparer);
+			var cnt = Count;
+			for (var i = 0; i < cnt; i++)
 			{
-				TItem item = this.GetItemAt(i);
+				var item = GetItemAt(i);
 				Contract.Assume(item != null);
-				TKey key = this.GetKeyForItem(item);
-				this.dict.Add(key, item);
+				var key = GetKeyForItem(item);
+				dict.Add(key, item);
 			}
 		}
 

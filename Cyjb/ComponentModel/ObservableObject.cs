@@ -1,6 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.ComponentModel
 {
@@ -30,7 +34,7 @@ namespace Cyjb.ComponentModel
 			{
 				CheckPropertyName(propertyName);
 			}
-			PropertyChangedEventHandler handler = PropertyChanged;
+			var handler = PropertyChanged;
 			if (handler != null)
 			{
 				handler(this, new PropertyChangedEventArgs(propertyName));
@@ -59,7 +63,7 @@ namespace Cyjb.ComponentModel
 			{
 				CheckPropertyName(propertyName);
 			}
-			PropertyChangingEventHandler handler = PropertyChanging;
+			var handler = PropertyChanging;
 			if (handler != null)
 			{
 				handler(this, new PropertyChangingEventArgs(propertyName));

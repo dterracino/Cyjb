@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -20,7 +22,7 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="source"/> 为 <c>null</c>。</exception>
 		public static IEnumerable<TSource> RandomOrder<TSource>(this IEnumerable<TSource> source)
 		{
-			CommonExceptions.CheckArgumentNull(source, "source");
+			CommonExceptions.CheckArgumentNull(source, nameof(source));
 			Contract.EndContractBlock();
 			return source.ToArray().Random();
 		}
@@ -52,10 +54,10 @@ namespace Cyjb.Collections
 		public static IEnumerable<TSource> Iterative<TSource>(this IEnumerable<TSource> source,
 			IEqualityComparer<TSource> comparer)
 		{
-			CommonExceptions.CheckArgumentNull(source, "source");
+			CommonExceptions.CheckArgumentNull(source, nameof(source));
 			Contract.EndContractBlock();
-			Dictionary<TSource, bool> dict = new Dictionary<TSource, bool>(comparer);
-			foreach (TSource item in source)
+			var dict = new Dictionary<TSource, bool>(comparer);
+			foreach (var item in source)
 			{
 				bool flag;
 				if (dict.TryGetValue(item, out flag))
@@ -86,9 +88,9 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public static bool IsDistinct<TSource>(this IEnumerable<TSource> source)
 		{
-			CommonExceptions.CheckArgumentNull(source, "source");
+			CommonExceptions.CheckArgumentNull(source, nameof(source));
 			Contract.EndContractBlock();
-			HashSet<TSource> set = new HashSet<TSource>();
+			var set = new HashSet<TSource>();
 			return source.All(set.Add);
 		}
 		/// <summary>
@@ -101,9 +103,9 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="source"/> 为 <c>null</c>。</exception>
 		public static bool IsDistinct<TSource>(this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer)
 		{
-			CommonExceptions.CheckArgumentNull(source, "source");
+			CommonExceptions.CheckArgumentNull(source, nameof(source));
 			Contract.EndContractBlock();
-			HashSet<TSource> set = new HashSet<TSource>(comparer);
+			var set = new HashSet<TSource>(comparer);
 			return source.All(set.Add);
 		}
 		/// <summary>
@@ -117,11 +119,11 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="predicate"/> 为 <c>null</c>。</exception>
 		public static int FirstIndex<TSource>(this IEnumerable<TSource> source, Func<TSource, bool> predicate)
 		{
-			CommonExceptions.CheckArgumentNull(source, "source");
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
+			CommonExceptions.CheckArgumentNull(source, nameof(source));
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
 			Contract.EndContractBlock();
-			int idx = 0;
-			foreach (TSource item in source)
+			var idx = 0;
+			foreach (var item in source)
 			{
 				if (predicate(item))
 				{
@@ -143,12 +145,12 @@ namespace Cyjb.Collections
 		public static int LastIndex<TSource>(this IEnumerable<TSource> source,
 			Func<TSource, bool> predicate)
 		{
-			CommonExceptions.CheckArgumentNull(source, "source");
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
+			CommonExceptions.CheckArgumentNull(source, nameof(source));
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
 			Contract.EndContractBlock();
-			int lastIdx = -1;
-			int idx = 0;
-			foreach (TSource item in source)
+			var lastIdx = -1;
+			var idx = 0;
+			foreach (var item in source)
 			{
 				if (predicate(item))
 				{

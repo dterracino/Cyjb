@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -19,10 +22,10 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			foreach (T item in other)
+			foreach (var item in other)
 			{
 				collection.Add(item);
 			}

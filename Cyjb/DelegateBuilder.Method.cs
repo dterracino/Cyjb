@@ -1,10 +1,12 @@
 ﻿using System;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -34,19 +36,19 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this MethodBase method)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateOpenDelegate(method, type);
+			var dlg = CreateOpenDelegate(method, type);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg as TDelegate;
 		}
@@ -68,19 +70,19 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this MethodBase method, bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateOpenDelegate(method, type);
+			var dlg = CreateOpenDelegate(method, type);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg as TDelegate;
 		}
@@ -99,19 +101,19 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="method"/>。</exception>
 		public static Delegate CreateDelegate(this MethodBase method, Type delegateType)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateOpenDelegate(method, delegateType);
+			var dlg = CreateOpenDelegate(method, delegateType);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg;
 		}
@@ -133,19 +135,19 @@ namespace Cyjb
 		/// <exception cref="MethodAccessException">调用方无权访问 <paramref name="method"/>。</exception>
 		public static Delegate CreateDelegate(this MethodBase method, Type delegateType, bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateOpenDelegate(method, delegateType);
+			var dlg = CreateOpenDelegate(method, delegateType);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg;
 		}
@@ -162,25 +164,25 @@ namespace Cyjb
 		{
 			Contract.Requires(method != null && delegateType != null);
 			// 判断是否需要作为实例的形参。
-			int index = 0;
+			var index = 0;
 			if (!method.IsStatic && !(method is ConstructorInfo))
 			{
 				index++;
 			}
-			MethodInfo invoke = delegateType.GetInvokeMethod();
-			Type[] paramTypes = invoke.GetParameterTypes();
-			Type[] types = paramTypes.Extend(method.GetParametersNoCopy().Length + index, typeof(Missing));
-			Type returnType = invoke.ReturnType;
+			var invoke = delegateType.GetInvokeMethod();
+			var paramTypes = invoke.GetParameterTypes();
+			var types = paramTypes.Extend(method.GetParametersNoCopy().Length + index, typeof(Missing));
+			var returnType = invoke.ReturnType;
 			// 提取方法参数信息。
-			MethodArgumentsInfo argumentsInfo = GetArgumentsInfo(ref method, types, returnType);
+			var argumentsInfo = GetArgumentsInfo(ref method, types, returnType);
 			if (argumentsInfo == null)
 			{
 				return null;
 			}
 			// 构造动态委托。
-			DynamicMethod dlgMethod = new DynamicMethod("MethodDelegate", returnType, paramTypes,
+			var dlgMethod = new DynamicMethod("MethodDelegate", returnType, paramTypes,
 				method.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var il = dlgMethod.GetILGenerator();
 			Contract.Assume(il != null);
 			// 实例方法的第一个参数用作传递实例对象。
 			if (argumentsInfo.InstanceType != null)
@@ -210,7 +212,7 @@ namespace Cyjb
 		/// <returns>方法的参数信息。</returns>
 		private static MethodArgumentsInfo GetArgumentsInfo(ref MethodBase method, Type[] types, Type returnType)
 		{
-			MethodArgumentsOption options = MethodArgumentsOption.OptionalAndExplicit | MethodArgumentsOption.ConvertRefType;
+			var options = MethodArgumentsOption.OptionalAndExplicit | MethodArgumentsOption.ConvertRefType;
 			if (!method.IsStatic && !(method is ConstructorInfo))
 			{
 				options |= MethodArgumentsOption.ContainsInstance;
@@ -218,7 +220,7 @@ namespace Cyjb
 			if (method.IsGenericMethodDefinition)
 			{
 				// 对泛型方法定义进行类型推断。
-				MethodArgumentsInfo argumentsInfo = method.GenericArgumentsInferences(returnType, types, options);
+				var argumentsInfo = method.GenericArgumentsInferences(returnType, types, options);
 				if (argumentsInfo == null)
 				{
 					return null;
@@ -245,7 +247,7 @@ namespace Cyjb
 				il.EmitCheckArgumentNull(0, "instance");
 			}
 			il.Emit(OpCodes.Ldarg_0);
-			Type declType = member.DeclaringType;
+			var declType = member.DeclaringType;
 			Contract.Assume(declType != null);
 			il.EmitConversion(instanceType, declType, true, ConversionType.Explicit);
 			if (declType.IsValueType)
@@ -266,11 +268,11 @@ namespace Cyjb
 			int index)
 		{
 			Contract.Requires(il != null && method != null && argumentsInfo != null && index >= 0);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
-			IList<Type> args = argumentsInfo.FixedArguments;
-			int argCnt = args.Count;
-			bool optimizeTailcall = true;
-			for (int i = 0; i < argCnt; i++, index++)
+			var parameters = method.GetParametersNoCopy();
+			var args = argumentsInfo.FixedArguments;
+			var argCnt = args.Count;
+			var optimizeTailcall = true;
+			for (var i = 0; i < argCnt; i++, index++)
 			{
 				if (!il.EmitLoadParameter(parameters[i], index, args[i]))
 				{
@@ -281,13 +283,13 @@ namespace Cyjb
 			{
 				// 加载 params 参数。
 				argCnt = args.Count;
-				Type elementType = argumentsInfo.ParamArrayType.GetElementType();
+				var elementType = argumentsInfo.ParamArrayType.GetElementType();
 				Contract.Assume(elementType != null);
 				il.EmitConstant(argCnt);
 				il.Emit(OpCodes.Newarr, elementType);
-				LocalBuilder local = il.GetLocal(argumentsInfo.ParamArrayType);
+				var local = il.GetLocal(argumentsInfo.ParamArrayType);
 				il.Emit(OpCodes.Stloc, local);
-				for (int i = 0; i < argCnt; i++, index++)
+				for (var i = 0; i < argCnt; i++, index++)
 				{
 					il.Emit(OpCodes.Ldloc, local);
 					il.EmitConstant(i);
@@ -302,7 +304,7 @@ namespace Cyjb
 			{
 				// 加载可变参数。
 				argCnt = args.Count;
-				for (int i = 0; i < argCnt; i++, index++)
+				for (var i = 0; i < argCnt; i++, index++)
 				{
 					il.EmitLoadParameter(args[i], index, args[i]);
 				}
@@ -387,11 +389,11 @@ namespace Cyjb
 			Type returnType, bool optimizeTailcall)
 		{
 			Contract.Requires(il != null && method != null && returnType != null);
-			MethodInfo methodInfo = method as MethodInfo;
+			var methodInfo = method as MethodInfo;
 			if (methodInfo == null)
 			{
 				// 调用构造函数。
-				Converter converter = il.GetConversion(method.DeclaringType, returnType, ConversionType.Explicit);
+				var converter = il.GetConversion(method.DeclaringType, returnType, ConversionType.Explicit);
 				if (converter == null)
 				{
 					return false;
@@ -422,7 +424,7 @@ namespace Cyjb
 			else
 			{
 				// 对返回值进行类型转换。
-				Converter converter = il.GetConversion(methodInfo.ReturnType, returnType, ConversionType.Explicit);
+				var converter = il.GetConversion(methodInfo.ReturnType, returnType, ConversionType.Explicit);
 				if (converter == null)
 				{
 					return false;
@@ -455,19 +457,19 @@ namespace Cyjb
 		public static TDelegate CreateDelegate<TDelegate>(this MethodBase method, object firstArgument)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateClosedDelegate(method, type, firstArgument, false);
+			var dlg = CreateClosedDelegate(method, type, firstArgument, false);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg as TDelegate;
 		}
@@ -492,19 +494,19 @@ namespace Cyjb
 			bool throwOnBindFailure)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
-			Type type = typeof(TDelegate);
+			var type = typeof(TDelegate);
 			CommonExceptions.CheckDelegateType(type);
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateClosedDelegate(method, type, firstArgument, false);
+			var dlg = CreateClosedDelegate(method, type, firstArgument, false);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg as TDelegate;
 		}
@@ -525,19 +527,19 @@ namespace Cyjb
 		/// <seealso cref="Delegate.CreateDelegate(Type, object, MethodInfo)"/>
 		public static Delegate CreateDelegate(this MethodBase method, Type delegateType, object firstArgument)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateClosedDelegate(method, delegateType, firstArgument, false);
+			var dlg = CreateClosedDelegate(method, delegateType, firstArgument, false);
 			if (dlg == null)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg;
 		}
@@ -562,19 +564,19 @@ namespace Cyjb
 		public static Delegate CreateDelegate(this MethodBase method, Type delegateType, object firstArgument,
 			bool throwOnBindFailure)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(delegateType, "delegateType");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(delegateType, nameof(delegateType));
 			Contract.EndContractBlock();
-			CommonExceptions.CheckDelegateType(delegateType, "delegateType");
-			CommonExceptions.CheckUnboundGenParam(method, "method");
+			CommonExceptions.CheckDelegateType(delegateType, nameof(delegateType));
+			CommonExceptions.CheckUnboundGenParam(method, nameof(method));
 			if (method.ContainsGenericParameters && !method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.UnboundGenParam("method");
+				throw CommonExceptions.UnboundGenParam(nameof(method));
 			}
-			Delegate dlg = CreateClosedDelegate(method, delegateType, firstArgument, false);
+			var dlg = CreateClosedDelegate(method, delegateType, firstArgument, false);
 			if (dlg == null && throwOnBindFailure)
 			{
-				throw CommonExceptions.BindTargetMethod("method");
+				throw CommonExceptions.BindTargetMethod(nameof(method));
 			}
 			return dlg;
 		}
@@ -597,37 +599,37 @@ namespace Cyjb
 			if (!ensureClosed && firstArgument == null)
 			{
 				// 开放方法。
-				Delegate dlg = CreateOpenDelegate(method, delegateType);
+				var dlg = CreateOpenDelegate(method, delegateType);
 				if (dlg != null)
 				{
 					return dlg;
 				}
 			}
 			// 封闭方法。
-			MethodInfo invoke = delegateType.GetInvokeMethod();
-			Type[] paramTypes = invoke.GetParameterTypes();
-			Type[] paramTypesWithFirstArg = paramTypes.Insert(0,
+			var invoke = delegateType.GetInvokeMethod();
+			var paramTypes = invoke.GetParameterTypes();
+			var paramTypesWithFirstArg = paramTypes.Insert(0,
 				// 这里使用 firstArgument 的实际类型，因为需要做类型检查和泛型类型推断。
 				firstArgument == null ? null : firstArgument.GetType());
 			// 判断是否需要作为实例的形参。
-			int index = 0;
+			var index = 0;
 			if (!method.IsStatic && !(method is ConstructorInfo))
 			{
 				index++;
 			}
-			Type[] types = paramTypesWithFirstArg.Extend(method.GetParametersNoCopy().Length + index, typeof(Missing));
-			Type returnType = invoke.ReturnType;
-			MethodArgumentsInfo argumentsInfo = GetArgumentsInfo(ref method, types, returnType);
+			var types = paramTypesWithFirstArg.Extend(method.GetParametersNoCopy().Length + index, typeof(Missing));
+			var returnType = invoke.ReturnType;
+			var argumentsInfo = GetArgumentsInfo(ref method, types, returnType);
 			if (argumentsInfo == null)
 			{
 				return null;
 			}
-			bool needLoadFirstArg = false;
+			var needLoadFirstArg = false;
 			if (!ILExt.CanEmitConstant(firstArgument))
 			{
 				needLoadFirstArg = true;
 				// 修正额外参数的类型。
-				Type argType = GetFirstArgParamType(method);
+				var argType = GetFirstArgParamType(method);
 				// 提前进行类型转换。
 				if (firstArgument != null && firstArgument.GetType() != argType)
 				{
@@ -637,9 +639,9 @@ namespace Cyjb
 				paramTypes = paramTypesWithFirstArg;
 			}
 			// 构造动态委托。
-			DynamicMethod dlgMethod = new DynamicMethod("MethodDelegate", returnType, paramTypes,
+			var dlgMethod = new DynamicMethod("MethodDelegate", returnType, paramTypes,
 				method.Module, true);
-			ILGenerator il = dlgMethod.GetILGenerator();
+			var il = dlgMethod.GetILGenerator();
 			Contract.Assume(il != null);
 			bool optimizeTailcall;
 			if (needLoadFirstArg)
@@ -705,7 +707,7 @@ namespace Cyjb
 		private static void EmitLoadInstance(this ILGenerator il, MemberInfo member, object value)
 		{
 			Contract.Requires(il != null && member != null);
-			Type declType = member.DeclaringType;
+			var declType = member.DeclaringType;
 			Contract.Assume(declType != null);
 			if (value == null)
 			{
@@ -738,14 +740,14 @@ namespace Cyjb
 			object firstArgument)
 		{
 			Contract.Requires(il != null && method != null && argumentsInfo != null);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
-			IList<Type> args = argumentsInfo.FixedArguments;
+			var parameters = method.GetParametersNoCopy();
+			var args = argumentsInfo.FixedArguments;
 			int argCnt = args.Count, index = 0;
 			bool optimizeTailcall = true, firstArg = true;
 			if (argCnt > 0)
 			{
 				firstArg = false;
-				Type paramType = parameters[0].ParameterType;
+				var paramType = parameters[0].ParameterType;
 				if (paramType.IsByRef)
 				{
 					il.EmitConstant(Convert.ChangeType(firstArgument, paramType));
@@ -757,7 +759,7 @@ namespace Cyjb
 					il.EmitConstant(Convert.ChangeType(firstArgument, paramType));
 				}
 			}
-			for (int i = 1; i < argCnt; i++, index++)
+			for (var i = 1; i < argCnt; i++, index++)
 			{
 				if (!il.EmitLoadParameter(parameters[i], index, args[i]))
 				{
@@ -768,13 +770,13 @@ namespace Cyjb
 			{
 				// 加载 params 参数。
 				argCnt = args.Count;
-				Type elementType = argumentsInfo.ParamArrayType.GetElementType();
+				var elementType = argumentsInfo.ParamArrayType.GetElementType();
 				Contract.Assume(elementType != null);
 				il.EmitConstant(argCnt);
 				il.Emit(OpCodes.Newarr, elementType);
-				LocalBuilder local = il.GetLocal(argumentsInfo.ParamArrayType);
+				var local = il.GetLocal(argumentsInfo.ParamArrayType);
 				il.Emit(OpCodes.Stloc, local);
-				int i = 0;
+				var i = 0;
 				if (firstArg)
 				{
 					i++;
@@ -795,7 +797,7 @@ namespace Cyjb
 			{
 				// 加载可变参数。
 				argCnt = args.Count;
-				int i = 0;
+				var i = 0;
 				if (firstArg)
 				{
 					i++;

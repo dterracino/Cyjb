@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -17,9 +21,9 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestToDesctiption()
 		{
-			for (int i = 0; i < 129; i++)
+			for (var i = 0; i < 129; i++)
 			{
-				BindingFlags value = (BindingFlags)i;
+				var value = (BindingFlags)i;
 				Assert.AreEqual(value.ToString(), value.ToDescription());
 			}
 			Assert.AreEqual("0", ((TestEnum)0).ToDescription());
@@ -46,9 +50,9 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestParseEx()
 		{
-			for (int i = 0; i < 150; i++)
+			for (var i = 0; i < 150; i++)
 			{
-				BindingFlags value = (BindingFlags)i;
+				var value = (BindingFlags)i;
 				Assert.AreEqual(value, EnumExt.ParseEx<BindingFlags>(value.ToString()));
 				Assert.AreEqual(value, EnumExt.ParseEx<BindingFlags>(value.ToDescription()));
 			}

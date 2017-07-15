@@ -1,8 +1,11 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Reflection;
-using System.Reflection.Emit;
 using Cyjb.Reflection;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -34,11 +37,11 @@ namespace Cyjb.Conversions
 		public override void Emit(ILGenerator generator, Type inputType, Type outputType, bool isChecked)
 		{
 			Contract.Assume(inputType.IsNullable());
-			Type inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
+			var inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
 			generator.EmitCall(inputType.GetMethod("get_Value"));
 			if (inputUnderlyingType != outputType)
 			{
-				Conversion conversion = ConversionFactory.GetConversion(inputUnderlyingType, outputType);
+				var conversion = ConversionFactory.GetConversion(inputUnderlyingType, outputType);
 				Contract.Assume(conversion != null);
 				conversion.Emit(generator, inputUnderlyingType, outputType, isChecked);
 			}

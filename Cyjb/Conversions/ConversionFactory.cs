@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -45,7 +48,7 @@ namespace Cyjb.Conversions
 				return null;
 			}
 			// 检索已创建的用户自定义类型转换器。
-			Tuple<Type, Type> key = new Tuple<Type, Type>(inputType, outputType);
+			var key = new Tuple<Type, Type>(inputType, outputType);
 			Conversion conversion;
 			if (userDefinedConverers.TryGetValue(key, out conversion))
 			{
@@ -68,7 +71,7 @@ namespace Cyjb.Conversions
 			Delegate converterDelegate = null;
 			if (providers.TryGetValue(inputType, out provider))
 			{
-				Delegate dlg = provider.GetConverterTo(outputType);
+				var dlg = provider.GetConverterTo(outputType);
 				if (provider.IsValidConverterTo(dlg, outputType))
 				{
 					converterDelegate = dlg;
@@ -76,7 +79,7 @@ namespace Cyjb.Conversions
 			}
 			if (converterDelegate == null && providers.TryGetValue(outputType, out provider))
 			{
-				Delegate dlg = provider.GetConverterFrom(inputType);
+				var dlg = provider.GetConverterFrom(inputType);
 				if (provider.IsValidConverterFrom(dlg, inputType))
 				{
 					converterDelegate = dlg;
@@ -139,7 +142,7 @@ namespace Cyjb.Conversions
 				{
 					return BoxConversion.Default;
 				}
-				Type inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
+				var inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
 				if (inputUnderlyingType != null && outputType.IsAssignableFrom(inputUnderlyingType))
 				{
 					// 装箱为可空类型的内部类型实现的接口。
@@ -154,7 +157,7 @@ namespace Cyjb.Conversions
 				{
 					return UnboxConversion.Default;
 				}
-				Type outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
+				var outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
 				if (outputUnderlyingType != null && inputType.IsAssignableFrom(outputUnderlyingType))
 				{
 					return UnboxConversion.Default;
@@ -182,16 +185,16 @@ namespace Cyjb.Conversions
 		{
 			Contract.Requires(inputType != null && outputType != null);
 			Contract.Requires(inputType.IsValueType && outputType.IsValueType);
-			TypeCode inputTypeCode = Type.GetTypeCode(inputType);
-			TypeCode outputTypeCode = Type.GetTypeCode(outputType);
+			var inputTypeCode = Type.GetTypeCode(inputType);
+			var outputTypeCode = Type.GetTypeCode(outputType);
 			// 数值或枚举转换。
 			if (inputTypeCode.IsNumeric() && outputTypeCode.IsNumeric())
 			{
 				return GetNumericOrEnumConversion(inputType, inputTypeCode, outputType, outputTypeCode);
 			}
 			// 可空类型转换。
-			Type inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
-			Type outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
+			var inputUnderlyingType = Nullable.GetUnderlyingType(inputType);
+			var outputUnderlyingType = Nullable.GetUnderlyingType(outputType);
 			if (inputUnderlyingType != null)
 			{
 				inputTypeCode = Type.GetTypeCode(inputUnderlyingType);
@@ -213,7 +216,7 @@ namespace Cyjb.Conversions
 				// 可空类型间转换，从 S? 到 T?，与上面同理，但此时不可能有 S==T。
 				if (inputTypeCode.IsNumeric() && outputTypeCode.IsNumeric())
 				{
-					Conversion conversion = GetNumericOrEnumConversion(inputUnderlyingType, inputTypeCode,
+					var conversion = GetNumericOrEnumConversion(inputUnderlyingType, inputTypeCode,
 						outputUnderlyingType, outputTypeCode);
 					return conversion.ConversionType.IsImplicit()
 						? BetweenNullableConversion.Implicit : BetweenNullableConversion.Explicit;
@@ -230,7 +233,7 @@ namespace Cyjb.Conversions
 				outputTypeCode = Type.GetTypeCode(outputUnderlyingType);
 				if (inputType.IsNumeric() && outputTypeCode.IsNumeric())
 				{
-					Conversion conversion = GetNumericOrEnumConversion(inputType, inputTypeCode,
+					var conversion = GetNumericOrEnumConversion(inputType, inputTypeCode,
 						outputUnderlyingType, outputTypeCode);
 					return conversion.ConversionType.IsImplicit() ?
 						ToNullableConversion.Implicit : ToNullableConversion.Explicit;
@@ -278,11 +281,11 @@ namespace Cyjb.Conversions
 				}
 				return DecimalConversion.ImplicitNumeric;
 			}
-			Conversion conversion = GetNumericConversion(inputTypeCode, outputTypeCode);
+			var conversion = GetNumericConversion(inputTypeCode, outputTypeCode);
 			if (inputType.IsEnum || outputType.IsEnum)
 			{
 				// 将类型转换的类型修正为 Enum。
-				NumericConversion numericConv = conversion as NumericConversion;
+				var numericConv = conversion as NumericConversion;
 				return numericConv == null ? IdentityConversion.ExplicitEnum :
 					new NumericConversion(ConversionType.Enum, numericConv);
 			}
@@ -302,7 +305,7 @@ namespace Cyjb.Conversions
 			Contract.Requires(inputTypeCode.IsNumeric() && inputTypeCode != TypeCode.Decimal);
 			Contract.Requires(outputTypeCode.IsNumeric() && outputTypeCode != TypeCode.Decimal);
 			Contract.Ensures(Contract.Result<Conversion>() != null);
-			bool fromUnsigned = inputTypeCode.IsUnsigned();
+			var fromUnsigned = inputTypeCode.IsUnsigned();
 			switch (outputTypeCode)
 			{
 				case TypeCode.Char:
@@ -473,7 +476,7 @@ namespace Cyjb.Conversions
 			{
 				return false;
 			}
-			Conversion conversion = GetPreDefinedConversionNotVoid(inputType, outputType);
+			var conversion = GetPreDefinedConversionNotVoid(inputType, outputType);
 			return conversion != null && conversion.ConversionType.IsReference();
 		}
 		/// <summary>
@@ -490,15 +493,15 @@ namespace Cyjb.Conversions
 			{
 				return null;
 			}
-			Type typeDefinition = inputType.GetGenericTypeDefinition();
+			var typeDefinition = inputType.GetGenericTypeDefinition();
 			if (typeDefinition != outputType.GetGenericTypeDefinition())
 			{
 				return null;
 			}
-			Type[] args = typeDefinition.GetGenericArguments();
-			Type[] inputArgs = inputType.GetGenericArguments();
-			Type[] outputArgs = outputType.GetGenericArguments();
-			for (int i = 0; i < args.Length; i++)
+			var args = typeDefinition.GetGenericArguments();
+			var inputArgs = inputType.GetGenericArguments();
+			var outputArgs = outputType.GetGenericArguments();
+			for (var i = 0; i < args.Length; i++)
 			{
 				if (!CheckGenericArguments(args[i], inputArgs[i], outputArgs[i]))
 				{
@@ -521,7 +524,7 @@ namespace Cyjb.Conversions
 			{
 				return true;
 			}
-			GenericParameterAttributes attrs = arg.GenericParameterAttributes & GenericParameterAttributes.VarianceMask;
+			var attrs = arg.GenericParameterAttributes & GenericParameterAttributes.VarianceMask;
 			if (attrs == GenericParameterAttributes.None || inputArg.IsValueType || outputArg.IsValueType)
 			{
 				return false;
@@ -530,7 +533,7 @@ namespace Cyjb.Conversions
 			{
 				return true;
 			}
-			Conversion conversion = GetConversion(inputArg, outputArg);
+			var conversion = GetConversion(inputArg, outputArg);
 			return conversion != null && conversion.ConversionType.IsReference();
 		}
 
@@ -549,17 +552,17 @@ namespace Cyjb.Conversions
 			Contract.Requires(inputType != null && outputType != null &&
 				inputType != typeof(void) && outputType != typeof(void));
 			// 判断可空类型。
-			Type inputUnderlyingType = inputType.GetNonNullableType();
-			Type outputUnderlyingType = outputType.GetNonNullableType();
-			MethodInfo method = UserConversionCache.GetConversion(inputUnderlyingType, outputUnderlyingType);
+			var inputUnderlyingType = inputType.GetNonNullableType();
+			var outputUnderlyingType = outputType.GetNonNullableType();
+			var method = UserConversionCache.GetConversion(inputUnderlyingType, outputUnderlyingType);
 			if (method == null)
 			{
 				return null;
 			}
 			Conversion conversion = new UserConversion(method);
 			// 存入缓存。
-			Type methodInputType = method.GetParametersNoCopy()[0].ParameterType;
-			Tuple<Type, Type> key = new Tuple<Type, Type>(inputType, outputType);
+			var methodInputType = method.GetParametersNoCopy()[0].ParameterType;
+			var key = new Tuple<Type, Type>(inputType, outputType);
 			if (inputType != methodInputType || outputType != method.ReturnType)
 			{
 				conversion = userDefinedConverers.GetOrAdd(new Tuple<Type, Type>(methodInputType, method.ReturnType),
@@ -596,7 +599,7 @@ namespace Cyjb.Conversions
 		{
 			Contract.Requires(inputType != null && outputType != null &&
 				inputType != typeof(void) && outputType != typeof(void));
-			Conversion conversion = GetPreDefinedConversionNotVoid(inputType, outputType);
+			var conversion = GetPreDefinedConversionNotVoid(inputType, outputType);
 			// 不存在预定义类型转换。
 			if (conversion == null)
 			{
@@ -619,7 +622,7 @@ namespace Cyjb.Conversions
 				case ConversionType.ExplicitNullable:
 					// 包含部分转换，需要判断是否存在反向隐式转换。
 					// 此时 inputType 和 outputType 一定都是值类型。
-					Conversion reversedConversion = GetBetweenValueTypeConversion(outputType, inputType);
+					var reversedConversion = GetBetweenValueTypeConversion(outputType, inputType);
 					Contract.Assume(reversedConversion != null);
 					return reversedConversion.ConversionType.IsImplicit() ?
 						conversion.ConversionType : ConversionType.None;

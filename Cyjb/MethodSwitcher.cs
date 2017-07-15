@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using Cyjb.Collections;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
@@ -8,8 +10,8 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using Cyjb.Collections;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -109,10 +111,10 @@ namespace Cyjb
 		public static TDelegate Create<TDelegate>(params Delegate[] delegates)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckCollectionItemNull(delegates, "delegates");
+			CommonExceptions.CheckCollectionItemNull(delegates, nameof(delegates));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			CommonExceptions.CheckDelegateType(typeof(TDelegate));
-			ProcessorData data = new ProcessorData(delegates);
+			var data = new ProcessorData(delegates);
 			CheckDelegateType<TDelegate>(data);
 			return CreateSwitcher<TDelegate>(data, null, null);
 		}
@@ -130,10 +132,10 @@ namespace Cyjb
 		public static TDelegate Create<TDelegate>(Type type)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			CommonExceptions.CheckDelegateType(typeof(TDelegate));
-			ProcessorData data = GetMethods<TDelegate>(type, ProcessorAttribute.DefaultId, true);
+			var data = GetMethods<TDelegate>(type, ProcessorAttribute.DefaultId, true);
 			return CreateSwitcher<TDelegate>(data, ProcessorAttribute.DefaultId, null);
 		}
 		/// <summary>
@@ -153,11 +155,11 @@ namespace Cyjb
 		public static TDelegate Create<TDelegate>(Type type, string id)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckStringEmpty(id, "id");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckStringEmpty(id, nameof(id));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			CommonExceptions.CheckDelegateType(typeof(TDelegate));
-			ProcessorData data = GetMethods<TDelegate>(type, id, true);
+			var data = GetMethods<TDelegate>(type, id, true);
 			return CreateSwitcher<TDelegate>(data, id, null);
 		}
 		/// <summary>
@@ -174,10 +176,10 @@ namespace Cyjb
 		public static TDelegate Create<TDelegate>(object target)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			CommonExceptions.CheckDelegateType(typeof(TDelegate));
-			ProcessorData data = GetMethods<TDelegate>(target.GetType(), ProcessorAttribute.DefaultId, false);
+			var data = GetMethods<TDelegate>(target.GetType(), ProcessorAttribute.DefaultId, false);
 			return CreateSwitcher<TDelegate>(data, ProcessorAttribute.DefaultId, target);
 		}
 		/// <summary>
@@ -197,11 +199,11 @@ namespace Cyjb
 		public static TDelegate Create<TDelegate>(object target, string id)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(id, "id");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(id, nameof(id));
 			Contract.Ensures(Contract.Result<TDelegate>() != null);
 			CommonExceptions.CheckDelegateType(typeof(TDelegate));
-			ProcessorData data = GetMethods<TDelegate>(target.GetType(), id, false);
+			var data = GetMethods<TDelegate>(target.GetType(), id, false);
 			return CreateSwitcher<TDelegate>(data, id, target);
 		}
 		/// <summary>
@@ -216,8 +218,8 @@ namespace Cyjb
 			where TDelegate : class
 		{
 			Contract.Requires(data != null);
-			MethodInfo invoke = typeof(TDelegate).GetInvokeMethod();
-			Type[] paramTypes = invoke.GetParameterTypes();
+			var invoke = typeof(TDelegate).GetInvokeMethod();
+			var paramTypes = invoke.GetParameterTypes();
 			object closure;
 			if (data.IsStatic)
 			{
@@ -227,9 +229,9 @@ namespace Cyjb
 			{
 				closure = new Closure(new[] { instance, data.Processors }, null);
 			}
-			DynamicMethod method = new DynamicMethod("MethodSwitcher", invoke.ReturnType,
+			var method = new DynamicMethod("MethodSwitcher", invoke.ReturnType,
 				paramTypes.Insert(0, closure.GetType()), true);
-			ILGenerator il = method.GetILGenerator();
+			var il = method.GetILGenerator();
 			// 静态方法中，arg_0 用作存储处理器委托字典。
 			if (data.IsStatic)
 			{
@@ -242,11 +244,11 @@ namespace Cyjb
 			}
 			// 判断关键参数是否为 null。
 			il.EmitLoadArg(data.KeyIndex + 1);
-			Label keyNullCase = il.DefineLabel();
+			var keyNullCase = il.DefineLabel();
 			il.Emit(OpCodes.Brtrue, keyNullCase);
 			// 关键参数为 null，将 object 作为查找类型。
 			il.EmitConstant(typeof(object));
-			Label endKeyNull = il.DefineLabel();
+			var endKeyNull = il.DefineLabel();
 			il.Emit(OpCodes.Br, endKeyNull);
 			// 关键参数不为 null，将参数类型作为查找类型。
 			il.MarkLabel(keyNullCase);
@@ -258,23 +260,23 @@ namespace Cyjb
 			il.EmitCall(methodGetMethod);
 			il.Emit(OpCodes.Castclass, data.DelegateType);
 			//// 载入参数，调用委托。
-			Type[] originParamTypes = data.DelegateParamTypes;
+			var originParamTypes = data.DelegateParamTypes;
 			if (!data.IsStatic)
 			{
 				// 载入实例，Closure.Constants[0]。
 				il.EmitLoadClosureConstant(0, instance.GetType());
 			}
-			int offset = data.IsStatic ? 0 : 1;
-			for (int i = 0; i < paramTypes.Length; i++)
+			var offset = data.IsStatic ? 0 : 1;
+			for (var i = 0; i < paramTypes.Length; i++)
 			{
-				Type paramType = paramTypes[i];
-				Type targetType = originParamTypes[i + offset];
+				var paramType = paramTypes[i];
+				var targetType = originParamTypes[i + offset];
 				Contract.Assume(paramType != null && targetType != null);
 				il.EmitLoadArg(i + 1, paramType, targetType);
 			}
 			il.Emit(OpCodes.Callvirt, data.DelegateType.GetInvokeMethod());
-			Type returnType = originParamTypes[originParamTypes.Length - 1];
-			Type targetReturnType = invoke.ReturnType;
+			var returnType = originParamTypes[originParamTypes.Length - 1];
+			var targetReturnType = invoke.ReturnType;
 			// 转换返回类型。
 			if (returnType == typeof(void))
 			{
@@ -315,7 +317,7 @@ namespace Cyjb
 		{
 			Contract.Requires(type != null && id != null);
 			Contract.Ensures(Contract.Result<ProcessorData>() != null);
-			ProcessorData data = methodDict.GetOrAdd(string.Concat(type.FullName, "_", id),
+			var data = methodDict.GetOrAdd(string.Concat(type.FullName, "_", id),
 				key => new ProcessorData(type, id));
 			if (data.IsStatic != needStatic)
 			{
@@ -333,14 +335,14 @@ namespace Cyjb
 		private static void CheckDelegateType<TDelegate>(ProcessorData data)
 		{
 			Contract.Requires(data != null);
-			Type dlgType = typeof(TDelegate);
+			var dlgType = typeof(TDelegate);
 			if (data.IsStatic)
 			{
 				if (data.DelegateType != dlgType)
 				{
 					// 检查静态委托参数。
-					ParameterInfo[] paramInfos = data.DelegateType.GetMethod("Invoke").GetParametersNoCopy();
-					ParameterInfo[] dlgParamInfos = dlgType.GetMethod("Invoke").GetParametersNoCopy();
+					var paramInfos = data.DelegateType.GetMethod("Invoke").GetParametersNoCopy();
+					var dlgParamInfos = dlgType.GetMethod("Invoke").GetParametersNoCopy();
 					if (paramInfos.Length != dlgParamInfos.Length)
 					{
 						throw CommonExceptions.DelegateCompatible(data.DelegateType, dlgType);
@@ -355,13 +357,13 @@ namespace Cyjb
 			else
 			{
 				// 检查实例委托参数，要考虑实例对应的参数。
-				ParameterInfo[] paramInfos = data.DelegateType.GetMethod("Invoke").GetParametersNoCopy();
-				ParameterInfo[] dlgParamInfos = dlgType.GetMethod("Invoke").GetParametersNoCopy();
+				var paramInfos = data.DelegateType.GetMethod("Invoke").GetParametersNoCopy();
+				var dlgParamInfos = dlgType.GetMethod("Invoke").GetParametersNoCopy();
 				if (paramInfos.Length != dlgParamInfos.Length + 1)
 				{
 					throw CommonExceptions.DelegateCompatible(data.DelegateType, dlgType);
 				}
-				for (int i = 1; i < paramInfos.Length; i++)
+				for (var i = 1; i < paramInfos.Length; i++)
 				{
 					if (!paramInfos[i].ParameterType.IsExplicitFrom(dlgParamInfos[i - 1].ParameterType))
 					{
@@ -381,7 +383,7 @@ namespace Cyjb
 		{
 			Contract.Requires(dict != null && type != null);
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			Delegate dlg = GetMethodUnderlying(dict, type);
+			var dlg = GetMethodUnderlying(dict, type);
 			if (dlg == null)
 			{
 				throw CommonExceptions.ProcessorNotFound(type, id);
@@ -449,26 +451,26 @@ namespace Cyjb
 			public ProcessorData(Delegate[] delegates)
 			{
 				Contract.Requires(delegates != null && delegates.All(d => d != null));
-				this.IsStatic = true;
-				List<MethodInfo> list = new List<MethodInfo>(delegates.Length);
+				IsStatic = true;
+				var list = new List<MethodInfo>(delegates.Length);
 				list.AddRange(delegates.Select(d => d.GetInvokeMethod()));
-				int cnt = list.Count;
+				var cnt = list.Count;
 				// 发现关键参数，所有处理器各不相同的参数就认为是关键参数。
-				List<Type[]> paramTypes = new List<Type[]>(cnt);
-				for (int i = 0; i < cnt; i++)
+				var paramTypes = new List<Type[]>(cnt);
+				for (var i = 0; i < cnt; i++)
 				{
 					paramTypes.Add(list[i].GetParameterTypesWithReturn());
 				}
-				this.KeyIndex = FindKeyIndex(null, null, paramTypes);
+				KeyIndex = FindKeyIndex(null, null, paramTypes);
 				// 构造委托类型。
-				this.DelegateParamTypes = FindDelegateType(paramTypes, null);
-				this.DelegateType = Expression.GetDelegateType(this.DelegateParamTypes);
-				this.Processors = new Dictionary<Type, Delegate>(cnt);
-				for (int i = 0; i < cnt; i++)
+				DelegateParamTypes = FindDelegateType(paramTypes, null);
+				DelegateType = Expression.GetDelegateType(DelegateParamTypes);
+				Processors = new Dictionary<Type, Delegate>(cnt);
+				for (var i = 0; i < cnt; i++)
 				{
-					Type keyType = list[i].GetParameters()[this.KeyIndex].ParameterType;
+					var keyType = list[i].GetParameters()[KeyIndex].ParameterType;
 					// 经过前面的类型检查，包装委托时应当总是会成功。
-					this.Processors.Add(keyType, DelegateBuilder.Wrap(delegates[i], this.DelegateType));
+					Processors.Add(keyType, delegates[i].Wrap(DelegateType));
 				}
 			}
 			/// <summary>
@@ -484,37 +486,37 @@ namespace Cyjb
 			{
 				Contract.Requires(type != null && id != null);
 				// 寻找处理器。
-				MethodInfo[] methods = type.GetMethods(TypeExt.AllMemberFlag);
-				List<MethodInfo> list = new List<MethodInfo>(methods.Length);
+				var methods = type.GetMethods(TypeExt.AllMemberFlag);
+				var list = new List<MethodInfo>(methods.Length);
 				list.AddRange(methods.Where(m => m.GetCustomAttributes(typeof(ProcessorAttribute), true)
 					.Cast<ProcessorAttribute>().Any(p => p.Id == id)));
-				int cnt = list.Count;
+				var cnt = list.Count;
 				if (cnt == 0)
 				{
 					throw CommonExceptions.ProcessorNotFound(type, id);
 				}
 				// 判断是静态方法还是动态方法。
-				this.IsStatic = list[0].IsStatic;
+				IsStatic = list[0].IsStatic;
 				if (list.Any(m => m.IsStatic != IsStatic))
 				{
 					throw CommonExceptions.ProcessorMixed(type, id);
 				}
 				// 发现关键参数，所有处理器各不相同的参数就认为是关键参数。
-				List<Type[]> paramTypes = new List<Type[]>(cnt);
-				for (int i = 0; i < cnt; i++)
+				var paramTypes = new List<Type[]>(cnt);
+				for (var i = 0; i < cnt; i++)
 				{
 					paramTypes.Add(list[i].GetParameterTypesWithReturn());
 				}
-				this.KeyIndex = FindKeyIndex(type, id, paramTypes);
+				KeyIndex = FindKeyIndex(type, id, paramTypes);
 				// 构造委托类型。
-				this.DelegateParamTypes = FindDelegateType(paramTypes, this.IsStatic ? null : type);
-				this.DelegateType = Expression.GetDelegateType(this.DelegateParamTypes);
-				this.Processors = new Dictionary<Type, Delegate>(cnt);
-				for (int i = 0; i < cnt; i++)
+				DelegateParamTypes = FindDelegateType(paramTypes, IsStatic ? null : type);
+				DelegateType = Expression.GetDelegateType(DelegateParamTypes);
+				Processors = new Dictionary<Type, Delegate>(cnt);
+				for (var i = 0; i < cnt; i++)
 				{
-					Type keyType = list[i].GetParameters()[this.KeyIndex].ParameterType;
+					var keyType = list[i].GetParameters()[KeyIndex].ParameterType;
 					// 经过前面的类型检查，创建委托时应当总是会成功。
-					this.Processors.Add(keyType, DelegateBuilder.CreateDelegate(list[i], this.DelegateType));
+					Processors.Add(keyType, DelegateBuilder.CreateDelegate(list[i], DelegateType));
 				}
 			}
 			/// <summary>
@@ -529,9 +531,9 @@ namespace Cyjb
 			private static int FindKeyIndex(Type type, string id, List<Type[]> paramTypes)
 			{
 				Contract.Requires(paramTypes != null && paramTypes.Count > 0);
-				int cnt = paramTypes.Count;
-				int paramCnt = -1;
-				for (int i = 0; i < cnt; i++)
+				var cnt = paramTypes.Count;
+				var paramCnt = -1;
+				for (var i = 0; i < cnt; i++)
 				{
 					if (paramCnt == -1)
 					{
@@ -542,9 +544,9 @@ namespace Cyjb
 						throw CommonExceptions.ProcessorParameterMismatch(type, id);
 					}
 				}
-				UniqueValue<int> keyIdx = new UniqueValue<int>();
+				var keyIdx = new UniqueValue<int>();
 				// 不考虑最后的返回值类型。
-				for (int i = paramCnt - 2; i >= 0; i--)
+				for (var i = paramCnt - 2; i >= 0; i--)
 				{
 					var idx = i;
 					if (!paramTypes.Select(types => types[idx]).Iterative().Any())
@@ -571,7 +573,7 @@ namespace Cyjb
 			private static Type[] FindDelegateType(List<Type[]> paramTypes, Type instanceType)
 			{
 				Contract.Requires(paramTypes != null && paramTypes.Count > 0);
-				int len = paramTypes[0].Length;
+				var len = paramTypes[0].Length;
 				Type[] types;
 				if (instanceType == null)
 				{
@@ -585,11 +587,11 @@ namespace Cyjb
 				}
 				int paramsIdx = paramTypes[0].Length - 1, typesIdx = len - 1;
 				Contract.Assume(paramsIdx >= 0);
-				int returnIdx = paramsIdx;
+				var returnIdx = paramsIdx;
 				types[typesIdx] = TypeExt.GetEncompassedType(paramTypes.Select(t => t[returnIdx])) ?? typeof(object);
 				for (; paramsIdx >= 0; paramsIdx--, typesIdx--)
 				{
-					int idx = paramsIdx;
+					var idx = paramsIdx;
 					types[typesIdx] = TypeExt.GetEncompassingType(paramTypes.Select(t => t[idx])) ?? typeof(object);
 				}
 				return types;

@@ -2,7 +2,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -16,34 +20,34 @@ namespace Cyjb.Collections.ObjectModel
 		/// 的元素复制到一个 <see cref="Array"/> 中。
 		/// </summary>
 		/// <param name="source">要复制元素的集合。</param>
-		/// <param name="array">从 <paramref name="source"/> 复制的元素的目标位置的一维 
+		/// <param name="array">从 <paramref name="source"/> 复制的元素的目标位置的一维
 		/// <see cref="Array"/>。<paramref name="array"/> 必须具有从零开始的索引。</param>
 		/// <param name="index"><paramref name="array"/> 中从零开始的索引，在此处开始复制。</param>
 		/// <exception cref="ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 <c>0</c>。</exception>
 		/// <exception cref="ArgumentException"><paramref name="array"/> 是多维的。</exception>
 		/// <exception cref="ArgumentException"><paramref name="source"/>
-		/// 中的元素数目大于从 <paramref name="index"/> 到目标 <paramref name="array"/> 
+		/// 中的元素数目大于从 <paramref name="index"/> 到目标 <paramref name="array"/>
 		/// 末尾之间的可用空间。</exception>
 		/// <exception cref="ArgumentException"><paramref name="source"/>
 		/// 的类型无法自动转换为目标 <paramref name="array"/> 的类型。</exception>
 		public static void CopyTo<T>(ICollection<T> source, Array array, int index)
 		{
 			Contract.Requires(source != null);
-			CommonExceptions.CheckSimplyArray(array, "array");
+			CommonExceptions.CheckSimplyArray(array, nameof(array));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (array.Length - index < source.Count)
 			{
-				throw CommonExceptions.ArrayTooSmall("array");
+				throw CommonExceptions.ArrayTooSmall(nameof(array));
 			}
 			Contract.EndContractBlock();
-			T[] arr = array as T[];
+			var arr = array as T[];
 			if (arr != null)
 			{
-				foreach (T obj in source)
+				foreach (var obj in source)
 				{
 					arr[index++] = obj;
 				}
@@ -52,7 +56,7 @@ namespace Cyjb.Collections.ObjectModel
 			{
 				try
 				{
-					foreach (T obj in source)
+					foreach (var obj in source)
 					{
 						array.SetValue(obj, index++);
 					}
@@ -70,9 +74,9 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="value">要测试是否兼容的对象。</param>
 		/// <returns>如果指定的对象与 <typeparamref name="T"/> 类型兼容，则为 <c>true</c>；
 		/// 否则为 <c>false</c>。</returns>
-		public static bool IsCompatible<T>(object value)
+		public static bool IsCompatible<T>([CanBeNull] object value)
 		{
-			return (value is T) || (value == null && default(T) == null);
+			return value is T || (value == null && default(T) == null);
 		}
 		/// <summary>
 		/// 获取指定字典的值集合。
@@ -81,7 +85,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>指定字典的值集合。</returns>
 		public static IEnumerable<TItem> GetDictValues<TKey, TItem>(IDictionary<TKey, TItem> dict)
 		{
-			CommonExceptions.CheckArgumentNull(dict, "dict");
+			CommonExceptions.CheckArgumentNull(dict, nameof(dict));
 			Contract.Ensures(Contract.Result<IEnumerable<TItem>>() != null);
 			return dict.Values;
 		}
@@ -93,8 +97,8 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="syncRoot">用于同步访问的对象。</param>
 		public static void CreateSyncRoot<T>(T items, ref object syncRoot)
 		{
-			ICollection collection = items as ICollection;
-			object syncObj = collection == null ? new object() : collection.SyncRoot;
+			var collection = items as ICollection;
+			var syncObj = collection == null ? new object() : collection.SyncRoot;
 			Interlocked.CompareExchange(ref syncRoot, syncObj, null);
 		}
 	}

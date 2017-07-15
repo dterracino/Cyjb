@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -18,8 +20,8 @@ namespace UnitTestCyjb.Reflection
 		[TestMethod]
 		public void TestGenericArgumentsInferences()
 		{
-			Type type = typeof(TestClass);
-			MethodInfo method = type.GetMethod("TestMethod");
+			var type = typeof(TestClass);
+			var method = type.GetMethod("TestMethod");
 			AssertExt.AreEqual(new[] { typeof(int) }, method.GenericArgumentsInferences(typeof(int)));
 			AssertExt.AreEqual(new[] { typeof(uint) }, method.GenericArgumentsInferences(typeof(uint)));
 			method = type.GetMethod("TestMethod2");

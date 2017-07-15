@@ -7,6 +7,8 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Permissions;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Collections
@@ -117,17 +119,17 @@ namespace Cyjb.Collections
 			: base(null)
 		{
 			this.ignoreCase = ignoreCase;
-			this.data = new uint[TopLen][];
+			data = new uint[TopLen][];
 			if (this.ignoreCase)
 			{
 				this.culture = culture ?? CultureInfo.InvariantCulture;
-				this.getIndex = GetIndexIgnoreCase;
-				this.btmFullLen = BtmLen << 1;
+				getIndex = GetIndexIgnoreCase;
+				btmFullLen = BtmLen << 1;
 			}
 			else
 			{
-				this.getIndex = GetIndex;
-				this.btmFullLen = BtmLen;
+				getIndex = GetIndex;
+				btmFullLen = BtmLen;
 			}
 		}
 		/// <summary>
@@ -138,9 +140,9 @@ namespace Cyjb.Collections
 		public CharSet(IEnumerable<char> collection)
 			: this(false, null)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.UnionWith(collection);
+			UnionWith(collection);
 		}
 		/// <summary>
 		/// 使用指定的是否区分大小写初始化 <see cref="CharSet"/> 类的新实例，
@@ -152,9 +154,9 @@ namespace Cyjb.Collections
 		public CharSet(IEnumerable<char> collection, bool ignoreCase)
 			: this(ignoreCase, null)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.UnionWith(collection);
+			UnionWith(collection);
 		}
 		/// <summary>
 		/// 使用指定的是否区分大小写和区域信息初始化 
@@ -168,9 +170,9 @@ namespace Cyjb.Collections
 		public CharSet(IEnumerable<char> collection, bool ignoreCase, CultureInfo culture)
 			: this(ignoreCase, culture)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.UnionWith(collection);
+			UnionWith(collection);
 		}
 		/// <summary>
 		/// 用指定的序列化信息和上下文初始化 <see cref="CharSet"/> 类的新实例。
@@ -183,21 +185,21 @@ namespace Cyjb.Collections
 		private CharSet(SerializationInfo info, StreamingContext context)
 			: base(null)
 		{
-			CommonExceptions.CheckArgumentNull(info, "info");
+			CommonExceptions.CheckArgumentNull(info, nameof(info));
 			Contract.EndContractBlock();
-			this.data = (uint[][])info.GetValue("Data", typeof(uint[][]));
-			this.count = info.GetInt32("Count");
-			this.ignoreCase = info.GetBoolean("IgnoreCase");
-			if (this.ignoreCase)
+			data = (uint[][])info.GetValue("Data", typeof(uint[][]));
+			count = info.GetInt32("Count");
+			ignoreCase = info.GetBoolean("IgnoreCase");
+			if (ignoreCase)
 			{
-				this.culture = (CultureInfo)info.GetValue("Culture", typeof(CultureInfo));
-				this.getIndex = GetIndexIgnoreCase;
-				this.btmFullLen = BtmLen << 1;
+				culture = (CultureInfo)info.GetValue("Culture", typeof(CultureInfo));
+				getIndex = GetIndexIgnoreCase;
+				btmFullLen = BtmLen << 1;
 			}
 			else
 			{
-				this.getIndex = GetIndex;
-				this.btmFullLen = BtmLen;
+				getIndex = GetIndex;
+				btmFullLen = BtmLen;
 			}
 		}
 
@@ -225,7 +227,7 @@ namespace Cyjb.Collections
 		[ContractInvariantMethod]
 		private void ObjectInvariant()
 		{
-			Contract.Invariant(this.data != null && this.data.Length == TopLen);
+			Contract.Invariant(data != null && data.Length == TopLen);
 		}
 
 		#region 数据操作
@@ -238,7 +240,7 @@ namespace Cyjb.Collections
 		private static bool IsEmpty(uint[] array)
 		{
 			Contract.Requires(array != null && array.Length >= BtmLen);
-			for (int i = 0; i < BtmLen; i++)
+			for (var i = 0; i < BtmLen; i++)
 			{
 				if (array[i] != 0)
 				{
@@ -256,8 +258,8 @@ namespace Cyjb.Collections
 		{
 			Contract.Requires(array != null && array.Length >= BtmLen);
 			Contract.Ensures(Contract.Result<int>() >= 0);
-			int cnt = 0;
-			for (int i = 0; i < BtmLen; i++)
+			var cnt = 0;
+			for (var i = 0; i < BtmLen; i++)
 			{
 				if (array[i] != 0)
 				{
@@ -278,7 +280,7 @@ namespace Cyjb.Collections
 			Contract.Ensures(Contract.Result<uint[]>() != null && 
 				Contract.Result<uint[]>().Length == array.Length);
 			Contract.Ensures(Contract.ValueAtReturn(out count) >= 0);
-			uint[] newArr = new uint[array.Length];
+			var newArr = new uint[array.Length];
 			array.CopyTo(newArr, 0);
 			count = CountChar(array);
 			return newArr;
@@ -312,11 +314,11 @@ namespace Cyjb.Collections
 		/// <returns>数据数组。</returns>
 		private uint[] FindMask(int ch, out int idx, out uint binIdx)
 		{
-			Contract.Requires(ch >= 0 && (ch >> TopShift) < TopLen);
+			Contract.Requires(ch >= 0 && ch >> TopShift < TopLen);
 			Contract.Ensures(Contract.Result<uint[]>() == null ||
 				Contract.Result<uint[]>().Length == btmFullLen);
 			idx = ch >> TopShift;
-			uint[] arr = this.data[idx];
+			var arr = data[idx];
 			if (arr == null)
 			{
 				binIdx = 0;
@@ -337,17 +339,17 @@ namespace Cyjb.Collections
 		/// <returns>数据数组。</returns>
 		private uint[] FindAndCreateMask(int ch, out int idx, out uint binIdx)
 		{
-			Contract.Requires(ch >= 0 && (ch >> TopShift) < TopLen);
+			Contract.Requires(ch >= 0 && ch >> TopShift < TopLen);
 			Contract.Ensures(Contract.Result<uint[]>() != null &&
 				Contract.Result<uint[]>().Length == btmFullLen);
 			Contract.Ensures(Contract.ValueAtReturn(out idx) >= 0 &&
 				Contract.ValueAtReturn(out idx) < TopLen);
 			idx = ch >> TopShift;
-			uint[] arr = this.data[idx];
+			var arr = data[idx];
 			if (arr == null)
 			{
 				arr = new uint[btmFullLen];
-				this.data[idx] = arr;
+				data[idx] = arr;
 			}
 			idx = (ch >> BtmShift) & BtmMask;
 			binIdx = 1u << (ch & IndexMask);
@@ -367,10 +369,10 @@ namespace Cyjb.Collections
 			Contract.Ensures(Contract.ValueAtReturn(out sameCount) >= 0);
 			Contract.Ensures(Contract.ValueAtReturn(out unfoundCount) >= 0);
 			sameCount = unfoundCount = 0;
-			CharSet uniqueSet = new CharSet(ignoreCase, culture);
-			foreach (char ch in other)
+			var uniqueSet = new CharSet(ignoreCase, culture);
+			foreach (var ch in other)
 			{
-				if (this.Contains(ch))
+				if (Contains(ch))
 				{
 					if (uniqueSet.Add(ch))
 					{
@@ -396,14 +398,14 @@ namespace Cyjb.Collections
 		private bool ContainsAllElements(CharSet other)
 		{
 			Contract.Requires(other != null);
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] otherArr = other.data[i];
+				var otherArr = other.data[i];
 				if (otherArr == null)
 				{
 					continue;
 				}
-				uint[] arr = data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					if (!IsEmpty(otherArr))
@@ -412,7 +414,7 @@ namespace Cyjb.Collections
 					}
 					continue;
 				}
-				for (int j = 0; j < BtmLen; j++)
+				for (var j = 0; j < BtmLen; j++)
 				{
 					if ((arr[j] | otherArr[j]) != arr[j])
 					{
@@ -431,7 +433,7 @@ namespace Cyjb.Collections
 		/// </summary>
 		public void TrimExcess()
 		{
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
 				if (data[i] != null && IsEmpty(data[i]))
 				{
@@ -451,10 +453,10 @@ namespace Cyjb.Collections
 		/// 如果该元素已在集内，则为 <c>false</c>。</returns>
 		protected override bool AddItem(char item)
 		{
-			int cIdx = getIndex(item);
+			var cIdx = getIndex(item);
 			int idx;
 			uint binIdx;
-			uint[] arr = FindAndCreateMask(cIdx, out idx, out binIdx);
+			var arr = FindAndCreateMask(cIdx, out idx, out binIdx);
 			if ((arr[idx] & binIdx) != 0U)
 			{
 				return false;
@@ -480,31 +482,31 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override void ExceptWith(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			if (this.count <= 0)
+			if (count <= 0)
 			{
 				return;
 			}
 			if (ReferenceEquals(this, other))
 			{
-				this.Clear();
+				Clear();
 			}
 			else
 			{
-				CharSet otherSet = other as CharSet;
+				var otherSet = other as CharSet;
 				if (otherSet != null &&
-					this.ignoreCase == otherSet.ignoreCase &&
-					Equals(this.culture, otherSet.culture))
+					ignoreCase == otherSet.ignoreCase &&
+					Equals(culture, otherSet.culture))
 				{
 					// 针对 CharSet 的操作更快。
-					this.ExceptWith(otherSet);
+					ExceptWith(otherSet);
 				}
 				else
 				{
-					foreach (char c in other)
+					foreach (var c in other)
 					{
-						this.Remove(c);
+						Remove(c);
 					}
 				}
 			}
@@ -516,24 +518,24 @@ namespace Cyjb.Collections
 		private void ExceptWith(CharSet other)
 		{
 			Contract.Requires(other != null);
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] arr = data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					continue;
 				}
-				uint[] otherArr = other.data[i];
+				var otherArr = other.data[i];
 				if (otherArr == null)
 				{
 					continue;
 				}
-				for (int j = 0; j < BtmLen; j++)
+				for (var j = 0; j < BtmLen; j++)
 				{
-					uint removed = arr[j] & otherArr[j];
+					var removed = arr[j] & otherArr[j];
 					if (removed > 0U)
 					{
-						this.count -= removed.CountBits();
+						count -= removed.CountBits();
 						arr[j] &= ~removed;
 						if (ignoreCase)
 						{
@@ -550,26 +552,26 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override void IntersectWith(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			if (this.count <= 0 || ReferenceEquals(this, other))
+			if (count <= 0 || ReferenceEquals(this, other))
 			{
 				return;
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet != null &&
-				this.ignoreCase == otherSet.ignoreCase &&
-				Equals(this.culture, otherSet.culture))
+				ignoreCase == otherSet.ignoreCase &&
+				Equals(culture, otherSet.culture))
 			{
 				// 针对 CharSet 的操作更快。
 				IntersectWith(otherSet);
 			}
 			else
 			{
-				otherSet = new CharSet(other.Where(this.Contains), ignoreCase, culture);
+				otherSet = new CharSet(other.Where(Contains), ignoreCase, culture);
 				// 替换当前集合。
-				this.data = otherSet.data;
-				this.count = otherSet.count;
+				data = otherSet.data;
+				count = otherSet.count;
 			}
 		}
 		/// <summary>
@@ -580,27 +582,27 @@ namespace Cyjb.Collections
 		{
 			Contract.Requires(other != null);
 			// 针对 CharSet 的操作更快。
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] arr = data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					continue;
 				}
-				uint[] otherArr = other.data[i];
+				var otherArr = other.data[i];
 				if (otherArr == null)
 				{
 					data[i] = null;
 					// 计算被移除的元素数量。
-					this.count -= CountChar(arr);
+					count -= CountChar(arr);
 					continue;
 				}
-				for (int j = 0; j < BtmLen; j++)
+				for (var j = 0; j < BtmLen; j++)
 				{
-					uint removed = arr[j] & ~otherArr[j];
+					var removed = arr[j] & ~otherArr[j];
 					if (removed > 0U)
 					{
-						this.count -= removed.CountBits();
+						count -= removed.CountBits();
 						arr[j] &= otherArr[j];
 						if (ignoreCase)
 						{
@@ -619,10 +621,10 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override bool IsProperSubsetOf(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			ICollection<char> col = other as ICollection<char>;
-			if (this.count == 0)
+			var col = other as ICollection<char>;
+			if (count == 0)
 			{
 				if (col == null)
 				{
@@ -630,12 +632,12 @@ namespace Cyjb.Collections
 				}
 				return col.Count > 0;
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet != null &&
-				this.ignoreCase == otherSet.ignoreCase &&
-				Equals(this.culture, otherSet.culture))
+				ignoreCase == otherSet.ignoreCase &&
+				Equals(culture, otherSet.culture))
 			{
-				return this.count < otherSet.count && otherSet.ContainsAllElements(this);
+				return count < otherSet.count && otherSet.ContainsAllElements(this);
 			}
 			int sameCount, unfoundCount;
 			CountElements(other, false, out sameCount, out unfoundCount);
@@ -650,21 +652,21 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override bool IsProperSupersetOf(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			if (this.count == 0)
+			if (count == 0)
 			{
 				return false;
 			}
-			ICollection<char> col = other as ICollection<char>;
+			var col = other as ICollection<char>;
 			if (col != null && col.Count == 0)
 			{
 				return true;
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet != null &&
-				this.ignoreCase == otherSet.ignoreCase &&
-				Equals(this.culture, otherSet.culture))
+				ignoreCase == otherSet.ignoreCase &&
+				Equals(culture, otherSet.culture))
 			{
 				return otherSet.count < count && ContainsAllElements(otherSet);
 			}
@@ -681,18 +683,18 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override bool IsSubsetOf(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			if (this.count == 0)
+			if (count == 0)
 			{
 				return true;
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet != null &&
-				this.ignoreCase == otherSet.ignoreCase &&
-				Equals(this.culture, otherSet.culture))
+				ignoreCase == otherSet.ignoreCase &&
+				Equals(culture, otherSet.culture))
 			{
-				return this.count <= otherSet.Count && otherSet.ContainsAllElements(this);
+				return count <= otherSet.Count && otherSet.ContainsAllElements(this);
 			}
 			int sameCount, unfoundCount;
 			CountElements(other, false, out sameCount, out unfoundCount);
@@ -707,28 +709,28 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override bool IsSupersetOf(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			ICollection<char> col = other as ICollection<char>;
+			var col = other as ICollection<char>;
 			if (col != null)
 			{
 				if (col.Count == 0)
 				{
 					return true;
 				}
-				if (this.count == 0)
+				if (count == 0)
 				{
 					return false;
 				}
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet == null ||
-				this.ignoreCase != otherSet.ignoreCase ||
-				!Equals(this.culture, otherSet.culture))
+				ignoreCase != otherSet.ignoreCase ||
+				!Equals(culture, otherSet.culture))
 			{
-				return other.All(this.Contains);
+				return other.All(Contains);
 			}
-			return otherSet.Count <= this.count && this.ContainsAllElements(otherSet);
+			return otherSet.Count <= count && ContainsAllElements(otherSet);
 		}
 		/// <summary>
 		/// 确定当前集是否与指定的集合重叠。
@@ -739,21 +741,21 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override bool Overlaps(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			if (this.count <= 0)
+			if (count <= 0)
 			{
 				return false;
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet == null ||
-				this.ignoreCase != otherSet.ignoreCase ||
-				!Equals(this.culture, otherSet.culture))
+				ignoreCase != otherSet.ignoreCase ||
+				!Equals(culture, otherSet.culture))
 			{
-				return other.Any(this.Contains);
+				return other.Any(Contains);
 			}
 			// 针对 CharSet 的操作更快。
-			return this.Overlaps(otherSet);
+			return Overlaps(otherSet);
 		}
 		/// <summary>
 		/// 确定当前集是否与指定的集合重叠。
@@ -764,19 +766,19 @@ namespace Cyjb.Collections
 		private bool Overlaps(CharSet other)
 		{
 			Contract.Requires(other != null);
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] arr = data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					continue;
 				}
-				uint[] otherArr = other.data[i];
+				var otherArr = other.data[i];
 				if (otherArr == null)
 				{
 					continue;
 				}
-				for (int j = 0; j < BtmLen; j++)
+				for (var j = 0; j < BtmLen; j++)
 				{
 					if ((arr[j] & otherArr[j]) > 0U)
 					{
@@ -795,17 +797,17 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override bool SetEquals(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet != null &&
-				this.ignoreCase == otherSet.ignoreCase &&
-				Equals(this.culture, otherSet.culture))
+				ignoreCase == otherSet.ignoreCase &&
+				Equals(culture, otherSet.culture))
 			{
-				return count == otherSet.count && this.ContainsAllElements(otherSet);
+				return count == otherSet.count && ContainsAllElements(otherSet);
 			}
-			ICollection<char> col = other as ICollection<char>;
-			if (this.count == 0)
+			var col = other as ICollection<char>;
+			if (count == 0)
 			{
 				if (col == null)
 				{
@@ -818,7 +820,7 @@ namespace Cyjb.Collections
 			}
 			int sameCount, unfoundCount;
 			CountElements(other, true, out sameCount, out unfoundCount);
-			return (sameCount == count && unfoundCount == 0);
+			return sameCount == count && unfoundCount == 0;
 		}
 		/// <summary>
 		/// 修改当前集，使该集仅包含当前集或指定集合中存在的元素（但不可包含两者共有的元素）。
@@ -827,22 +829,22 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override void SymmetricExceptWith(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			if (this.count == 0)
+			if (count == 0)
 			{
-				this.UnionWith(other);
+				UnionWith(other);
 			}
 			else if (ReferenceEquals(this, other))
 			{
-				this.Clear();
+				Clear();
 			}
 			else
 			{
-				CharSet otherSet = other as CharSet;
+				var otherSet = other as CharSet;
 				if (otherSet == null ||
-					this.ignoreCase != otherSet.ignoreCase ||
-					!Equals(this.culture, otherSet.culture))
+					ignoreCase != otherSet.ignoreCase ||
+					!Equals(culture, otherSet.culture))
 				{
 					otherSet = new CharSet(other, ignoreCase, culture);
 				}
@@ -857,25 +859,25 @@ namespace Cyjb.Collections
 		private void SymmetricExceptWith(CharSet other)
 		{
 			Contract.Requires(other != null);
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] otherArr = other.data[i];
+				var otherArr = other.data[i];
 				if (otherArr == null)
 				{
 					continue;
 				}
-				uint[] arr = data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					// 复制数据。
 					int cnt;
 					data[i] = CopyChar(otherArr, out cnt);
-					this.count += cnt;
+					count += cnt;
 					continue;
 				}
-				for (int j = 0; j < BtmLen; j++)
+				for (var j = 0; j < BtmLen; j++)
 				{
-					int oldCnt = 0;
+					var oldCnt = 0;
 					if (arr[j] > 0)
 					{
 						oldCnt = arr[j].CountBits();
@@ -886,12 +888,12 @@ namespace Cyjb.Collections
 						arr[j + BtmLen] |= otherArr[j + BtmLen] & ~arr[j];
 					}
 					arr[j] ^= otherArr[j];
-					int newCnt = 0;
+					var newCnt = 0;
 					if (arr[j] > 0)
 					{
 						newCnt = arr[j].CountBits();
 					}
-					this.count += newCnt - oldCnt;
+					count += newCnt - oldCnt;
 				}
 			}
 		}
@@ -902,25 +904,25 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="other"/> 为 <c>null</c>。</exception>
 		public override void UnionWith(IEnumerable<char> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
 			if (ReferenceEquals(this, other))
 			{
 				return;
 			}
-			CharSet otherSet = other as CharSet;
+			var otherSet = other as CharSet;
 			if (otherSet != null &&
-				this.ignoreCase == otherSet.ignoreCase &&
-				Equals(this.culture, otherSet.culture))
+				ignoreCase == otherSet.ignoreCase &&
+				Equals(culture, otherSet.culture))
 			{
 				// 针对 CharSet 的操作更快。
-				this.UnionWith(otherSet);
+				UnionWith(otherSet);
 			}
 			else
 			{
-				foreach (char c in other)
+				foreach (var c in other)
 				{
-					this.AddItem(c);
+					AddItem(c);
 				}
 			}
 		}
@@ -931,29 +933,29 @@ namespace Cyjb.Collections
 		private void UnionWith(CharSet other)
 		{
 			Contract.Requires(other != null);
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] otherArr = other.data[i];
+				var otherArr = other.data[i];
 				if (otherArr == null)
 				{
 					continue;
 				}
-				uint[] arr = data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					// 复制数据。
 					int cnt;
 					data[i] = CopyChar(otherArr, out cnt);
-					this.count += cnt;
+					count += cnt;
 					continue;
 				}
-				for (int j = 0; j < BtmLen; j++)
+				for (var j = 0; j < BtmLen; j++)
 				{
 					// 后来添加的字符数。
-					uint added = (~arr[j]) & otherArr[j];
+					var added = ~arr[j] & otherArr[j];
 					if (added > 0)
 					{
-						this.count += added.CountBits();
+						count += added.CountBits();
 						arr[j] |= added;
 						if (ignoreCase)
 						{
@@ -974,15 +976,15 @@ namespace Cyjb.Collections
 		/// <value><see cref="CharSet"/> 中包含的元素数。</value>
 		public override int Count
 		{
-			get { return this.count; }
+			get { return count; }
 		}
 		/// <summary>
 		/// 从 <see cref="CharSet"/> 中移除所有元素。
 		/// </summary>
 		public override void Clear()
 		{
-			this.count = 0;
-			for (int i = 0; i < TopLen; i++)
+			count = 0;
+			for (var i = 0; i < TopLen; i++)
 			{
 				data[i] = null;
 			}
@@ -998,7 +1000,7 @@ namespace Cyjb.Collections
 		{
 			int idx;
 			uint binIdx;
-			uint[] arr = FindMask(getIndex(item), out idx, out binIdx);
+			var arr = FindMask(getIndex(item), out idx, out binIdx);
 			return (arr != null) && ((arr[idx] & binIdx) != 0U);
 		}
 		/// <summary>
@@ -1010,10 +1012,10 @@ namespace Cyjb.Collections
 		/// 中没有找到 <paramref name="item"/>，该方法也会返回 <c>false</c>。</returns>
 		public override bool Remove(char item)
 		{
-			int cIdx = getIndex(item);
+			var cIdx = getIndex(item);
 			int idx;
 			uint binIdx;
-			uint[] arr = FindMask(cIdx, out idx, out binIdx);
+			var arr = FindMask(cIdx, out idx, out binIdx);
 			if (arr == null || (arr[idx] & binIdx) == 0U)
 			{
 				return false;
@@ -1038,22 +1040,22 @@ namespace Cyjb.Collections
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/>。</returns>
 		public override IEnumerator<char> GetEnumerator()
 		{
-			for (int i = 0; i < TopLen; i++)
+			for (var i = 0; i < TopLen; i++)
 			{
-				uint[] arr = this.data[i];
+				var arr = data[i];
 				if (arr == null)
 				{
 					continue;
 				}
-				int highPart = i << TopShift;
-				for (int k = 0; k < BtmLen; k++)
+				var highPart = i << TopShift;
+				for (var k = 0; k < BtmLen; k++)
 				{
-					int midPart = highPart | (k << BtmShift);
-					uint value = arr[k];
-					uint ignoreCaseFlags = ignoreCase ? arr[k + BtmLen] : 0U;
-					for (int n = -1; value > 0U; )
+					var midPart = highPart | (k << BtmShift);
+					var value = arr[k];
+					var ignoreCaseFlags = ignoreCase ? arr[k + BtmLen] : 0U;
+					for (var n = -1; value > 0U; )
 					{
-						int oneIdx = (value & 1U) == 1U ? 1 : value.CountTrailingZeroBits() + 1;
+						var oneIdx = (value & 1U) == 1U ? 1 : value.CountTrailingZeroBits() + 1;
 						if (oneIdx == 32)
 						{
 							// C# 中 uint 右移 32 位会不变。
@@ -1064,7 +1066,7 @@ namespace Cyjb.Collections
 							value = value >> oneIdx;
 						}
 						n += oneIdx;
-						char lowPart = (char)(midPart | n);
+						var lowPart = (char)(midPart | n);
 						if ((ignoreCaseFlags & (1U << n)) > 0U)
 						{
 							lowPart = char.ToLower(lowPart, culture);
@@ -1090,14 +1092,14 @@ namespace Cyjb.Collections
 		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			CommonExceptions.CheckArgumentNull(info, "info");
+			CommonExceptions.CheckArgumentNull(info, nameof(info));
 			Contract.EndContractBlock();
-			info.AddValue("Data", this.data);
-			info.AddValue("Count", this.count);
-			info.AddValue("IgnoreCase", this.ignoreCase);
-			if (this.ignoreCase)
+			info.AddValue("Data", data);
+			info.AddValue("Count", count);
+			info.AddValue("IgnoreCase", ignoreCase);
+			if (ignoreCase)
 			{
-				info.AddValue("Culture", this.culture);
+				info.AddValue("Culture", culture);
 			}
 		}
 

@@ -6,7 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -50,7 +52,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (collection != null)
 			{
-				this.items = collection as ICollection<T> ?? new List<T>(collection);
+				items = collection as ICollection<T> ?? new List<T>(collection);
 			}
 		}
 		/// <summary>
@@ -70,7 +72,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value><see cref="ReadOnlyCollection{T}"/> 中包含的元素数。</value>
 		public virtual int Count
 		{
-			get { return this.items.Count; }
+			get { return items.Count; }
 		}
 		/// <summary>
 		/// 获取一个值，该值指示 <see cref="ReadOnlyCollection{T}"/> 是否为只读。
@@ -109,7 +111,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public virtual bool Contains(T item)
 		{
-			return this.items.Contains(item);
+			return items.Contains(item);
 		}
 		/// <summary>
 		/// 从特定的 <see cref="Array"/> 索引处开始，将 <see cref="ReadOnlyCollection{T}"/> 
@@ -167,11 +169,11 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				if (this.syncRoot == null)
+				if (syncRoot == null)
 				{
-					CollectionHelper.CreateSyncRoot(this.items, ref this.syncRoot);
+					CollectionHelper.CreateSyncRoot(items, ref syncRoot);
 				}
-				return this.syncRoot;
+				return syncRoot;
 			}
 		}
 		/// <summary>
@@ -204,7 +206,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/> 对象。</returns>
 		public virtual IEnumerator<T> GetEnumerator()
 		{
-			return this.items.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		#endregion // IEnumerable<T> 成员
@@ -217,7 +219,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/> 对象。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员

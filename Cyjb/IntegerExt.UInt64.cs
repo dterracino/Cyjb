@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -125,7 +129,7 @@ namespace Cyjb
 			if (value >= 10000UL) { return 4; }
 			if (value >= 1000UL) { return 3; }
 			if (value >= 100UL) { return 2; }
-			return (value >= 10UL) ? 1 : 0;
+			return value >= 10UL ? 1 : 0;
 		}
 		/// <summary>
 		/// 计算指定整数的二进制表示中末尾连续 <c>0</c> 的个数。
@@ -183,8 +187,8 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static ulong NextBitPermutation(this ulong value)
 		{
-			ulong t = value | (value - 1);
-			return (t + 1UL) | (((~t & (ulong)(-(long)~t)) - 1UL) >> (value.CountTrailingZeroBits() + 1));
+			var t = value | (value - 1);
+			return (t + 1UL) | (((~t & (ulong)-(long)~t) - 1UL) >> (value.CountTrailingZeroBits() + 1));
 		}
 
 		#endregion // 位运算

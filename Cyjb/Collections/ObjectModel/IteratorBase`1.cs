@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -28,7 +31,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// </summary>
 		protected IteratorBase()
 		{
-			this.threadId = Thread.CurrentThread.ManagedThreadId;
+			threadId = Thread.CurrentThread.ManagedThreadId;
 		}
 		/// <summary>
 		/// 创建一个与当前迭代器相同的示例。
@@ -50,13 +53,13 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator{T}"/>。</returns>
 		public IEnumerator<T> GetEnumerator()
 		{
-			if (this.threadId == Thread.CurrentThread.ManagedThreadId &&
-				this.state == IteratorState.Default)
+			if (threadId == Thread.CurrentThread.ManagedThreadId &&
+				state == IteratorState.Default)
 			{
-				this.state = IteratorState.Ready;
+				state = IteratorState.Ready;
 				return this;
 			}
-			IteratorBase<T> iterator = Clone();
+			var iterator = Clone();
 			Debug.Assert(iterator != null);
 			iterator.state = IteratorState.Ready;
 			return iterator;
@@ -72,7 +75,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/>。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员
@@ -95,7 +98,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value>集合中的当前元素。</value>
 		object IEnumerator.Current
 		{
-			get { return this.Current; }
+			get { return Current; }
 		}
 		/// <summary>
 		/// 将枚举数推进到集合的下一个元素。
@@ -104,7 +107,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// 如果枚举数越过集合的结尾，则为 <c>false</c>。</returns>
 		public bool MoveNext()
 		{
-			return this.state == IteratorState.Ready && MoveNextInternal();
+			return state == IteratorState.Ready && MoveNextInternal();
 		}
 		/// <summary>
 		/// 将枚举数设置为其初始位置，该位置位于集合中第一个元素之前。
@@ -128,7 +131,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// </overloads>
 		public void Dispose()
 		{
-			this.Dispose(true);
+			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 		/// <summary>
@@ -137,12 +140,12 @@ namespace Cyjb.Collections.ObjectModel
 		/// <param name="disposing">是否释放托管资源。</param>
 		protected virtual void Dispose(bool disposing)
 		{
-			if (this.state == IteratorState.Disposed || !disposing)
+			if (state == IteratorState.Disposed || !disposing)
 			{
 				return;
 			}
-			this.state = IteratorState.Disposed;
-			this.Current = default(T);
+			state = IteratorState.Disposed;
+			Current = default(T);
 		}
 
 		#endregion // IDisposable 成员

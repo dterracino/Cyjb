@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Net
 {
@@ -98,28 +102,24 @@ namespace Cyjb.Net
 
 		#endregion // HTTP 标头字段
 
-		/// <summary>
-		/// 初始化 <see cref="HttpWebClient"/> 类的新实例。
-		/// </summary>
-		public HttpWebClient() { }
-		/// <summary>
+	    /// <summary>
 		/// 为指定资源返回一个 <see cref="WebRequest"/> 对象。
 		/// </summary>
 		/// <param name="address">一个 <see cref="Uri"/>，用于标识要请求的资源。</param>
 		/// <returns>一个新的 <see cref="WebRequest"/> 对象，用于指定的资源。</returns>
 		protected override WebRequest GetWebRequest(Uri address)
 		{
-			WebRequest request = base.GetWebRequest(address);
-			HttpWebRequest httpRequest = request as HttpWebRequest;
+			var request = base.GetWebRequest(address);
+			var httpRequest = request as HttpWebRequest;
 			if (httpRequest != null)
 			{
-				httpRequest.Accept = this.accept;
-				httpRequest.AllowAutoRedirect = this.allowAutoRedirect;
+				httpRequest.Accept = accept;
+				httpRequest.AllowAutoRedirect = allowAutoRedirect;
 				httpRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
 				httpRequest.CookieContainer = cookies;
-				httpRequest.KeepAlive = this.keepAlive;
-				httpRequest.Timeout = this.timeout;
-				httpRequest.UserAgent = this.userAgent;
+				httpRequest.KeepAlive = keepAlive;
+				httpRequest.Timeout = timeout;
+				httpRequest.UserAgent = userAgent;
 			}
 			return request;
 		}

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
@@ -15,7 +19,7 @@ namespace Cyjb.IO
 		/// <returns>指定对象在源文件中的字符长度。</returns>
 		public static int Length(this ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
 			return locatable.IsUnknown() ? 0 : locatable.End.Index - locatable.Start.Index + 1;
 		}
@@ -26,7 +30,7 @@ namespace Cyjb.IO
 		/// <returns>如果指定对象表示未知范围，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public static bool IsUnknown(this ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
 			return locatable.Start == SourcePosition.Unknown || locatable.End == SourcePosition.Unknown;
 		}
@@ -49,10 +53,10 @@ namespace Cyjb.IO
 		/// </overloads>
 		public static bool Contains(this ISourceLocatable thisObj, ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(thisObj, "thisObj");
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(thisObj, nameof(thisObj));
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
-			return (!thisObj.IsUnknown()) && thisObj.Start <= locatable.Start && thisObj.End >= locatable.End;
+			return !thisObj.IsUnknown() && thisObj.Start <= locatable.Start && thisObj.End >= locatable.End;
 		}
 		/// <summary>
 		/// 返回指定的位置是否完全包含在当前范围中。
@@ -64,7 +68,7 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="thisObj"/> 为 <c>null</c>。</exception>
 		public static bool Contains(this ISourceLocatable thisObj, SourcePosition location)
 		{
-			CommonExceptions.CheckArgumentNull(thisObj, "thisObj");
+			CommonExceptions.CheckArgumentNull(thisObj, nameof(thisObj));
 			Contract.EndContractBlock();
 			if (location.IsUnknown || thisObj.IsUnknown())
 			{
@@ -82,7 +86,7 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="thisObj"/> 为 <c>null</c>。</exception>
 		public static bool Contains(this ISourceLocatable thisObj, int index)
 		{
-			CommonExceptions.CheckArgumentNull(thisObj, "thisObj");
+			CommonExceptions.CheckArgumentNull(thisObj, nameof(thisObj));
 			Contract.EndContractBlock();
 			if (index < 0 || thisObj.IsUnknown())
 			{
@@ -103,7 +107,7 @@ namespace Cyjb.IO
 		/// 小于 <c>0</c>。</exception>
 		public static bool Contains(this ISourceLocatable thisObj, int line, int col)
 		{
-			CommonExceptions.CheckArgumentNull(thisObj, "thisObj");
+			CommonExceptions.CheckArgumentNull(thisObj, nameof(thisObj));
 			Contract.EndContractBlock();
 			if (line < 1 || col < 1 || thisObj.IsUnknown())
 			{
@@ -134,10 +138,10 @@ namespace Cyjb.IO
 		/// <paramref name="locatable"/> 为 <c>null</c>。</exception>
 		public static bool OverlapsWith(this ISourceLocatable thisObj, ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(thisObj, "thisObj");
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(thisObj, nameof(thisObj));
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
-			return (!thisObj.IsUnknown()) && thisObj.Start <= locatable.End && thisObj.End >= locatable.Start;
+			return !thisObj.IsUnknown() && thisObj.Start <= locatable.End && thisObj.End >= locatable.Start;
 		}
 		/// <summary>
 		/// 返回当前范围与指定 <see cref="ISourceLocatable"/> 的重叠范围，如果不存在则为 
@@ -151,11 +155,11 @@ namespace Cyjb.IO
 		/// <paramref name="locatable"/> 为 <c>null</c>。</exception>>
 		public static SourceRange Overlap(this ISourceLocatable thisObj, ISourceLocatable locatable)
 		{
-			CommonExceptions.CheckArgumentNull(thisObj, "thisObj");
-			CommonExceptions.CheckArgumentNull(locatable, "locatable");
+			CommonExceptions.CheckArgumentNull(thisObj, nameof(thisObj));
+			CommonExceptions.CheckArgumentNull(locatable, nameof(locatable));
 			Contract.EndContractBlock();
-			SourcePosition maxStart = thisObj.Start > locatable.Start ? thisObj.Start : locatable.Start;
-			SourcePosition minEnd = thisObj.End < locatable.End ? thisObj.End : locatable.End;
+			var maxStart = thisObj.Start > locatable.Start ? thisObj.Start : locatable.Start;
+			var minEnd = thisObj.End < locatable.End ? thisObj.End : locatable.End;
 			if (maxStart == SourcePosition.Unknown || maxStart > minEnd)
 			{
 				return SourceRange.Unknown;

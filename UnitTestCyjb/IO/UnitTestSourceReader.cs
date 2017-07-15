@@ -1,4 +1,9 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -16,7 +21,7 @@ namespace UnitTestCyjb.IO
 		[TestMethod]
 		public void TestSourceReader()
 		{
-			SourceReader reader = new SourceReader(new StringReader("1234567890"));
+			var reader = new SourceReader(new StringReader("1234567890"));
 			Assert.AreEqual('1', reader.Read());
 			Assert.AreEqual('2', reader.Read());
 			Assert.AreEqual("12", reader.ReadedBlock());

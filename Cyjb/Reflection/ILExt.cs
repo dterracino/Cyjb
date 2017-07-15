@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Conversions;
 
 namespace Cyjb.Reflection
@@ -78,8 +82,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="type"/> 为 <c>null</c>。</exception>
 		public static LocalBuilder GetLocal(this ILGenerator il, Type type)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<LocalBuilder>() != null);
 			return il.GetManager().GetLocal(type);
 		}
@@ -92,8 +96,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="local"/> 为 <c>null</c>。</exception>
 		public static void FreeLocal(this ILGenerator il, LocalBuilder local)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(local, "local");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(local, nameof(local));
 			Contract.EndContractBlock();
 			il.GetManager().FreeLocal(local);
 		}
@@ -117,10 +121,10 @@ namespace Cyjb.Reflection
 		/// </overloads>
 		public static void EmitLoadArg(this ILGenerator il, int index)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			if (index == 0)
@@ -158,10 +162,10 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 <c>0</c>。</exception>
 		public static void EmitLoadArgAddress(this ILGenerator il, int index)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			if (index <= Byte.MaxValue)
@@ -187,13 +191,13 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="targetType"/> 为 <c>null</c>。</exception>
 		public static void EmitLoadArg(this ILGenerator il, int index, Type paramType, Type targetType)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			CommonExceptions.CheckArgumentNull(paramType, "paramType");
-			CommonExceptions.CheckArgumentNull(targetType, "targetType");
+			CommonExceptions.CheckArgumentNull(paramType, nameof(paramType));
+			CommonExceptions.CheckArgumentNull(targetType, nameof(targetType));
 			Contract.EndContractBlock();
 			EmitLoadArg(il, index, paramType, targetType, true);
 		}
@@ -214,13 +218,13 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentException"><paramref name="targetType"/> 包含泛型参数。</exception>
 		public static void EmitLoadArg(this ILGenerator il, int index, Type paramType, Type targetType, bool isChecked)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			CommonExceptions.CheckArgumentNull(paramType, "paramType");
-			CommonExceptions.CheckArgumentNull(targetType, "targetType");
+			CommonExceptions.CheckArgumentNull(paramType, nameof(paramType));
+			CommonExceptions.CheckArgumentNull(targetType, nameof(targetType));
 			Contract.EndContractBlock();
 			if (paramType.ContainsGenericParameters)
 			{
@@ -235,7 +239,7 @@ namespace Cyjb.Reflection
 				il.EmitLoadArg(index);
 				return;
 			}
-			Converter converter = il.GetConversion(paramType, targetType, ConversionType.UserDefined);
+			var converter = il.GetConversion(paramType, targetType, ConversionType.UserDefined);
 			if (converter == null)
 			{
 				throw CommonExceptions.InvalidCast(paramType, targetType);
@@ -264,8 +268,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="type"/> 为 <c>null</c>。</exception>
 		public static void EmitLoadIndirect(this ILGenerator il, Type type)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.EndContractBlock();
 			switch (Type.GetTypeCode(type))
 			{
@@ -325,8 +329,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="field"/> 为 <c>null</c>。</exception>
 		public static void EmitLoadField(this ILGenerator il, FieldInfo field)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
 			il.Emit(field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, field);
 		}
@@ -339,8 +343,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="field"/> 为 <c>null</c>。</exception>
 		public static void EmitLoadFieldAddress(this ILGenerator il, FieldInfo field)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
 			il.Emit(field.IsStatic ? OpCodes.Ldsflda : OpCodes.Ldflda, field);
 		}
@@ -353,8 +357,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="field"/> 为 <c>null</c>。</exception>
 		public static void EmitStoreField(this ILGenerator il, FieldInfo field)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
 			il.Emit(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
 		}
@@ -399,8 +403,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="elementType"/> 为 <c>null</c>。</exception>
 		public static void EmitLoadElement(this ILGenerator il, Type elementType)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(elementType, "elementType");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(elementType, nameof(elementType));
 			Contract.EndContractBlock();
 			if (!elementType.IsValueType)
 			{
@@ -459,8 +463,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="elementType"/> 为 <c>null</c>。</exception>
 		public static void EmitStoreElement(this ILGenerator il, Type elementType)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(elementType, "elementType");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(elementType, nameof(elementType));
 			Contract.EndContractBlock();
 			if (!elementType.IsValueType)
 			{
@@ -521,9 +525,9 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentException"><paramref name="outputType"/> 包含泛型参数。</exception>
 		public static void EmitConversion(this ILGenerator il, Type inputType, Type outputType, bool isChecked)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(inputType, "inputType");
-			CommonExceptions.CheckArgumentNull(outputType, "outputType");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(inputType, nameof(inputType));
+			CommonExceptions.CheckArgumentNull(outputType, nameof(outputType));
 			Contract.EndContractBlock();
 			if (inputType.ContainsGenericParameters)
 			{
@@ -550,7 +554,7 @@ namespace Cyjb.Reflection
 			Contract.Requires(conversionType == ConversionType.Implicit ||
 				conversionType == ConversionType.Explicit ||
 				conversionType == ConversionType.UserDefined);
-			Conversion conversion = conversionType == ConversionType.UserDefined ?
+			var conversion = conversionType == ConversionType.UserDefined ?
 				ConversionFactory.GetConversion(inputType, outputType) :
 				ConversionFactory.GetPreDefinedConversion(inputType, outputType);
 			if (conversion == null || conversion.ConversionType > conversionType)
@@ -578,9 +582,9 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentException"><paramref name="outputType"/> 包含泛型参数。</exception>
 		public static Converter GetConversion(this ILGenerator il, Type inputType, Type outputType)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(inputType, "inputType");
-			CommonExceptions.CheckArgumentNull(outputType, "outputType");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(inputType, nameof(inputType));
+			CommonExceptions.CheckArgumentNull(outputType, nameof(outputType));
 			Contract.EndContractBlock();
 			if (inputType.ContainsGenericParameters)
 			{
@@ -608,7 +612,7 @@ namespace Cyjb.Reflection
 			Contract.Requires(conversionType == ConversionType.Implicit ||
 				conversionType == ConversionType.Explicit ||
 				conversionType == ConversionType.UserDefined);
-			Conversion conversion = conversionType == ConversionType.UserDefined ?
+			var conversion = conversionType == ConversionType.UserDefined ?
 				ConversionFactory.GetConversion(inputType, outputType) :
 				ConversionFactory.GetPreDefinedConversion(inputType, outputType);
 			if (conversion == null || conversion.ConversionType > conversionType)
@@ -632,8 +636,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static void Emit(this ILGenerator il, OpCode opCode, MethodBase method)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			if (method.MemberType == MemberTypes.Constructor)
 			{
@@ -658,8 +662,8 @@ namespace Cyjb.Reflection
 		/// </overloads>
 		public static void EmitCall(this ILGenerator il, MethodInfo method)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(method, false, Type.EmptyTypes);
 		}
@@ -673,8 +677,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static void EmitCall(this ILGenerator il, MethodInfo method, bool tailCall)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(method, tailCall, Type.EmptyTypes);
 		}
@@ -689,8 +693,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static void EmitCall(this ILGenerator il, MethodInfo method, params Type[] parameterTypes)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(method, false, parameterTypes);
 		}
@@ -707,8 +711,8 @@ namespace Cyjb.Reflection
 		public static void EmitCall(this ILGenerator il, MethodInfo method, bool tailCall,
 			params Type[] parameterTypes)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(method, tailCall, parameterTypes);
 		}
@@ -753,8 +757,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static void EmitCall(this ILGenerator il, Type instanceType, MethodInfo method)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(instanceType, method, false, Type.EmptyTypes);
 		}
@@ -770,8 +774,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static void EmitCall(this ILGenerator il, Type instanceType, MethodInfo method, bool tailCall)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(instanceType, method, tailCall, Type.EmptyTypes);
 		}
@@ -789,8 +793,8 @@ namespace Cyjb.Reflection
 		public static void EmitCall(this ILGenerator il, Type instanceType, MethodInfo method,
 			params Type[] parameterTypes)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(instanceType, method, false, parameterTypes);
 		}
@@ -809,8 +813,8 @@ namespace Cyjb.Reflection
 		public static void EmitCall(this ILGenerator il, Type instanceType, MethodInfo method, bool tailCall,
 			params Type[] parameterTypes)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			il.EmitCallInternal(instanceType, method, tailCall, parameterTypes);
 		}
@@ -872,7 +876,7 @@ namespace Cyjb.Reflection
 			{
 				return false;
 			}
-			Type declType = method.DeclaringType;
+			var declType = method.DeclaringType;
 			Contract.Assume(declType != null);
 			if (declType.IsValueType)
 			{
@@ -899,10 +903,10 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentException"><paramref name="valueType"/> 包含泛型参数。</exception>
 		public static void EmitGetAddress(this ILGenerator il, Type valueType)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(valueType, "valueType");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(valueType, nameof(valueType));
 			Contract.EndContractBlock();
-			LocalBuilder locFrom = il.DeclareLocal(valueType);
+			var locFrom = il.DeclareLocal(valueType);
 			il.Emit(OpCodes.Stloc, locFrom);
 			il.Emit(OpCodes.Ldloca, locFrom);
 		}
@@ -916,8 +920,8 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentException"><paramref name="type"/> 包含泛型参数。</exception>
 		public static void EmitNew(this ILGenerator il, Type type)
 		{
-			CommonExceptions.CheckArgumentNull(il, "il");
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(il, nameof(il));
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.EndContractBlock();
 			if (type.ContainsGenericParameters)
 			{
@@ -926,8 +930,8 @@ namespace Cyjb.Reflection
 			if (type.IsValueType)
 			{
 				// 值类型使用 initobj 指令。
-				ILManager manager = il.GetManager();
-				LocalBuilder local = manager.GetLocal(type);
+				var manager = il.GetManager();
+				var local = manager.GetLocal(type);
 				il.Emit(OpCodes.Ldloca, local);
 				il.Emit(OpCodes.Initobj, type);
 				il.Emit(OpCodes.Ldloc, local);
@@ -936,7 +940,7 @@ namespace Cyjb.Reflection
 			else
 			{
 				// 引用类型调用构造函数。
-				ConstructorInfo ctor = type.GetConstructor(TypeExt.InstanceFlag, null, Type.EmptyTypes, null);
+				var ctor = type.GetConstructor(TypeExt.InstanceFlag, null, Type.EmptyTypes, null);
 				if (ctor == null)
 				{
 					throw CommonExceptions.TypeMissingDefaultConstructor(type);

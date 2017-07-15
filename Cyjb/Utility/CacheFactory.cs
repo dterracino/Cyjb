@@ -1,10 +1,13 @@
 ﻿using System;
+using Cyjb.Reflection;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Security;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -49,11 +52,11 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public static ICache<TKey, TValue> Create<TKey, TValue>(string key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			try
 			{
-				ICache<TKey, TValue> cache = CreateInternal<TKey, TValue>(key);
+				var cache = CreateInternal<TKey, TValue>(key);
 				return cache ?? RaiseCacheResolve<TKey, TValue>(key, null);
 			}
 			catch (ConfigurationErrorsException ex)
@@ -72,19 +75,19 @@ namespace Cyjb.Utility
 		{
 			Contract.Requires(key != null);
 			// 读取配置文件。
-			CacheSection section = ConfigurationManager.GetSection(SectionName) as CacheSection;
+			var section = ConfigurationManager.GetSection(SectionName) as CacheSection;
 			if (section == null)
 			{
 				return null;
 			}
-			CacheElement element = section.Caches[key];
+			var element = section.Caches[key];
 			if (element == null)
 			{
 				return null;
 			}
-			Type cacheType = GetCacheType<TKey, TValue>(element);
+			var cacheType = GetCacheType<TKey, TValue>(element);
 			// 读取缓冲池设置。
-			Dictionary<string, string> options = new Dictionary<string, string>(element.Options.Count,
+			var options = new Dictionary<string, string>(element.Options.Count,
 				StringComparer.OrdinalIgnoreCase);
 			foreach (NameValueConfigurationElement nv in element.Options)
 			{
@@ -102,7 +105,7 @@ namespace Cyjb.Utility
 		private static Type GetCacheType<TKey, TValue>(CacheElement element)
 		{
 			Contract.Requires(element != null);
-			string typeName = element.CacheType;
+			var typeName = element.CacheType;
 			// 读取缓冲池类型，类型总是开放泛型类型。
 			if (typeName.IndexOf(',') == -1)
 			{
@@ -113,7 +116,7 @@ namespace Cyjb.Utility
 					typeName += "`2";
 				}
 			}
-			Type cacheType = Type.GetType(typeName, false, true);
+			var cacheType = Type.GetType(typeName, false, true);
 			if (cacheType == null)
 			{
 				throw CommonExceptions.InvalidCacheType(element);
@@ -143,17 +146,17 @@ namespace Cyjb.Utility
 		private static object CreateCacheType(Type type, Dictionary<string, string> arguments)
 		{
 			Contract.Requires(type != null && arguments != null);
-			int argCnt = arguments.Count;
-			object[] values = new object[argCnt];
+			var argCnt = arguments.Count;
+			var values = new object[argCnt];
 			// 使用反射检索缓冲池类型，这里不能直接用 PowerBinder，是因为参数类型是未知的。
 			// 找到与设置个数和名称匹配的构造函数。
-			ConstructorInfo[] ctors = type.GetConstructors();
-			for (int i = 0; i < ctors.Length; i++)
+			var ctors = type.GetConstructors();
+			for (var i = 0; i < ctors.Length; i++)
 			{
-				ParameterInfo[] parameters = ctors[i].GetParametersNoCopy();
+				var parameters = ctors[i].GetParametersNoCopy();
 				if (parameters.Length != argCnt) { continue; }
 				// 测试参数名称是否全部能匹配上，并进行参数类型转换。
-				int j = 0;
+				var j = 0;
 				for (; j < argCnt; j++)
 				{
 					string value;
@@ -202,10 +205,10 @@ namespace Cyjb.Utility
 			ConfigurationErrorsException innerException)
 		{
 			Contract.Requires(key != null);
-			EventHandler<CacheResolveEventArgs> events = CacheResolve;
+			var events = CacheResolve;
 			if (events != null)
 			{
-				CacheResolveEventArgs args = new CacheResolveEventArgs(
+				var args = new CacheResolveEventArgs(
 					key, typeof(TKey), typeof(TValue), innerException);
 				events(null, args);
 				return args.CacheObject as ICache<TKey, TValue>;

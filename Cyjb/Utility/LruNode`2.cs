@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -38,9 +42,9 @@ namespace Cyjb.Utility
 		public LruNode(TKey key, Lazy<TValue> value)
 		{
 			Contract.Requires(key != null && value != null);
-			this.Key = key;
-			this.Value = value;
-			this.VisitCount = 1;
+			Key = key;
+			Value = value;
+			VisitCount = 1;
 		}
 		/// <summary>
 		/// 向当前节点之前添加新节点。
@@ -50,9 +54,9 @@ namespace Cyjb.Utility
 		{
 			Contract.Requires(node != null);
 			node.Next = this;
-			node.Prev = this.Prev;
-			this.Prev.Next = node;
-			this.Prev = node;
+			node.Prev = Prev;
+			Prev.Next = node;
+			Prev = node;
 		}
 		/// <summary>
 		/// 返回当前对象的字符串表示形式。

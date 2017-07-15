@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -23,7 +27,7 @@ namespace Cyjb
 		/// </overloads>
 		public static Array Fill(this Array array, object value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, 0, array.Length);
 		}
@@ -39,10 +43,10 @@ namespace Cyjb
 		/// 小于零或大于等于数组的长度。</exception>
 		public static Array Fill(this Array array, object value, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < 0 || startIndex >= array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -62,14 +66,14 @@ namespace Cyjb
 		/// 或 <paramref name="length"/> 小于零。</exception>
 		public static Array Fill(this Array array, object value, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, startIndex, length);
@@ -89,7 +93,7 @@ namespace Cyjb
 			Contract.Requires(length >= 0);
 			Contract.Requires(startIndex + length <= array.Length);
 			Contract.Ensures(Contract.Result<Array>() != null);
-			for (int i = startIndex + length - 1; i >= startIndex; i--)
+			for (var i = startIndex + length - 1; i >= startIndex; i--)
 			{
 				array.SetValue(value, i);
 			}
@@ -105,8 +109,8 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static Array Fill(this Array array, Func<object> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, 0, array.Length);
 		}
@@ -123,11 +127,11 @@ namespace Cyjb
 		/// 小于零或大于等于数组的长度。</exception>
 		public static Array Fill(this Array array, Func<object> value, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0 || startIndex >= array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -148,15 +152,15 @@ namespace Cyjb
 		/// 或 <paramref name="length"/> 小于零。</exception>
 		public static Array Fill(this Array array, Func<object> value, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, startIndex, length);
@@ -175,8 +179,8 @@ namespace Cyjb
 			Contract.Requires(value != null);
 			Contract.Requires(startIndex >= 0 && startIndex + length <= array.Length);
 			Contract.Ensures(Contract.Result<Array>() != null);
-			int len = startIndex + length;
-			for (int i = startIndex; i < len; i++)
+			var len = startIndex + length;
+			for (var i = startIndex; i < len; i++)
 			{
 				array.SetValue(value(), i);
 			}
@@ -192,8 +196,8 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static Array Fill(this Array array, Func<int, object> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, 0, array.Length);
 		}
@@ -210,11 +214,11 @@ namespace Cyjb
 		/// 小于零或大于等于数组的长度。</exception>
 		public static Array Fill(this Array array, Func<int, object> value, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0 || startIndex >= array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -235,15 +239,15 @@ namespace Cyjb
 		/// 或 <paramref name="length"/> 小于零。</exception>
 		public static Array Fill(this Array array, Func<int, object> value, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<Array>() != null);
 			return FillInternal(array, value, startIndex, length);
@@ -262,8 +266,8 @@ namespace Cyjb
 			Contract.Requires(value != null);
 			Contract.Requires(startIndex >= 0 && startIndex + length <= array.Length);
 			Contract.Ensures(Contract.Result<Array>() != null);
-			int len = startIndex + length;
-			for (int i = startIndex; i < len; i++)
+			var len = startIndex + length;
+			for (var i = startIndex; i < len; i++)
 			{
 				array.SetValue(value(i), i);
 			}
@@ -284,7 +288,7 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		public static T[] Fill<T>(this T[] array, T value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, 0, array.Length);
 		}
@@ -301,10 +305,10 @@ namespace Cyjb
 		/// 小于零或大于等于数组的长度。</exception>
 		public static T[] Fill<T>(this T[] array, T value, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < 0 || startIndex >= array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -325,14 +329,14 @@ namespace Cyjb
 		/// 或 <paramref name="length"/> 小于零。</exception>
 		public static T[] Fill<T>(this T[] array, T value, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -351,7 +355,7 @@ namespace Cyjb
 			Contract.Requires(array != null);
 			Contract.Requires(startIndex >= 0 && startIndex + length <= array.Length);
 			Contract.Ensures(Contract.Result<T[]>() != null);
-			for (int i = startIndex + length - 1; i >= startIndex; i--)
+			for (var i = startIndex + length - 1; i >= startIndex; i--)
 			{
 				array[i] = value;
 			}
@@ -368,8 +372,8 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static T[] Fill<T>(this T[] array, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, 0, array.Length);
 		}
@@ -387,11 +391,11 @@ namespace Cyjb
 		/// 小于零或大于等于数组的长度。</exception>
 		public static T[] Fill<T>(this T[] array, Func<T> value, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0 || startIndex >= array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -413,15 +417,15 @@ namespace Cyjb
 		/// 或 <paramref name="length"/> 小于零。</exception>
 		public static T[] Fill<T>(this T[] array, Func<T> value, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, startIndex, length);
@@ -441,8 +445,8 @@ namespace Cyjb
 			Contract.Requires(value != null);
 			Contract.Requires(startIndex >= 0 && startIndex + length <= array.Length);
 			Contract.Ensures(Contract.Result<T[]>() != null);
-			int len = startIndex + length;
-			for (int i = startIndex; i < len; i++)
+			var len = startIndex + length;
+			for (var i = startIndex; i < len; i++)
 			{
 				array[i] = value();
 			}
@@ -459,8 +463,8 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static T[] Fill<T>(this T[] array, Func<int, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, 0, array.Length);
 		}
@@ -476,11 +480,11 @@ namespace Cyjb
 		/// 小于零或大于等于数组的长度。</exception>
 		public static T[] Fill<T>(this T[] array, Func<int, T> value, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0 || startIndex >= array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, startIndex, array.Length - startIndex);
@@ -502,15 +506,15 @@ namespace Cyjb
 		/// 或 <paramref name="length"/> 小于零。</exception>
 		public static T[] Fill<T>(this T[] array, Func<int, T> value, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			if (startIndex < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			return FillInternal(array, value, startIndex, length);
@@ -530,8 +534,8 @@ namespace Cyjb
 			Contract.Requires(value != null);
 			Contract.Requires(startIndex >= 0 && startIndex + length <= array.Length);
 			Contract.Ensures(Contract.Result<T[]>() != null);
-			int len = startIndex + length;
-			for (int i = startIndex; i < len; i++)
+			var len = startIndex + length;
+			for (var i = startIndex; i < len; i++)
 			{
 				array[i] = value(i);
 			}
@@ -554,11 +558,11 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Return")]
 		public static T[,] Fill<T>(this T[,] array, T value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[,]>() != null);
-			for (int i = array.GetLength(0) - 1; i >= 0; i--)
+			for (var i = array.GetLength(0) - 1; i >= 0; i--)
 			{
-				for (int j = array.GetLength(1) - 1; j >= 0; j--)
+				for (var j = array.GetLength(1) - 1; j >= 0; j--)
 				{
 					array[i, j] = value;
 				}
@@ -578,12 +582,12 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Return")]
 		public static T[,] Fill<T>(this T[,] array, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[,]>() != null);
-			for (int i = 0; i < array.GetLength(0); i++)
+			for (var i = 0; i < array.GetLength(0); i++)
 			{
-				for (int j = 0; j < array.GetLength(1); j++)
+				for (var j = 0; j < array.GetLength(1); j++)
 				{
 					array[i, j] = value();
 				}
@@ -603,12 +607,12 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Return")]
 		public static T[,] Fill<T>(this T[,] array, Func<int, int, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[,]>() != null);
-			for (int i = 0; i < array.GetLength(0); i++)
+			for (var i = 0; i < array.GetLength(0); i++)
 			{
-				for (int j = 0; j < array.GetLength(1); j++)
+				for (var j = 0; j < array.GetLength(1); j++)
 				{
 					array[i, j] = value(i, j);
 				}
@@ -630,11 +634,11 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		public static T[][] Fill<T>(this T[][] array, T value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[][]>() != null);
-			for (int i = array.Length - 1; i >= 0; i--)
+			for (var i = array.Length - 1; i >= 0; i--)
 			{
-				for (int j = array[i].Length - 1; j >= 0; j--)
+				for (var j = array[i].Length - 1; j >= 0; j--)
 				{
 					array[i][j] = value;
 				}
@@ -652,12 +656,12 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static T[][] Fill<T>(this T[][] array, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[][]>() != null);
-			for (int i = 0; i < array.Length; i++)
+			for (var i = 0; i < array.Length; i++)
 			{
-				for (int j = 0; j < array[i].Length; j++)
+				for (var j = 0; j < array[i].Length; j++)
 				{
 					array[i][j] = value();
 				}
@@ -675,12 +679,12 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static T[][] Fill<T>(this T[][] array, Func<int, int, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[][]>() != null);
-			for (int i = 0; i < array.Length; i++)
+			for (var i = 0; i < array.Length; i++)
 			{
-				for (int j = 0; j < array[i].Length; j++)
+				for (var j = 0; j < array[i].Length; j++)
 				{
 					array[i][j] = value(i, j);
 				}
@@ -704,13 +708,13 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Return")]
 		public static T[, ,] Fill<T>(this T[, ,] array, T value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[, ,]>() != null);
-			for (int i = 0; i < array.GetLength(0); i++)
+			for (var i = 0; i < array.GetLength(0); i++)
 			{
-				for (int j = 0; j < array.GetLength(1); j++)
+				for (var j = 0; j < array.GetLength(1); j++)
 				{
-					for (int k = 0; k < array.GetLength(2); k++)
+					for (var k = 0; k < array.GetLength(2); k++)
 					{
 						array[i, j, k] = value;
 					}
@@ -731,14 +735,14 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Return")]
 		public static T[, ,] Fill<T>(this T[, ,] array, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[, ,]>() != null);
-			for (int i = 0; i < array.GetLength(0); i++)
+			for (var i = 0; i < array.GetLength(0); i++)
 			{
-				for (int j = 0; j < array.GetLength(1); j++)
+				for (var j = 0; j < array.GetLength(1); j++)
 				{
-					for (int k = 0; k < array.GetLength(2); k++)
+					for (var k = 0; k < array.GetLength(2); k++)
 					{
 						array[i, j, k] = value();
 					}
@@ -759,14 +763,14 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", MessageId = "Return")]
 		public static T[, ,] Fill<T>(this T[, ,] array, Func<int, int, int, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[, ,]>() != null);
-			for (int i = 0; i < array.GetLength(0); i++)
+			for (var i = 0; i < array.GetLength(0); i++)
 			{
-				for (int j = 0; j < array.GetLength(1); j++)
+				for (var j = 0; j < array.GetLength(1); j++)
 				{
-					for (int k = 0; k < array.GetLength(2); k++)
+					for (var k = 0; k < array.GetLength(2); k++)
 					{
 						array[i, j, k] = value(i, j, k);
 					}
@@ -789,13 +793,13 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		public static T[][][] Fill<T>(this T[][][] array, T value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[][][]>() != null);
-			for (int i = 0; i < array.Length; i++)
+			for (var i = 0; i < array.Length; i++)
 			{
-				for (int j = array[i].Length - 1; j >= 0; j--)
+				for (var j = array[i].Length - 1; j >= 0; j--)
 				{
-					for (int k = array[i][j].Length - 1; k >= 0; k--)
+					for (var k = array[i][j].Length - 1; k >= 0; k--)
 					{
 						array[i][j][k] = value;
 					}
@@ -814,14 +818,14 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static T[][][] Fill<T>(this T[][][] array, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[][][]>() != null);
-			for (int i = 0; i < array.Length; i++)
+			for (var i = 0; i < array.Length; i++)
 			{
-				for (int j = 0; j < array[i].Length; j++)
+				for (var j = 0; j < array[i].Length; j++)
 				{
-					for (int k = 0; k < array[i][j].Length; k++)
+					for (var k = 0; k < array[i][j].Length; k++)
 					{
 						array[i][j][k] = value();
 					}
@@ -840,14 +844,14 @@ namespace Cyjb
 		/// <exception cref="System.ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static T[][][] Fill<T>(this T[][][] array, Func<int, int, int, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<T[][][]>() != null);
-			for (int i = 0; i < array.Length; i++)
+			for (var i = 0; i < array.Length; i++)
 			{
-				for (int j = 0; j < array[i].Length; j++)
+				for (var j = 0; j < array[i].Length; j++)
 				{
-					for (int k = 0; k < array[i][j].Length; k++)
+					for (var k = 0; k < array[i][j].Length; k++)
 					{
 						array[i][j][k] = value(i, j, k);
 					}

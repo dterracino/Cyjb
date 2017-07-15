@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -12,11 +15,7 @@ namespace Cyjb
 	public class TextValuePairCollection<TValue> :
 		BindingList<TextValuePair<TValue>>
 	{
-		/// <summary>
-		/// 初始化 <see cref="TextValuePairCollection{TValue}"/> 类的新实例。
-		/// </summary>
-		public TextValuePairCollection() { }
-		/// <summary>
+	    /// <summary>
 		/// 返回指定文本在集合中的索引。
 		/// </summary>
 		/// <param name="text">要获取索引的文本。</param>
@@ -29,7 +28,7 @@ namespace Cyjb
 		/// </overloads>
 		public int IndexOf(string text)
 		{
-			for (int i = 0; i < Items.Count; i++)
+			for (var i = 0; i < Items.Count; i++)
 			{
 				if (string.Equals(Items[i].Text, text, StringComparison.CurrentCulture))
 				{
@@ -74,9 +73,9 @@ namespace Cyjb
 			{
 				if (key is TValue)
 				{
-					TValue value = (TValue)key;
-					EqualityComparer<TValue> comparer = EqualityComparer<TValue>.Default;
-					for (int i = 0; i < Count; i++)
+					var value = (TValue)key;
+					var comparer = EqualityComparer<TValue>.Default;
+					for (var i = 0; i < Count; i++)
 					{
 						if (comparer.Equals(Items[i].Value, value))
 						{

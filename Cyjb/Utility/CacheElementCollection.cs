@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Configurations;
 
 namespace Cyjb.Utility
@@ -9,11 +13,7 @@ namespace Cyjb.Utility
 	/// </summary>
 	public sealed class CacheElementCollection : ConfigurationElementCollection<string, CacheElement>
 	{
-		/// <summary>
-		/// 初始化 <see cref="CacheElementCollection"/> 类的新实例。
-		/// </summary>
-		public CacheElementCollection() { }
-		/// <summary>
+	    /// <summary>
 		/// 创建一个新的 <see cref="ConfigurationElement"/>。
 		/// </summary>
 		/// <returns>新的 <see cref="ConfigurationElement"/>。</returns>

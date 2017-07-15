@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.ComponentModel;
 using Cyjb.Utility;
 
@@ -56,7 +60,7 @@ namespace Cyjb
 		public TextValuePair(string text, object value)
 		{
 			this.text = text;
-			this.pairValue = value;
+			pairValue = value;
 		}
 		/// <summary>
 		/// 获取或设置文本。
@@ -128,8 +132,8 @@ namespace Cyjb
 		{
 			if (isInEdit)
 			{
-				string tmpText = text;
-				object tmpValue = pairValue;
+				var tmpText = text;
+				var tmpValue = pairValue;
 				text = savedText;
 				pairValue = savedValue;
 				isInEdit = false;
@@ -201,8 +205,8 @@ namespace Cyjb
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public override bool Equals(object obj)
 		{
-			TextValuePair thisObj = obj as TextValuePair;
-			return !ReferenceEquals(thisObj, null) && this.Equals(thisObj);
+			var thisObj = obj as TextValuePair;
+			return !ReferenceEquals(thisObj, null) && Equals(thisObj);
 		}
 
 		/// <summary>

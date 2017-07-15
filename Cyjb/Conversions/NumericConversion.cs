@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -161,7 +165,7 @@ namespace Cyjb.Conversions
 			: base(conversionType)
 		{
 			Contract.Requires(opCodes != null && opCodes.Length >= 1);
-			this.uncheckedOpCodes = this.checkedOpCodes = opCodes;
+			uncheckedOpCodes = checkedOpCodes = opCodes;
 		}
 		/// <summary>
 		/// 使用指定的转换类型和要写入的 IL 指令初始化 <see cref="NumericConversion"/> 类的新实例。
@@ -186,8 +190,8 @@ namespace Cyjb.Conversions
 			: base(conversionType)
 		{
 			Contract.Requires(conversion != null);
-			this.uncheckedOpCodes = conversion.uncheckedOpCodes;
-			this.checkedOpCodes = conversion.checkedOpCodes;
+			uncheckedOpCodes = conversion.uncheckedOpCodes;
+			checkedOpCodes = conversion.checkedOpCodes;
 		}
 		/// <summary>
 		/// 写入类型转换的 IL 指令。
@@ -198,8 +202,8 @@ namespace Cyjb.Conversions
 		/// <param name="isChecked">是否执行溢出检查。</param>
 		public override void Emit(ILGenerator generator, Type inputType, Type outputType, bool isChecked)
 		{
-			OpCode[] opCodes = isChecked ? checkedOpCodes : uncheckedOpCodes;
-			for (int i = 0; i < opCodes.Length; i++)
+			var opCodes = isChecked ? checkedOpCodes : uncheckedOpCodes;
+			for (var i = 0; i < opCodes.Length; i++)
 			{
 				generator.Emit(opCodes[i]);
 			}

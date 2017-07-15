@@ -6,7 +6,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections.ObjectModel
 {
@@ -50,7 +52,7 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			if (set != null)
 			{
-				this.items = set as ISet<T> ?? new HashSet<T>(set);
+				items = set as ISet<T> ?? new HashSet<T>(set);
 			}
 		}
 		/// <summary>
@@ -107,9 +109,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsProperSubsetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsProperSubsetOf(other);
+			return items.IsProperSubsetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的真超集合。
@@ -122,9 +124,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsProperSupersetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsProperSubsetOf(other);
+			return items.IsProperSubsetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的子集合。
@@ -137,9 +139,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsSubsetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsSubsetOf(other);
+			return items.IsSubsetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否为指定集合的超集合。
@@ -152,9 +154,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool IsSupersetOf(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.IsSupersetOf(other);
+			return items.IsSupersetOf(other);
 		}
 		/// <summary>
 		/// 确定当前集合是否与指定的集合重叠。
@@ -167,9 +169,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool Overlaps(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.Overlaps(other);
+			return items.Overlaps(other);
 		}
 		/// <summary>
 		/// 确定当前集合与指定的集合中是否包含相同的元素。
@@ -182,9 +184,9 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool SetEquals(IEnumerable<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.EndContractBlock();
-			return this.items.SetEquals(other);
+			return items.SetEquals(other);
 		}
 		/// <summary>
 		/// 修改当前集合，使该集合仅包含当前集合或指定集合中存在的元素（但不可包含两者共有的元素）。
@@ -217,7 +219,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <value><see cref="ReadOnlySet{T}"/> 中包含的元素数。</value>
 		public virtual int Count
 		{
-			get { return this.items.Count; }
+			get { return items.Count; }
 		}
 		/// <summary>
 		/// 获取一个值，该值指示 <see cref="ReadOnlySet{T}"/> 是否为只读。
@@ -256,7 +258,7 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual bool Contains(T item)
 		{
-			return this.items.Contains(item);
+			return items.Contains(item);
 		}
 		/// <summary>
 		/// 从特定的 <see cref="Array"/> 索引处开始，将 <see cref="ReadOnlySet{T}"/> 
@@ -316,11 +318,11 @@ namespace Cyjb.Collections.ObjectModel
 		{
 			get
 			{
-				if (this.syncRoot == null)
+				if (syncRoot == null)
 				{
-					CollectionHelper.CreateSyncRoot(this.items, ref this.syncRoot);
+					CollectionHelper.CreateSyncRoot(items, ref syncRoot);
 				}
-				return this.syncRoot;
+				return syncRoot;
 			}
 		}
 		/// <summary>
@@ -355,7 +357,7 @@ namespace Cyjb.Collections.ObjectModel
 		[Pure]
 		public virtual IEnumerator<T> GetEnumerator()
 		{
-			return this.items.GetEnumerator();
+			return items.GetEnumerator();
 		}
 
 		#endregion // IEnumerable<T> 成员
@@ -368,7 +370,7 @@ namespace Cyjb.Collections.ObjectModel
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/>。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员
@@ -422,7 +424,7 @@ namespace Cyjb.Collections.ObjectModel
 			[Pure]
 			public override bool IsProperSubsetOf(IEnumerable<T> other)
 			{
-				CommonExceptions.CheckArgumentNull(other, "other");
+				CommonExceptions.CheckArgumentNull(other, nameof(other));
 				Contract.EndContractBlock();
 				return other.Any();
 			}
@@ -437,7 +439,7 @@ namespace Cyjb.Collections.ObjectModel
 			[Pure]
 			public override bool IsProperSupersetOf(IEnumerable<T> other)
 			{
-				CommonExceptions.CheckArgumentNull(other, "other");
+				CommonExceptions.CheckArgumentNull(other, nameof(other));
 				Contract.EndContractBlock();
 				return false;
 			}
@@ -452,7 +454,7 @@ namespace Cyjb.Collections.ObjectModel
 			[Pure]
 			public override bool IsSubsetOf(IEnumerable<T> other)
 			{
-				CommonExceptions.CheckArgumentNull(other, "other");
+				CommonExceptions.CheckArgumentNull(other, nameof(other));
 				Contract.EndContractBlock();
 				return true;
 			}
@@ -467,7 +469,7 @@ namespace Cyjb.Collections.ObjectModel
 			[Pure]
 			public override bool IsSupersetOf(IEnumerable<T> other)
 			{
-				CommonExceptions.CheckArgumentNull(other, "other");
+				CommonExceptions.CheckArgumentNull(other, nameof(other));
 				Contract.EndContractBlock();
 				return !other.Any();
 			}
@@ -482,7 +484,7 @@ namespace Cyjb.Collections.ObjectModel
 			[Pure]
 			public override bool Overlaps(IEnumerable<T> other)
 			{
-				CommonExceptions.CheckArgumentNull(other, "other");
+				CommonExceptions.CheckArgumentNull(other, nameof(other));
 				Contract.EndContractBlock();
 				return false;
 			}
@@ -497,7 +499,7 @@ namespace Cyjb.Collections.ObjectModel
 			[Pure]
 			public override bool SetEquals(IEnumerable<T> other)
 			{
-				CommonExceptions.CheckArgumentNull(other, "other");
+				CommonExceptions.CheckArgumentNull(other, nameof(other));
 				Contract.EndContractBlock();
 				return !other.Any();
 			}

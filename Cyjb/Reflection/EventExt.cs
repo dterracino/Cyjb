@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
@@ -30,18 +34,18 @@ namespace Cyjb.Reflection
 		/// <seealso cref="MethodInfo.GetBaseDefinition"/>
 		public static EventInfo GetBaseDefinition(this EventInfo evn)
 		{
-			CommonExceptions.CheckArgumentNull(evn, "evn");
+			CommonExceptions.CheckArgumentNull(evn, nameof(evn));
 			Contract.Ensures(Contract.Result<EventInfo>() != null);
-			MethodInfo method = evn.GetAddMethod(true);
-			MethodInfo baseMethod = method.GetBaseDefinition();
+			var method = evn.GetAddMethod(true);
+			var baseMethod = method.GetBaseDefinition();
 			if (baseMethod == method)
 			{
 				return evn;
 			}
 			// 找到方法对应的事件。
-			Type baseType = method.DeclaringType;
+			var baseType = method.DeclaringType;
 			Contract.Assume(baseType != null);
-			EventInfo baseEvent = baseType.GetEvent(evn.Name, TypeExt.AllMemberFlag | BindingFlags.ExactBinding);
+			var baseEvent = baseType.GetEvent(evn.Name, TypeExt.AllMemberFlag | BindingFlags.ExactBinding);
 			return baseEvent ?? evn;
 		}
 

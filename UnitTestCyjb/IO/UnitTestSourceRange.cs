@@ -1,4 +1,9 @@
-﻿using Cyjb.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Cyjb.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestCyjb.IO
@@ -15,8 +20,8 @@ namespace UnitTestCyjb.IO
 		[TestMethod]
 		public void TestProperties()
 		{
-			SourcePosition loc1 = new SourcePosition(0, 1, 1);
-			SourcePosition loc2 = new SourcePosition(2, 1, 3);
+			var loc1 = new SourcePosition(0, 1, 1);
+			var loc2 = new SourcePosition(2, 1, 3);
 			Assert.AreEqual(true, SourceRange.Unknown.IsUnknown);
 			Assert.AreEqual(true, new SourceRange(SourcePosition.Unknown).IsUnknown);
 			Assert.AreEqual(true, new SourceRange(SourcePosition.Unknown, SourcePosition.Unknown).IsUnknown);
@@ -34,15 +39,15 @@ namespace UnitTestCyjb.IO
 		[TestMethod]
 		public void TestContains()
 		{
-			SourcePosition loc1 = new SourcePosition(0, 1, 1);
-			SourcePosition loc2 = new SourcePosition(2, 1, 3);
-			SourcePosition loc3 = new SourcePosition(5, 1, 6);
-			SourcePosition loc4 = new SourcePosition(6, 1, 7);
-			SourcePosition loc5 = new SourcePosition(9, 2, 14);
-			SourceRange range1 = new SourceRange(loc1, loc2);
-			SourceRange range2 = new SourceRange(loc2, loc4);
-			SourceRange range3 = new SourceRange(loc1, loc4);
-			SourceRange range4 = new SourceRange(loc1, loc5);
+			var loc1 = new SourcePosition(0, 1, 1);
+			var loc2 = new SourcePosition(2, 1, 3);
+			var loc3 = new SourcePosition(5, 1, 6);
+			var loc4 = new SourcePosition(6, 1, 7);
+			var loc5 = new SourcePosition(9, 2, 14);
+			var range1 = new SourceRange(loc1, loc2);
+			var range2 = new SourceRange(loc2, loc4);
+			var range3 = new SourceRange(loc1, loc4);
+			var range4 = new SourceRange(loc1, loc5);
 			// Contains(ISourceLocatable)
 			Assert.AreEqual(false, SourceRange.Unknown.Contains(SourceRange.Unknown));
 			Assert.AreEqual(false, SourceRange.Unknown.Contains(range1));
@@ -79,19 +84,19 @@ namespace UnitTestCyjb.IO
 		[TestMethod]
 		public void TestOverlaps()
 		{
-			SourcePosition loc1 = new SourcePosition(0, 1, 1);
-			SourcePosition loc2 = new SourcePosition(2, 1, 3);
-			SourcePosition loc3 = new SourcePosition(5, 1, 6);
-			SourcePosition loc4 = new SourcePosition(6, 1, 7);
-			SourcePosition loc5 = new SourcePosition(9, 2, 14);
-			SourceRange range1 = new SourceRange(loc2, loc4);
-			SourceRange range2 = new SourceRange(loc1, loc1);
-			SourceRange range3 = new SourceRange(loc1, loc2);
-			SourceRange range4 = new SourceRange(loc1, loc3);
-			SourceRange range5 = new SourceRange(loc1, loc4);
-			SourceRange range6 = new SourceRange(loc1, loc5);
-			SourceRange range7 = new SourceRange(loc2, loc2);
-			SourceRange range8 = new SourceRange(loc3, loc3);
+			var loc1 = new SourcePosition(0, 1, 1);
+			var loc2 = new SourcePosition(2, 1, 3);
+			var loc3 = new SourcePosition(5, 1, 6);
+			var loc4 = new SourcePosition(6, 1, 7);
+			var loc5 = new SourcePosition(9, 2, 14);
+			var range1 = new SourceRange(loc2, loc4);
+			var range2 = new SourceRange(loc1, loc1);
+			var range3 = new SourceRange(loc1, loc2);
+			var range4 = new SourceRange(loc1, loc3);
+			var range5 = new SourceRange(loc1, loc4);
+			var range6 = new SourceRange(loc1, loc5);
+			var range7 = new SourceRange(loc2, loc2);
+			var range8 = new SourceRange(loc3, loc3);
 			Assert.AreEqual(false, SourceRange.Unknown.OverlapsWith(SourceRange.Unknown));
 			Assert.AreEqual(SourceRange.Unknown, SourceRange.Unknown.Overlap(SourceRange.Unknown));
 			Assert.AreEqual(false, range1.OverlapsWith(SourceRange.Unknown));
@@ -117,11 +122,11 @@ namespace UnitTestCyjb.IO
 		[TestMethod]
 		public void TestMerge()
 		{
-			SourcePosition loc1 = new SourcePosition(0, 1, 1);
-			SourcePosition loc2 = new SourcePosition(2, 1, 3);
-			SourcePosition loc3 = new SourcePosition(5, 2, 6);
-			SourcePosition loc4 = new SourcePosition(6, 1, 7);
-			SourcePosition loc5 = new SourcePosition(9, 2, 14);
+			var loc1 = new SourcePosition(0, 1, 1);
+			var loc2 = new SourcePosition(2, 1, 3);
+			var loc3 = new SourcePosition(5, 2, 6);
+			var loc4 = new SourcePosition(6, 1, 7);
+			var loc5 = new SourcePosition(9, 2, 14);
 			Assert.AreEqual(SourceRange.Unknown, SourceRange.Merge());
 			Assert.AreEqual(SourceRange.Unknown, SourceRange.Merge(null));
 			Assert.AreEqual(SourceRange.Unknown, SourceRange.Merge(SourceRange.Unknown));

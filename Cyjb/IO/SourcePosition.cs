@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Utility;
 
 namespace Cyjb.IO
@@ -46,17 +50,17 @@ namespace Cyjb.IO
 		{
 			if (idx < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("idx", idx);
+				throw CommonExceptions.ArgumentNegative(nameof(idx), idx);
 			}
 			if (line < 1)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("line", line);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(line), line);
 			}
 			if (col < 1)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("col", col);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(col), col);
 			}
-			this.index = idx;
+			index = idx;
 			this.line = line;
 			this.col = col;
 		}
@@ -64,24 +68,24 @@ namespace Cyjb.IO
 		/// 获取所在的行。
 		/// </summary>
 		/// <value>表示当前位置所在行的整数，从 <c>1</c> 开始。</value>
-		public int Line { get { return this.line; } }
+		public int Line { get { return line; } }
 		/// <summary>
 		/// 获取所在的列。
 		/// </summary>
 		/// <value>表示当前位置所在列的整数，从 <c>1</c> 开始。</value>
-		public int Col { get { return this.col; } }
+		public int Col { get { return col; } }
 		/// <summary>
 		/// 获取索引。
 		/// </summary>
 		/// <value>表示当前位置从起始位置从零开始的索引。</value>
-		public int Index { get { return this.index; } }
+		public int Index { get { return index; } }
 		/// <summary>
 		/// 获取当前位置是否表示未知位置。
 		/// </summary>
 		/// <value>如果当前位置表示未知位置，则为 <c>true</c>；否则为 <c>false</c>。</value>
 		public bool IsUnknown
 		{
-			get { return this.line == 0 || this.col == 0; }
+			get { return line == 0 || col == 0; }
 		}
 
 		#region IComparable<SourcePosition> 成员
@@ -97,17 +101,17 @@ namespace Cyjb.IO
 		/// </remarks>
 		public int CompareTo(SourcePosition other)
 		{
-			int cmp = this.index - other.index;
+			var cmp = index - other.index;
 			if (cmp != 0)
 			{
 				return cmp;
 			}
-			cmp = this.line - other.line;
+			cmp = line - other.line;
 			if (cmp != 0)
 			{
 				return cmp;
 			}
-			return this.col - other.col;
+			return col - other.col;
 		}
 
 		#endregion // IComparable<SourcePosition> 成员
@@ -127,7 +131,7 @@ namespace Cyjb.IO
 		/// </overloads>
 		public bool Equals(SourcePosition other)
 		{
-			return this.index == other.index && this.line == other.line && this.col == other.col;
+			return index == other.index && line == other.line && col == other.col;
 		}
 
 		#endregion // IEquatable<SourcePosition> 成员
@@ -146,7 +150,7 @@ namespace Cyjb.IO
 			{
 				return false;
 			}
-			return this.Equals((SourcePosition)obj);
+			return Equals((SourcePosition)obj);
 		}
 
 		/// <summary>
@@ -155,7 +159,7 @@ namespace Cyjb.IO
 		/// <returns>当前 <see cref="SourcePosition"/> 的哈希代码。</returns>
 		public override int GetHashCode()
 		{
-			return Hash.Combine(Hash.Combine(this.index, this.line), this.col);
+			return Hash.Combine(Hash.Combine(index, line), col);
 		}
 		/// <summary>
 		/// 返回当前对象的字符串表示形式。
@@ -163,11 +167,11 @@ namespace Cyjb.IO
 		/// <returns>当前对象的字符串表示形式。</returns>
 		public override string ToString()
 		{
-			if (this.IsUnknown)
+			if (IsUnknown)
 			{
 				return "?,?";
 			}
-			return string.Concat(this.line, ",", this.col);
+			return string.Concat(line, ",", col);
 		}
 
 		#endregion // object 成员

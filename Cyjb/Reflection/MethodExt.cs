@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
@@ -37,20 +40,20 @@ namespace Cyjb.Reflection
 			if (!TypeExt.IsMonoRuntime)
 			{
 				// 为了防止 DelegateBuilder 里调用 GetParametersNoCopy 而导致死循环，这里必须使用 Delegate.CreateDelegate 方法。
-				MethodInfo methodGetParametersNoCopy = typeof(MethodBase).GetMethod("GetParametersNoCopy", TypeExt.InstanceFlag);
+				var methodGetParametersNoCopy = typeof(MethodBase).GetMethod("GetParametersNoCopy", TypeExt.InstanceFlag);
 				return (Func<MethodBase, ParameterInfo[]>)Delegate.CreateDelegate(typeof(Func<MethodBase, ParameterInfo[]>),
 					methodGetParametersNoCopy);
 			}
-			Type monoMethodInfo = Type.GetType("System.Reflection.MonoMethodInfo");
+			var monoMethodInfo = Type.GetType("System.Reflection.MonoMethodInfo");
 			Contract.Assume(monoMethodInfo != null);
-			MethodInfo getParamsInfoMethod = monoMethodInfo.GetMethod("GetParametersInfo", TypeExt.StaticFlag);
-			Type monoMethod = Type.GetType("System.Reflection.MonoMethod");
+			var getParamsInfoMethod = monoMethodInfo.GetMethod("GetParametersInfo", TypeExt.StaticFlag);
+			var monoMethod = Type.GetType("System.Reflection.MonoMethod");
 			Contract.Assume(monoMethod != null);
-			FieldInfo mhandleField = monoMethod.GetField("mhandle", TypeExt.InstanceFlag);
+			var mhandleField = monoMethod.GetField("mhandle", TypeExt.InstanceFlag);
 			Contract.Assume(mhandleField != null);
-			DynamicMethod method = new DynamicMethod("GetParametersNoCopy", typeof(ParameterInfo[]),
+			var method = new DynamicMethod("GetParametersNoCopy", typeof(ParameterInfo[]),
 				new[] { typeof(MethodBase) }, true);
-			ILGenerator il = method.GetILGenerator();
+			var il = method.GetILGenerator();
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, mhandleField);
 			il.Emit(OpCodes.Ldarg_0);
@@ -67,7 +70,7 @@ namespace Cyjb.Reflection
 		[Pure]
 		public static ParameterInfo[] GetParametersNoCopy(this MethodBase method)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.EndContractBlock();
 			return getParametersNoCopy(method);
 		}
@@ -79,15 +82,15 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static Type[] GetParameterTypes(this MethodBase method)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.Ensures(Contract.Result<Type[]>() != null);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
+			var parameters = method.GetParametersNoCopy();
 			if (parameters.Length == 0)
 			{
 				return Type.EmptyTypes;
 			}
-			Type[] types = new Type[parameters.Length];
-			for (int i = 0; i < types.Length; i++)
+			var types = new Type[parameters.Length];
+			for (var i = 0; i < types.Length; i++)
 			{
 				types[i] = parameters[i].ParameterType;
 			}
@@ -101,15 +104,15 @@ namespace Cyjb.Reflection
 		/// <exception cref="ArgumentNullException"><paramref name="method"/> 为 <c>null</c>。</exception>
 		public static Type[] GetParameterTypesWithReturn(this MethodInfo method)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
 			Contract.Ensures(Contract.Result<Type[]>() != null);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
+			var parameters = method.GetParametersNoCopy();
 			if (parameters.Length == 0)
 			{
 				return new[] { method.ReturnType };
 			}
-			Type[] types = new Type[parameters.Length + 1];
-			int i = 0;
+			var types = new Type[parameters.Length + 1];
+			var i = 0;
 			for (; i < parameters.Length; i++)
 			{
 				types[i] = parameters[i].ParameterType;
@@ -145,17 +148,17 @@ namespace Cyjb.Reflection
 		/// </overloads>
 		public static MethodInfo MakeGenericMethodFromParamTypes(this MethodInfo method, params Type[] types)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.Ensures(Contract.Result<MethodInfo>() != null);
 			if (!method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.NeedGenericMethodDefinition("method");
+				throw CommonExceptions.NeedGenericMethodDefinition(nameof(method));
 			}
 			var result = GenericArgumentsInferences(method, null, types, MethodArgumentsOption.OptionalParamBinding);
 			if (result == null)
 			{
-				throw CommonExceptions.CannotInferenceGenericArguments("method");
+				throw CommonExceptions.CannotInferenceGenericArguments(nameof(method));
 			}
 			return method.MakeGenericMethod(result.GenericArguments);
 		}
@@ -178,17 +181,17 @@ namespace Cyjb.Reflection
 		public static MethodInfo MakeGenericMethodFromParamTypes(this MethodInfo method, Type[] types,
 			MethodArgumentsOption options)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.Ensures(Contract.Result<MethodInfo>() != null);
 			if (!method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.NeedGenericMethodDefinition("method");
+				throw CommonExceptions.NeedGenericMethodDefinition(nameof(method));
 			}
 			var result = GenericArgumentsInferences(method, null, types, options);
 			if (result == null)
 			{
-				throw CommonExceptions.CannotInferenceGenericArguments("method");
+				throw CommonExceptions.CannotInferenceGenericArguments(nameof(method));
 			}
 			return method.MakeGenericMethod(result.GenericArguments);
 		}
@@ -209,12 +212,12 @@ namespace Cyjb.Reflection
 		/// </overloads>
 		public static Type[] GenericArgumentsInferences(this MethodBase method, params Type[] types)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.EndContractBlock();
 			if (!method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.NeedGenericMethodDefinition("method");
+				throw CommonExceptions.NeedGenericMethodDefinition(nameof(method));
 			}
 			var result = GenericArgumentsInferences(method, null, types, MethodArgumentsOption.OptionalParamBinding);
 			return result == null ? null : result.GenericArguments;
@@ -233,12 +236,12 @@ namespace Cyjb.Reflection
 		public static Type[] GenericArgumentsInferences(this MethodBase method, Type[] types,
 			MethodArgumentsOption options)
 		{
-			CommonExceptions.CheckArgumentNull(method, "method");
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckArgumentNull(method, nameof(method));
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.EndContractBlock();
 			if (!method.IsGenericMethodDefinition)
 			{
-				throw CommonExceptions.NeedGenericMethodDefinition("method");
+				throw CommonExceptions.NeedGenericMethodDefinition(nameof(method));
 			}
 			var result = GenericArgumentsInferences(method, null, types, options);
 			return result == null ? null : result.GenericArguments;
@@ -256,37 +259,37 @@ namespace Cyjb.Reflection
 			Type returnType, Type[] types, MethodArgumentsOption options)
 		{
 			Contract.Requires(method != null && types != null);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
+			var parameters = method.GetParametersNoCopy();
 			// 提取方法参数信息。
 			types = types.Extend(parameters.Length, typeof(Missing));
-			MethodArgumentsInfo result = MethodArgumentsInfo.GetInfo(method, types, options);
+			var result = MethodArgumentsInfo.GetInfo(method, types, options);
 			if (result == null)
 			{
 				return null;
 			}
 			// 对方法返回值进行推断。
-			bool isExplicit = options.HasFlag(MethodArgumentsOption.Explicit);
-			TypeBounds bounds = new TypeBounds(method.GetGenericArguments());
+			var isExplicit = options.HasFlag(MethodArgumentsOption.Explicit);
+			var bounds = new TypeBounds(method.GetGenericArguments());
 			if (!CheckReturnType(method, returnType, bounds, isExplicit))
 			{
 				return null;
 			}
 			// 对方法固定参数进行推断。
-			int paramLen = result.FixedArguments.Count;
-			for (int i = 0; i < paramLen; i++)
+			var paramLen = result.FixedArguments.Count;
+			for (var i = 0; i < paramLen; i++)
 			{
-				Type paramType = parameters[i].ParameterType;
-				Type argType = result.FixedArguments[i];
+				var paramType = parameters[i].ParameterType;
+				var argType = result.FixedArguments[i];
 				if (paramType.ContainsGenericParameters && argType != typeof(Missing) &&
 					!bounds.TypeInferences(paramType, argType))
 				{
 					return null;
 				}
 			}
-			IList<Type> paramArgTypes = result.ParamArgumentTypes;
+			var paramArgTypes = result.ParamArgumentTypes;
 			if (result.ParamArrayType == null || paramArgTypes.Count == 0)
 			{
-				Type[] args = bounds.FixTypeArguments();
+				var args = bounds.FixTypeArguments();
 				if (args == null)
 				{
 					return null;
@@ -295,19 +298,19 @@ namespace Cyjb.Reflection
 				return result;
 			}
 			// 对 params 参数进行推断。
-			Type paramElementType = result.ParamArrayType.GetElementType();
-			int paramArgCnt = paramArgTypes.Count;
+			var paramElementType = result.ParamArrayType.GetElementType();
+			var paramArgCnt = paramArgTypes.Count;
 			if (paramArgCnt > 1)
 			{
 				// 多个实参对应一个形参，做多次类型推断。
-				for (int i = 0; i < paramArgCnt; i++)
+				for (var i = 0; i < paramArgCnt; i++)
 				{
 					if (paramArgTypes[i] != typeof(Missing) && !bounds.TypeInferences(paramElementType, paramArgTypes[i]))
 					{
 						return null;
 					}
 				}
-				Type[] args = bounds.FixTypeArguments();
+				var args = bounds.FixTypeArguments();
 				if (args == null)
 				{
 					return null;
@@ -316,12 +319,12 @@ namespace Cyjb.Reflection
 				return result;
 			}
 			// 一个实参对应一个形参，需要判断是否需要展开 params 参数。
-			TypeBounds newBounds = new TypeBounds(bounds);
-			Type type = paramArgTypes[0];
+			var newBounds = new TypeBounds(bounds);
+			var type = paramArgTypes[0];
 			// 首先尝试对 paramArrayType 进行推断。
 			if (type == typeof(Missing) || bounds.TypeInferences(result.ParamArrayType, type))
 			{
-				Type[] args = bounds.FixTypeArguments();
+				var args = bounds.FixTypeArguments();
 				if (args != null)
 				{
 					// 推断成功的话，则无需展开 params 参数。
@@ -333,7 +336,7 @@ namespace Cyjb.Reflection
 			// 然后尝试对 paramElementType 进行推断。
 			if (newBounds.TypeInferences(paramElementType, type))
 			{
-				Type[] args = newBounds.FixTypeArguments();
+				var args = newBounds.FixTypeArguments();
 				if (args == null)
 				{
 					return null;
@@ -359,12 +362,12 @@ namespace Cyjb.Reflection
 			{
 				return true;
 			}
-			MethodInfo methodInfo = method as MethodInfo;
+			var methodInfo = method as MethodInfo;
 			if (methodInfo == null)
 			{
 				return true;
 			}
-			Type type = methodInfo.ReturnType;
+			var type = methodInfo.ReturnType;
 			if (type.ContainsGenericParameters)
 			{
 				// 对方法返回类型进行上限推断。

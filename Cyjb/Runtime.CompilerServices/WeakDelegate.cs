@@ -1,10 +1,14 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Runtime.CompilerServices
 {
@@ -36,9 +40,9 @@ namespace Cyjb.Runtime.CompilerServices
 		public static TDelegate Create<TDelegate>(TDelegate dlg)
 			where TDelegate : class
 		{
-			CommonExceptions.CheckArgumentNull(dlg, "dlg");
+			CommonExceptions.CheckArgumentNull(dlg, nameof(dlg));
 			Contract.EndContractBlock();
-			Delegate commonDlg = dlg as Delegate;
+			var commonDlg = dlg as Delegate;
 			if (commonDlg == null)
 			{
 				throw CommonExceptions.MustBeDelegate(typeof(TDelegate));
@@ -77,10 +81,10 @@ namespace Cyjb.Runtime.CompilerServices
 			where TDelegate : class
 			where TTarget : class
 		{
-			CommonExceptions.CheckArgumentNull(dlg, "dlg");
-			CommonExceptions.CheckArgumentNull(target, "target");
+			CommonExceptions.CheckArgumentNull(dlg, nameof(dlg));
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
 			Contract.EndContractBlock();
-			Delegate commonDlg = dlg as Delegate;
+			var commonDlg = dlg as Delegate;
 			if (commonDlg == null)
 			{
 				throw CommonExceptions.MustBeDelegate(typeof(TDelegate));
@@ -123,7 +127,7 @@ namespace Cyjb.Runtime.CompilerServices
 			public static TDelegate Create(object target, TDelegate dlg)
 			{
 				Contract.Requires(target != null && dlg != null);
-				DependentHandle<object, TDelegate> handle = new DependentHandle<object, TDelegate>(target, dlg);
+				var handle = new DependentHandle<object, TDelegate>(target, dlg);
 				return invoker.CreateDelegate(typeof(TDelegate), handle) as TDelegate;
 			}
 			/// <summary>
@@ -132,18 +136,18 @@ namespace Cyjb.Runtime.CompilerServices
 			/// <returns>构造弱引用委托的动态方法。</returns>
 			private static DynamicMethod MakeInvoker()
 			{
-				Type dlgType = typeof(TDelegate);
-				MethodInfo invoke = dlgType.GetInvokeMethod();
-				Type returnType = invoke.ReturnType;
-				DynamicMethod method = new DynamicMethod("WeakDelegateInvoker", returnType,
+				var dlgType = typeof(TDelegate);
+				var invoke = dlgType.GetInvokeMethod();
+				var returnType = invoke.ReturnType;
+				var method = new DynamicMethod("WeakDelegateInvoker", returnType,
 					invoke.GetParameterTypes().Insert(0, dependentHandleType), true);
-				ILGenerator il = method.GetILGenerator();
+				var il = method.GetILGenerator();
 				il.Emit(OpCodes.Ldarg_0);
 				il.EmitCall(dependentHandleGetValue);
-				LocalBuilder local = il.GetLocal(typeof(TDelegate));
+				var local = il.GetLocal(typeof(TDelegate));
 				il.Emit(OpCodes.Stloc, local);
 				il.Emit(OpCodes.Ldloc, local);
-				Label label = il.DefineLabel();
+				var label = il.DefineLabel();
 				il.Emit(OpCodes.Brfalse, label);
 				il.Emit(OpCodes.Ldloc, local);
 				il.EmitCall(invoke);

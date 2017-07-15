@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -55,9 +57,9 @@ namespace Cyjb.Utility
 		/// <remarks>算法来自 boost::hash_range。</remarks>
 		public static int Combine<T>(int seed, params T[] objs)
 		{
-			CommonExceptions.CheckArgumentNull(objs, "objs");
+			CommonExceptions.CheckArgumentNull(objs, nameof(objs));
 			Contract.EndContractBlock();
-			for (int i = 0; i < objs.Length; i++)
+			for (var i = 0; i < objs.Length; i++)
 			{
 				seed = Combine(seed, objs[1]);
 			}
@@ -74,7 +76,7 @@ namespace Cyjb.Utility
 		/// <remarks>算法来自 boost::hash_range。</remarks>
 		public static int Combine<T>(int seed, IEnumerable<T> objs)
 		{
-			CommonExceptions.CheckArgumentNull(objs, "objs");
+			CommonExceptions.CheckArgumentNull(objs, nameof(objs));
 			Contract.EndContractBlock();
 			return objs.Aggregate(seed, Combine);
 		}

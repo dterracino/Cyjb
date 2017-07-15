@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Reflection;
 
 namespace Cyjb
@@ -46,10 +50,10 @@ namespace Cyjb
 		/// </overloads>
 		public MemberAccessor(string name, Func<T> getDelegate, Action<T> setDelegate)
 		{
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			if (getDelegate == null && setDelegate == null)
 			{
-				throw CommonExceptions.ArgumentBothNull("getDelegate", "setDelegate");
+				throw CommonExceptions.ArgumentBothNull(nameof(getDelegate), nameof(setDelegate));
 			}
 			Contract.EndContractBlock();
 			this.name = name;
@@ -71,11 +75,11 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="name"/> 为 <c>null</c> 或空字符串。</exception>
 		public MemberAccessor(Type targetType, string name)
 		{
-			CommonExceptions.CheckArgumentNull(targetType, "targetType");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(targetType, nameof(targetType));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
 			this.name = name;
-			this.Init(targetType, false);
+			Init(targetType, false);
 		}
 		/// <summary>
 		/// 使用包含静态属性或字段的类型和名称，初始化 <see cref="MemberAccessor{T}"/> 类的新实例，
@@ -89,11 +93,11 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="name"/> 为 <c>null</c> 或空字符串。</exception>
 		public MemberAccessor(Type targetType, string name, bool nonPublic)
 		{
-			CommonExceptions.CheckArgumentNull(targetType, "targetType");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(targetType, nameof(targetType));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
 			this.name = name;
-			this.Init(targetType, nonPublic);
+			Init(targetType, nonPublic);
 		}
 		/// <summary>
 		/// 使用指定的静态属性，初始化 <see cref="MemberAccessor{T}"/> 类的新实例，
@@ -103,9 +107,9 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="property"/> 为 <c>null</c>。</exception>
 		public MemberAccessor(PropertyInfo property)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.EndContractBlock();
-			this.name = property.Name;
+			name = property.Name;
 			Init(property, null, false);
 		}
 		/// <summary>
@@ -118,9 +122,9 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="property"/> 为 <c>null</c>。</exception>
 		public MemberAccessor(PropertyInfo property, bool nonPublic)
 		{
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.EndContractBlock();
-			this.name = property.Name;
+			name = property.Name;
 			Init(property, null, nonPublic);
 		}
 		/// <summary>
@@ -131,9 +135,9 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="field"/> 为 <c>null</c>。</exception>
 		public MemberAccessor(FieldInfo field)
 		{
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
-			this.name = field.Name;
+			name = field.Name;
 			Init(field, null);
 		}
 
@@ -151,11 +155,11 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="name"/> 为 <c>null</c> 或空字符串。</exception>
 		public MemberAccessor(object target, string name)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
 			this.name = name;
-			this.Init(target, false);
+			Init(target, false);
 		}
 		/// <summary>
 		/// 使用包含属性或字段的对象和名称，初始化 <see cref="MemberAccessor{T}"/> 类的新实例，
@@ -169,11 +173,11 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="name"/> 为 <c>null</c> 或空字符串。</exception>
 		public MemberAccessor(object target, string name, bool nonPublic)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckStringEmpty(name, "name");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckStringEmpty(name, nameof(name));
 			Contract.EndContractBlock();
 			this.name = name;
-			this.Init(target, nonPublic);
+			Init(target, nonPublic);
 		}
 		/// <summary>
 		/// 使用包含属性的对象和属性信息，初始化 <see cref="MemberAccessor{T}"/> 类的新实例，
@@ -185,10 +189,10 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="property"/> 为 <c>null</c>。</exception>
 		public MemberAccessor(object target, PropertyInfo property)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.EndContractBlock();
-			this.name = property.Name;
+			name = property.Name;
 			Init(property, target, false);
 		}
 		/// <summary>
@@ -203,10 +207,10 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="property"/> 为 <c>null</c>。</exception>
 		public MemberAccessor(object target, PropertyInfo property, bool nonPublic)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckArgumentNull(property, "property");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckArgumentNull(property, nameof(property));
 			Contract.EndContractBlock();
-			this.name = property.Name;
+			name = property.Name;
 			Init(property, target, nonPublic);
 		}
 		/// <summary>
@@ -219,10 +223,10 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="field"/> 为 <c>null</c>。</exception>
 		public MemberAccessor(object target, FieldInfo field)
 		{
-			CommonExceptions.CheckArgumentNull(target, "target");
-			CommonExceptions.CheckArgumentNull(field, "field");
+			CommonExceptions.CheckArgumentNull(target, nameof(target));
+			CommonExceptions.CheckArgumentNull(field, nameof(field));
 			Contract.EndContractBlock();
-			this.name = field.Name;
+			name = field.Name;
 			Init(field, target);
 		}
 
@@ -239,19 +243,19 @@ namespace Cyjb
 		private void Init(Type type, bool nonPublic)
 		{
 			Contract.Requires(type != null);
-			BindingFlags flags = nonPublic ? TypeExt.AllMemberFlag : TypeExt.PublicFlag;
-			PropertyInfo property = type.GetProperty(this.name, flags);
+			var flags = nonPublic ? TypeExt.AllMemberFlag : TypeExt.PublicFlag;
+			var property = type.GetProperty(name, flags);
 			if (property != null)
 			{
 				Init(property, null, nonPublic);
 				return;
 			}
-			FieldInfo field = type.GetField(this.name, flags);
+			var field = type.GetField(name, flags);
 			if (field != null)
 			{
 				Init(field, null);
 			}
-			throw CommonExceptions.PropertyOrFieldNotFound(this.name, nonPublic);
+			throw CommonExceptions.PropertyOrFieldNotFound(name, nonPublic);
 		}
 		/// <summary>
 		/// 使用指定的实例初始化当前实例。
@@ -262,20 +266,20 @@ namespace Cyjb
 		private void Init(object target, bool nonPublic)
 		{
 			Contract.Requires(target != null);
-			Type type = target.GetType();
-			BindingFlags flags = nonPublic ? TypeExt.AllMemberFlag : TypeExt.PublicFlag;
-			PropertyInfo property = type.GetProperty(this.name, flags);
+			var type = target.GetType();
+			var flags = nonPublic ? TypeExt.AllMemberFlag : TypeExt.PublicFlag;
+			var property = type.GetProperty(name, flags);
 			if (property != null)
 			{
 				Init(property, target, nonPublic);
 				return;
 			}
-			FieldInfo field = type.GetField(this.name, flags);
+			var field = type.GetField(name, flags);
 			if (field != null)
 			{
 				Init(field, target);
 			}
-			throw CommonExceptions.PropertyOrFieldNotFound(this.name, nonPublic);
+			throw CommonExceptions.PropertyOrFieldNotFound(name, nonPublic);
 		}
 		/// <summary>
 		/// 使用指定的静态属性初始化当前实例。
@@ -287,15 +291,15 @@ namespace Cyjb
 		private void Init(PropertyInfo property, object firstArgument, bool nonPublic)
 		{
 			Contract.Requires(property != null);
-			MethodInfo method = property.GetGetMethod(nonPublic);
+			var method = property.GetGetMethod(nonPublic);
 			if (method != null)
 			{
-				this.getDelegate = method.CreateDelegate<Func<T>>(firstArgument);
+				getDelegate = method.CreateDelegate<Func<T>>(firstArgument);
 			}
 			method = property.GetSetMethod(nonPublic);
 			if (method != null)
 			{
-				this.setDelegate = method.CreateDelegate<Action<T>>(firstArgument);
+				setDelegate = method.CreateDelegate<Action<T>>(firstArgument);
 			}
 		}
 		/// <summary>
@@ -306,8 +310,8 @@ namespace Cyjb
 		private void Init(FieldInfo field, object firstArgument)
 		{
 			Contract.Requires(field != null);
-			this.getDelegate = field.CreateDelegate<Func<T>>(firstArgument, false);
-			this.setDelegate = field.CreateDelegate<Action<T>>(firstArgument, false);
+			getDelegate = field.CreateDelegate<Func<T>>(firstArgument, false);
+			setDelegate = field.CreateDelegate<Action<T>>(firstArgument, false);
 		}
 
 		#endregion // 初始化
@@ -321,7 +325,7 @@ namespace Cyjb
 			get
 			{
 				Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
-				return this.name;
+				return name;
 			}
 		}
 		/// <summary>
@@ -332,19 +336,19 @@ namespace Cyjb
 		{
 			get
 			{
-				if (this.getDelegate == null)
+				if (getDelegate == null)
 				{
-					throw CommonExceptions.PropertyNoGetter(this.name);
+					throw CommonExceptions.PropertyNoGetter(name);
 				}
-				return this.getDelegate();
+				return getDelegate();
 			}
 			set
 			{
-				if (this.setDelegate == null)
+				if (setDelegate == null)
 				{
-					throw CommonExceptions.PropertyNoSetter(this.name);
+					throw CommonExceptions.PropertyNoSetter(name);
 				}
-				this.setDelegate(value);
+				setDelegate(value);
 			}
 		}
 	}

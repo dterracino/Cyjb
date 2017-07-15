@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.ComponentModel;
 using Cyjb.Utility;
 
@@ -57,7 +60,7 @@ namespace Cyjb
 		public TextValuePair(string text, TValue value)
 		{
 			this.text = text;
-			this.pairValue = value;
+			pairValue = value;
 		}
 		/// <summary>
 		/// 获取或设置文本。
@@ -130,12 +133,12 @@ namespace Cyjb
 		{
 			if (isInEdit)
 			{
-				string tmpText = text;
-				TValue tmpValue = pairValue;
+				var tmpText = text;
+				var tmpValue = pairValue;
 				text = savedText;
 				pairValue = savedValue;
 				isInEdit = false;
-				EqualityComparer<TValue> comparer = EqualityComparer<TValue>.Default;
+				var comparer = EqualityComparer<TValue>.Default;
 				if (text == tmpText)
 				{
 					if (!comparer.Equals(pairValue, tmpValue))
@@ -205,8 +208,8 @@ namespace Cyjb
 		/// 则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public override bool Equals(object obj)
 		{
-			TextValuePair<TValue> thisObj = obj as TextValuePair<TValue>;
-			return !ReferenceEquals(thisObj, null) && this.Equals(thisObj);
+			var thisObj = obj as TextValuePair<TValue>;
+			return !ReferenceEquals(thisObj, null) && Equals(thisObj);
 		}
 
 		/// <summary>
@@ -281,7 +284,7 @@ namespace Cyjb
 			{
 				return new TextValuePair<TValue>(pair.Text, (TValue)pair.Value);
 			}
-			throw CommonExceptions.ArgumentWrongType("pair");
+			throw CommonExceptions.ArgumentWrongType(nameof(pair));
 		}
 
 		#endregion // 运算符重载

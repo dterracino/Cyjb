@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -50,8 +52,8 @@ namespace Cyjb
 			{
 				return str;
 			}
-			StringBuilder builder = new StringBuilder(str.Length * 2);
-			for (int i = 0; i < str.Length; i++)
+			var builder = new StringBuilder(str.Length * 2);
+			for (var i = 0; i < str.Length; i++)
 			{
 				builder.Append(str[i].Escape(customEscape));
 			}
@@ -72,8 +74,8 @@ namespace Cyjb
 			{
 				return str;
 			}
-			StringBuilder builder = new StringBuilder(str.Length * 2);
-			for (int i = 0; i < str.Length; i++)
+			var builder = new StringBuilder(str.Length * 2);
+			for (var i = 0; i < str.Length; i++)
 			{
 				builder.Append(str[i].EscapeUnicode());
 			}
@@ -140,13 +142,13 @@ namespace Cyjb
 			{
 				return str;
 			}
-			int idx = str.IndexOf('\\');
+			var idx = str.IndexOf('\\');
 			if (idx < 0)
 			{
 				return str;
 			}
 			int len = str.Length, start = 0;
-			StringBuilder builder = new StringBuilder(len);
+			var builder = new StringBuilder(len);
 			while (idx >= 0)
 			{
 				// 添加当前 '\' 之前的字符串。
@@ -162,8 +164,8 @@ namespace Cyjb
 					break;
 				}
 				// Unicode 转义需要的十六进制字符的长度。
-				int hexLen = 0;
-				char ch = str[idx];
+				var hexLen = 0;
+				var ch = str[idx];
 				switch (ch)
 				{
 					case 'x':
@@ -185,7 +187,7 @@ namespace Cyjb
 					if (CheckHexLength(str, idx + 1, hexLen))
 					{
 						idx++;
-						int charNum = System.Convert.ToInt32(str.Substring(idx, hexLen), 16);
+						var charNum = System.Convert.ToInt32(str.Substring(idx, hexLen), 16);
 						if (charNum < 0xFFFF)
 						{
 							// 单个字符。
@@ -231,7 +233,7 @@ namespace Cyjb
 			{
 				return false;
 			}
-			for (int i = 0; i < maxLength; i++, index++)
+			for (var i = 0; i < maxLength; i++, index++)
 			{
 				if (!CharExt.IsHex(str, index))
 				{
@@ -307,7 +309,7 @@ namespace Cyjb
 		{
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (length == 0 || string.IsNullOrEmpty(str))
@@ -334,7 +336,7 @@ namespace Cyjb
 		{
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (length == 0 || string.IsNullOrEmpty(str))
@@ -361,10 +363,10 @@ namespace Cyjb
 		/// <seealso cref="String.Substring(int)"/>
 		public static string SubstringEx(this string str, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (startIndex < -str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (startIndex < 0)
@@ -396,14 +398,14 @@ namespace Cyjb
 		/// </overloads>
 		public static string SubstringEx(this string str, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			if (startIndex < -str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (startIndex < 0)
@@ -424,10 +426,10 @@ namespace Cyjb
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="startIndex"/> 指示的位置不在此实例中。</exception>
 		public static string Slice(this string str, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (startIndex < -str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (startIndex < 0)
@@ -461,14 +463,14 @@ namespace Cyjb
 		/// </overloads>
 		public static string Slice(this string str, int startIndex, int endIndex)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (startIndex < -str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (endIndex < -str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("endIndex", endIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(endIndex), endIndex);
 			}
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (startIndex < 0)
@@ -500,10 +502,10 @@ namespace Cyjb
 			{
 				return string.Empty;
 			}
-			int len = str.Length;
-			int end = len - 1;
-			int i = 0;
-			char[] strArr = new char[len];
+			var len = str.Length;
+			var end = len - 1;
+			var i = 0;
+			var strArr = new char[len];
 			while (end >= 0)
 			{
 				switch (CharUnicodeInfo.GetUnicodeCategory(str[i]))
@@ -519,14 +521,14 @@ namespace Cyjb
 							i--;
 							end++;
 						}
-						TextElementEnumerator textElementEnumerator = StringInfo.GetTextElementEnumerator(str, i);
+						var textElementEnumerator = StringInfo.GetTextElementEnumerator(str, i);
 						textElementEnumerator.MoveNext();
-						int idx = textElementEnumerator.ElementIndex;
+						var idx = textElementEnumerator.ElementIndex;
 						while (end >= 0)
 						{
 							i = idx;
 							idx = textElementEnumerator.MoveNext() ? textElementEnumerator.ElementIndex : len;
-							for (int j = idx - 1; j >= i; strArr[end--] = str[j--]) ;
+							for (var j = idx - 1; j >= i; strArr[end--] = str[j--]) ;
 						}
 						goto EndReverse;
 				}
@@ -576,12 +578,12 @@ namespace Cyjb
 			{
 				return text;
 			}
-			StringBuilder builder = new StringBuilder(text.Length);
+			var builder = new StringBuilder(text.Length);
 			// 0：起始位置。
 			// 1：正常添加字符。
 			// 2：需要添加替代字符。
-			int state = 0;
-			for (int i = 0; i < text.Length; i++)
+			var state = 0;
+			for (var i = 0; i < text.Length; i++)
 			{
 				if (predicate(text[i]))
 				{

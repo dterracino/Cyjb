@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Collections
@@ -77,11 +79,11 @@ namespace Cyjb.Collections
 		{
 			if (capacity < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("capacity", capacity);
+				throw CommonExceptions.ArgumentNegative(nameof(capacity), capacity);
 			}
 			Contract.EndContractBlock();
-			this.items = new uint[(capacity >> IndexShift) + 1];
-			this.capacity = this.items.Length << IndexShift;
+			items = new uint[(capacity >> IndexShift) + 1];
+			this.capacity = items.Length << IndexShift;
 		}
 		/// <summary>
 		/// 初始化 <see cref="BitList"/> 类的新实例，该实例包含从指定集合复制的元素。
@@ -92,9 +94,9 @@ namespace Cyjb.Collections
 		public BitList(IEnumerable<uint> collection)
 			: this(0)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.AddRange(collection);
+			AddRange(collection);
 		}
 		/// <summary>
 		/// 初始化 <see cref="BitList"/> 类的新实例，
@@ -106,9 +108,9 @@ namespace Cyjb.Collections
 		public BitList(IEnumerable<int> collection)
 			: this(0)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.AddRange(collection);
+			AddRange(collection);
 		}
 		/// <summary>
 		/// 初始化 <see cref="BitList"/> 类的新实例，
@@ -120,9 +122,9 @@ namespace Cyjb.Collections
 		public BitList(IEnumerable<byte> collection)
 			: this(0)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.AddRange(collection);
+			AddRange(collection);
 		}
 		/// <summary>
 		/// 初始化 <see cref="BitList"/> 类的新实例，
@@ -133,9 +135,9 @@ namespace Cyjb.Collections
 		public BitList(IEnumerable<bool> collection)
 			: this(0)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.AddRange(collection);
+			AddRange(collection);
 		}
 		/// <summary>
 		/// 初始化 <see cref="BitList"/> 类的新实例，
@@ -149,13 +151,13 @@ namespace Cyjb.Collections
 		{
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.EndContractBlock();
-			this.count = length;
+			count = length;
 			if (defaultValue)
 			{
-				this.Fill(0, length, true);
+				Fill(0, length, true);
 			}
 		}
 
@@ -169,20 +171,20 @@ namespace Cyjb.Collections
 		/// 设置为小于 <see cref="Count"/> 的值。</exception>
 		public int Capacity
 		{
-			get { return this.capacity; }
+			get { return capacity; }
 			set
 			{
-				if (value < this.count)
+				if (value < count)
 				{
-					throw CommonExceptions.ArgumentOutOfRange("value", value);
+					throw CommonExceptions.ArgumentOutOfRange(nameof(value), value);
 				}
 				Contract.EndContractBlock();
-				int newLength = (value >> IndexShift) + 1;
-				if (newLength == this.items.Length) { return; }
-				uint[] newData = new uint[newLength];
-				Array.Copy(this.items, newData, Math.Min(newLength, this.items.Length));
-				this.items = newData;
-				this.capacity = newLength << IndexShift;
+				var newLength = (value >> IndexShift) + 1;
+				if (newLength == items.Length) { return; }
+				var newData = new uint[newLength];
+				Array.Copy(items, newData, Math.Min(newLength, items.Length));
+				items = newData;
+				capacity = newLength << IndexShift;
 			}
 		}
 
@@ -203,9 +205,9 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public void AddRange(IEnumerable<uint> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.InsertRange(this.count, collection);
+			InsertRange(count, collection);
 		}
 		/// <summary>
 		/// 将指定集合的元素添加到 <see cref="BitList"/> 的末尾。
@@ -215,9 +217,9 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="collection"/> 为 <c>null</c>。</exception>
 		public void AddRange(IEnumerable<int> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.InsertRange(this.count, collection);
+			InsertRange(count, collection);
 		}
 		/// <summary>
 		/// 将指定集合的元素添加到 <see cref="BitList"/> 的末尾。
@@ -227,9 +229,9 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="collection"/> 为 <c>null</c>。</exception>
 		public void AddRange(IEnumerable<byte> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.InsertRange(this.count, collection);
+			InsertRange(count, collection);
 		}
 		/// <summary>
 		/// 将指定集合的元素添加到 <see cref="BitList"/> 的末尾。
@@ -239,9 +241,9 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="collection"/> 为 <c>null</c>。</exception>
 		public void AddRange(IEnumerable<bool> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			Contract.EndContractBlock();
-			this.InsertRange(this.count, collection);
+			InsertRange(count, collection);
 		}
 		/// <summary>
 		/// 将指定长度的值添加到 <see cref="BitList"/> 的末尾。
@@ -253,13 +255,13 @@ namespace Cyjb.Collections
 		{
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("length", length);
+				throw CommonExceptions.ArgumentNegative(nameof(length), length);
 			}
 			Contract.EndContractBlock();
-			int cnt = this.count;
-			this.count += length;
-			EnsureCapacity(this.count + UnitSize);
-			this.FillInternal(cnt, length, value);
+			var cnt = count;
+			count += length;
+			EnsureCapacity(count + UnitSize);
+			FillInternal(cnt, length, value);
 		}
 
 		#endregion // AddRange 操作
@@ -282,18 +284,18 @@ namespace Cyjb.Collections
 		/// </overloads>
 		public void InsertRange(int index, IEnumerable<int> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.count)
+			if (index > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			IList<uint> uintList = collection.Select(i => unchecked((uint)i)).ToList();
-			this.InsertRange(index, uintList.Count << IndexShift, uintList);
+			InsertRange(index, uintList.Count << IndexShift, uintList);
 		}
 		/// <summary>
 		/// 将指定集合中的元素插入 <see cref="BitList"/> 的指定索引处。
@@ -306,18 +308,18 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 大于 <see cref="Count"/>。</exception>
 		public void InsertRange(int index, IEnumerable<uint> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.count)
+			if (index > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
-			IList<uint> uintList = collection as IList<uint> ?? new List<uint>(collection);
-			this.InsertRange(index, uintList.Count << IndexShift, uintList);
+			var uintList = collection as IList<uint> ?? new List<uint>(collection);
+			InsertRange(index, uintList.Count << IndexShift, uintList);
 		}
 		/// <summary>
 		/// 将指定集合中的元素插入 <see cref="BitList"/> 的指定索引处。
@@ -330,21 +332,21 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 大于 <see cref="Count"/>。</exception>
 		public void InsertRange(int index, IEnumerable<byte> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.count)
+			if (index > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", IndexMask);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), IndexMask);
 			}
 			Contract.EndContractBlock();
 			IList<uint> uintList = new List<uint>();
-			int length = 0;
-			uint value = 0U;
-			int j = 0;
-			foreach (byte b in collection)
+			var length = 0;
+			var value = 0U;
+			var j = 0;
+			foreach (var b in collection)
 			{
 				value |= unchecked((uint)(b << j));
 				j += 8;
@@ -360,7 +362,7 @@ namespace Cyjb.Collections
 			{
 				uintList.Add(value);
 			}
-			this.InsertRange(index, length, uintList);
+			InsertRange(index, length, uintList);
 		}
 		/// <summary>
 		/// 将指定集合中的元素插入 <see cref="BitList"/> 的指定索引处。
@@ -373,19 +375,19 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 大于 <see cref="Count"/>。</exception>
 		public void InsertRange(int index, IEnumerable<bool> collection)
 		{
-			CommonExceptions.CheckArgumentNull(collection, "collection");
+			CommonExceptions.CheckArgumentNull(collection, nameof(collection));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
-			if (index > this.count)
+			if (index > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			IList<uint> uintList;
-			int length = 0;
-			BitList bList = collection as BitList;
+			var length = 0;
+			var bList = collection as BitList;
 			if (bList != null)
 			{
 				length = bList.count;
@@ -394,9 +396,9 @@ namespace Cyjb.Collections
 			else
 			{
 				uintList = new List<uint>();
-				uint value = 0U;
-				int j = 0;
-				foreach (bool b in collection)
+				var value = 0U;
+				var j = 0;
+				foreach (var b in collection)
 				{
 					if (b)
 					{
@@ -416,7 +418,7 @@ namespace Cyjb.Collections
 					uintList.Add(value);
 				}
 			}
-			this.InsertRange(index, length, uintList);
+			InsertRange(index, length, uintList);
 		}
 		/// <summary>
 		/// 将指定长度的值插入 <see cref="BitList"/> 的指定索引处。
@@ -431,25 +433,25 @@ namespace Cyjb.Collections
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("length", length);
+				throw CommonExceptions.ArgumentNegative(nameof(length), length);
 			}
-			if (index + length > this.count)
+			if (index + length > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.EndContractBlock();
-			int cnt = this.count + length;
+			var cnt = count + length;
 			EnsureCapacity(cnt + UnitSize);
-			if (index < this.count)
+			if (index < count)
 			{
-				this.LeftShift(index, length);
+				LeftShift(index, length);
 			}
-			this.FillInternal(index, length, value);
-			this.count = cnt;
+			FillInternal(index, length, value);
+			count = cnt;
 		}
 		/// <summary>
 		/// 将指定集合中的元素插入 <see cref="BitList"/> 的指定索引处。
@@ -463,15 +465,15 @@ namespace Cyjb.Collections
 			Contract.Requires(index >= 0);
 			Contract.Requires(length >= 0);
 			Contract.Requires(uintList != null);
-			int cnt = this.count + length;
+			var cnt = count + length;
 			EnsureCapacity(cnt + UnitSize);
-			if (index < this.count)
+			if (index < count)
 			{
-				this.LeftShift(index, length);
+				LeftShift(index, length);
 			}
-			int lowSize = index & IndexMask;
-			this.CopyItems(uintList, 0, index >> IndexShift, lowSize, length + lowSize);
-			this.count += length;
+			var lowSize = index & IndexMask;
+			CopyItems(uintList, 0, index >> IndexShift, lowSize, length + lowSize);
+			count += length;
 		}
 		/// <summary>
 		/// 将指定索引之后数据左移指定长度（向着索引增大的方向）。
@@ -482,14 +484,14 @@ namespace Cyjb.Collections
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(length >= 0);
-			int sourceIdx = (this.count - 1) >> IndexShift;
-			int cnt = ((sourceIdx + 1) << IndexShift) + length;
-			int lowSize = cnt & IndexMask;
+			var sourceIdx = (count - 1) >> IndexShift;
+			var cnt = ((sourceIdx + 1) << IndexShift) + length;
+			var lowSize = cnt & IndexMask;
 			if (lowSize == 0)
 			{
 				lowSize = UnitSize;
 			}
-			this.CopyItemsBackward(sourceIdx, (cnt - 1) >> IndexShift, lowSize,
+			CopyItemsBackward(sourceIdx, (cnt - 1) >> IndexShift, lowSize,
 				cnt - length - index - lowSize + UnitSize);
 		}
 
@@ -511,15 +513,15 @@ namespace Cyjb.Collections
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("length", length);
+				throw CommonExceptions.ArgumentNegative(nameof(length), length);
 			}
-			if (index + length > this.count)
+			if (index + length > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.EndContractBlock();
 			if (length <= 0)
@@ -528,26 +530,26 @@ namespace Cyjb.Collections
 			}
 			if (length == 1)
 			{
-				this.RemoveItem(index);
+				RemoveItem(index);
 				return;
 			}
-			int valueIdx = (index + length) >> IndexShift;
-			int idx = index >> IndexShift;
-			int tailSize = index & IndexMask;
-			int rSize = (index + length) & IndexMask;
+			var valueIdx = (index + length) >> IndexShift;
+			var idx = index >> IndexShift;
+			var tailSize = index & IndexMask;
+			var rSize = (index + length) & IndexMask;
 			if (rSize > 0)
 			{
-				uint value = this.items[valueIdx];
-				int highSize = tailSize == 0 ? 0 : UnitSize - tailSize;
-				int restSize = UnitSize - rSize;
+				var value = items[valueIdx];
+				var highSize = tailSize == 0 ? 0 : UnitSize - tailSize;
+				var restSize = UnitSize - rSize;
 				if (highSize > restSize)
 				{
 					highSize = restSize;
 				}
 				if (highSize > 0)
 				{
-					uint tailMask = GetMask(tailSize);
-					this.items[idx] = (this.items[idx] & tailMask) |
+					var tailMask = GetMask(tailSize);
+					items[idx] = (items[idx] & tailMask) |
 									  ((value >> rSize) << tailSize);
 					tailSize += highSize;
 					if (tailSize == UnitSize)
@@ -564,12 +566,12 @@ namespace Cyjb.Collections
 				valueIdx++;
 			}
 			// 计算要复制的长度。
-			int len = this.count - (valueIdx << IndexShift) + tailSize;
+			var len = count - (valueIdx << IndexShift) + tailSize;
 			if (len > 0)
 			{
-				this.CopyItems(this.items, valueIdx, idx, tailSize, len);
+				CopyItems(items, valueIdx, idx, tailSize, len);
 			}
-			this.count -= length;
+			count -= length;
 		}
 		/// <summary>
 		/// 将所有位填充为指定的值。
@@ -577,7 +579,7 @@ namespace Cyjb.Collections
 		/// <param name="value">要填充的值。</param>
 		public void FillAll(bool value)
 		{
-			this.Fill(0, this.count, value);
+			Fill(0, count, value);
 		}
 		/// <summary>
 		/// 填充指定范围中的元素。
@@ -596,18 +598,18 @@ namespace Cyjb.Collections
 		{
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("length", length);
+				throw CommonExceptions.ArgumentNegative(nameof(length), length);
 			}
-			if (index + length > this.count)
+			if (index + length > count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.EndContractBlock();
-			this.FillInternal(index, length, value);
+			FillInternal(index, length, value);
 		}
 		/// <summary>
 		/// 填充指定范围中的元素。
@@ -619,22 +621,22 @@ namespace Cyjb.Collections
 		{
 			Contract.Requires(index >= 0);
 			Contract.Requires(length >= 0);
-			Contract.Requires(index + length <= this.count);
+			Contract.Requires(index + length <= count);
 			if (length == 0)
 			{
 				return;
 			}
-			uint uv = value ? uint.MaxValue : 0U;
-			int idx = index >> IndexShift;
-			int tailSize = index & IndexMask;
+			var uv = value ? uint.MaxValue : 0U;
+			var idx = index >> IndexShift;
+			var tailSize = index & IndexMask;
 			if (tailSize > 0)
 			{
-				uint mask = GetMask(tailSize);
+				var mask = GetMask(tailSize);
 				if (length < UnitSize)
 				{
 					mask |= ~GetMask(length) << tailSize;
 				}
-				this.items[idx] = (this.items[idx] & mask) | (uv & ~mask);
+				items[idx] = (items[idx] & mask) | (uv & ~mask);
 				length -= UnitSize - tailSize;
 				idx++;
 			}
@@ -642,14 +644,14 @@ namespace Cyjb.Collections
 			{
 				if (length >= UnitSize)
 				{
-					this.items[idx] = uv;
+					items[idx] = uv;
 					length -= UnitSize;
 					idx++;
 				}
 				else
 				{
-					uint mask = GetMask(length);
-					this.items[idx] = (this.items[idx] & ~mask) | (uv & mask);
+					var mask = GetMask(length);
+					items[idx] = (items[idx] & ~mask) | (uv & mask);
 					break;
 				}
 			}
@@ -661,20 +663,20 @@ namespace Cyjb.Collections
 		/// 否则为 <c>false</c>。</returns>
 		public bool AllTrue()
 		{
-			if (this.count == 0)
+			if (count == 0)
 			{
 				return true;
 			}
-			int end = this.count >> IndexShift;
-			for (int i = 0; i < end; i++)
+			var end = count >> IndexShift;
+			for (var i = 0; i < end; i++)
 			{
-				if (this.items[i] != uint.MaxValue)
+				if (items[i] != uint.MaxValue)
 				{
 					return false;
 				}
 			}
-			uint value = this.items[end];
-			end = this.count - (end << IndexShift);
+			var value = items[end];
+			end = count - (end << IndexShift);
 			return (value | ~GetMask(end)) == uint.MaxValue;
 		}
 		/// <summary>
@@ -684,20 +686,20 @@ namespace Cyjb.Collections
 		/// 否则为 <c>false</c>。</returns>
 		public bool AllFalse()
 		{
-			if (this.count == 0)
+			if (count == 0)
 			{
 				return true;
 			}
-			int end = this.count >> IndexShift;
-			for (int i = 0; i < end; i++)
+			var end = count >> IndexShift;
+			for (var i = 0; i < end; i++)
 			{
-				if (this.items[i] != 0U)
+				if (items[i] != 0U)
 				{
 					return false;
 				}
 			}
-			uint value = this.items[end];
-			end = this.count - (end << IndexShift);
+			var value = items[end];
+			end = count - (end << IndexShift);
 			return (value & GetMask(end)) == 0U;
 		}
 		/// <summary>
@@ -707,22 +709,22 @@ namespace Cyjb.Collections
 		/// <returns>如果内容相同，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		public bool ContentEquals(BitList list)
 		{
-			if (list == null || this.count != list.count)
+			if (list == null || count != list.count)
 			{
 				return false;
 			}
-			int end = this.count >> IndexShift;
-			for (int i = 0; i < end; i++)
+			var end = count >> IndexShift;
+			for (var i = 0; i < end; i++)
 			{
-				if (this.items[i] != list.items[i])
+				if (items[i] != list.items[i])
 				{
 					return false;
 				}
 			}
-			uint value = this.items[end];
-			uint value2 = list.items[end];
-			end = this.count - (end << IndexShift);
-			uint mask = GetMask(end);
+			var value = items[end];
+			var value2 = list.items[end];
+			end = count - (end << IndexShift);
+			var mask = GetMask(end);
 			return (value & mask) == (value2 & mask);
 		}
 		/// <summary>
@@ -735,14 +737,14 @@ namespace Cyjb.Collections
 		/// <returns>内容的哈希代码。</returns>
 		internal int GetContentHashCode()
 		{
-			int hashCode = this.count;
-			int end = this.count >> IndexShift;
-			for (int i = 0; i < end; i++)
+			var hashCode = count;
+			var end = count >> IndexShift;
+			for (var i = 0; i < end; i++)
 			{
-				hashCode ^= unchecked((int)this.items[i] + MagicCode + (hashCode << 6) + (hashCode >> 2));
+				hashCode ^= unchecked((int)items[i] + MagicCode + (hashCode << 6) + (hashCode >> 2));
 			}
-			uint value = this.items[end];
-			end = this.count - (end << IndexShift);
+			var value = items[end];
+			end = count - (end << IndexShift);
 			hashCode ^= unchecked((int)(value & GetMask(end)) + MagicCode + (hashCode << 6) + (hashCode >> 2));
 			return hashCode;
 		}
@@ -766,16 +768,16 @@ namespace Cyjb.Collections
 		/// 和当前 <see cref="BitList"/> 的元素数不同。</exception>
 		public BitList And(BitList list)
 		{
-			CommonExceptions.CheckArgumentNull(list, "list");
-			if (list.count != this.count)
+			CommonExceptions.CheckArgumentNull(list, nameof(list));
+			if (list.count != count)
 			{
-				throw CommonExceptions.CollectionCountDiffer("list");
+				throw CommonExceptions.CollectionCountDiffer(nameof(list));
 			}
 			Contract.EndContractBlock();
-			int cnt = this.count >> IndexShift;
-			for (int i = 0; i <= cnt; i++)
+			var cnt = count >> IndexShift;
+			for (var i = 0; i <= cnt; i++)
 			{
-				this.items[i] &= list.items[i];
+				items[i] &= list.items[i];
 			}
 			return this;
 		}
@@ -794,16 +796,16 @@ namespace Cyjb.Collections
 		/// 和当前 <see cref="BitList"/> 的元素数不同。</exception>
 		public BitList Or(BitList list)
 		{
-			CommonExceptions.CheckArgumentNull(list, "list");
-			if (list.count != this.count)
+			CommonExceptions.CheckArgumentNull(list, nameof(list));
+			if (list.count != count)
 			{
-				throw CommonExceptions.CollectionCountDiffer("list");
+				throw CommonExceptions.CollectionCountDiffer(nameof(list));
 			}
 			Contract.EndContractBlock();
-			int cnt = this.count >> IndexShift;
-			for (int i = 0; i <= cnt; i++)
+			var cnt = count >> IndexShift;
+			for (var i = 0; i <= cnt; i++)
 			{
-				this.items[i] |= list.items[i];
+				items[i] |= list.items[i];
 			}
 			return this;
 		}
@@ -822,16 +824,16 @@ namespace Cyjb.Collections
 		/// 和当前 <see cref="BitList"/> 的元素数不同。</exception>
 		public BitList Xor(BitList list)
 		{
-			CommonExceptions.CheckArgumentNull(list, "list");
-			if (list.count != this.count)
+			CommonExceptions.CheckArgumentNull(list, nameof(list));
+			if (list.count != count)
 			{
-				throw CommonExceptions.CollectionCountDiffer("list");
+				throw CommonExceptions.CollectionCountDiffer(nameof(list));
 			}
 			Contract.EndContractBlock();
-			int cnt = this.count >> IndexShift;
-			for (int i = 0; i <= cnt; i++)
+			var cnt = count >> IndexShift;
+			for (var i = 0; i <= cnt; i++)
 			{
-				this.items[i] ^= list.items[i];
+				items[i] ^= list.items[i];
 			}
 			return this;
 		}
@@ -843,10 +845,10 @@ namespace Cyjb.Collections
 		/// <returns>当前 <see cref="BitList"/> 对象。</returns>
 		public BitList Not()
 		{
-			int cnt = this.count >> IndexShift;
-			for (int i = 0; i <= cnt; i++)
+			var cnt = count >> IndexShift;
+			for (var i = 0; i <= cnt; i++)
 			{
-				this.items[i] = ~this.items[i];
+				items[i] = ~items[i];
 			}
 			return this;
 		}
@@ -859,14 +861,14 @@ namespace Cyjb.Collections
 		/// <returns>当前 <see cref="BitList"/> 对象。</returns>
 		public BitList LeftShift(int offset)
 		{
-			if (this.count <= 0)
+			if (count <= 0)
 			{
 				return this;
 			}
-			int b = this.count.LogBase2();
+			var b = count.LogBase2();
 			offset &= (1 << (b + 1)) - 1;
-			this.LeftShift(0, offset);
-			this.Fill(0, offset, false);
+			LeftShift(0, offset);
+			Fill(0, offset, false);
 			return this;
 		}
 		/// <summary>
@@ -878,16 +880,16 @@ namespace Cyjb.Collections
 		/// <returns>当前 <see cref="BitList"/> 对象。</returns>
 		public BitList RightShift(int offset)
 		{
-			if (this.count <= 0)
+			if (count <= 0)
 			{
 				return this;
 			}
-			int b = this.count.LogBase2();
+			var b = count.LogBase2();
 			offset &= (1 << (b + 1)) - 1;
-			int cnt = this.count;
-			this.RemoveRange(0, offset);
-			this.FillInternal(this.count, cnt - this.count, false);
-			this.count = cnt;
+			var cnt = count;
+			RemoveRange(0, offset);
+			FillInternal(count, cnt - count, false);
+			count = cnt;
 			return this;
 		}
 
@@ -900,7 +902,7 @@ namespace Cyjb.Collections
 		/// </summary>
 		public override void Clear()
 		{
-			this.count = 0;
+			count = 0;
 		}
 		/// <summary>
 		/// 将元素插入 <see cref="BitList"/> 的指定索引处。
@@ -909,28 +911,28 @@ namespace Cyjb.Collections
 		/// <param name="item">要插入的对象。</param>
 		protected override void InsertItem(int index, bool item)
 		{
-			if (this.count + 1 > this.capacity)
+			if (count + 1 > capacity)
 			{
-				EnsureCapacity(this.count + 1);
+				EnsureCapacity(count + 1);
 			}
-			int cnt = this.count >> IndexShift;
-			int idx = index >> IndexShift;
-			for (int i = cnt; i > idx; i--)
+			var cnt = count >> IndexShift;
+			var idx = index >> IndexShift;
+			for (var i = cnt; i > idx; i--)
 			{
-				this.items[i] <<= 1;
-				this.items[i] |= this.items[i - 1] >> 31;
+				items[i] <<= 1;
+				items[i] |= items[i - 1] >> 31;
 			}
-			uint value = this.items[idx];
-			uint spliter = (1U << (index & IndexMask));
-			uint lowMask = spliter - 1;
-			uint lowBits = value & lowMask;
-			uint highBits = value & (uint.MaxValue - lowMask);
+			var value = items[idx];
+			var spliter = 1U << (index & IndexMask);
+			var lowMask = spliter - 1;
+			var lowBits = value & lowMask;
+			var highBits = value & (uint.MaxValue - lowMask);
 			if (!item)
 			{
 				spliter = 0U;
 			}
-			this.items[idx] = (highBits << 1) | spliter | lowBits;
-			this.count++;
+			items[idx] = (highBits << 1) | spliter | lowBits;
+			count++;
 		}
 		/// <summary>
 		/// 移除 <see cref="BitList"/> 的指定索引处的元素。
@@ -938,19 +940,19 @@ namespace Cyjb.Collections
 		/// <param name="index">要移除的元素的从零开始的索引。</param>
 		protected override void RemoveItem(int index)
 		{
-			int idx = index >> IndexShift;
-			uint value = this.items[idx];
-			uint spliter = 1U << (index & IndexMask);
-			uint highBits = value & ~((spliter << 1) - 1U);
-			uint lowBits = value & (spliter - 1U);
-			this.items[idx] = (highBits >> 1) | lowBits;
-			int end = this.count >> IndexShift;
+			var idx = index >> IndexShift;
+			var value = items[idx];
+			var spliter = 1U << (index & IndexMask);
+			var highBits = value & ~((spliter << 1) - 1U);
+			var lowBits = value & (spliter - 1U);
+			items[idx] = (highBits >> 1) | lowBits;
+			var end = count >> IndexShift;
 			for (idx++; idx <= end; idx++)
 			{
-				this.items[idx - 1] |= this.items[idx] << 31;
-				this.items[idx] >>= 1;
+				items[idx - 1] |= items[idx] << 31;
+				items[idx] >>= 1;
 			}
-			this.count--;
+			count--;
 		}
 		/// <summary>
 		/// 替换指定索引处的元素。
@@ -959,18 +961,18 @@ namespace Cyjb.Collections
 		/// <param name="item">位于指定索引处的元素的新值。对于引用类型，该值可以为 <c>null</c>。</param>
 		protected override void SetItemAt(int index, bool item)
 		{
-			if (index < 0 || index >= this.count)
+			if (index < 0 || index >= count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
 			if (item)
 			{
-				this.items[index >> IndexShift] |= (1U << (index & IndexMask));
+				items[index >> IndexShift] |= 1U << (index & IndexMask);
 			}
 			else
 			{
-				this.items[index >> IndexShift] &= ~(1U << (index & IndexMask));
+				items[index >> IndexShift] &= ~(1U << (index & IndexMask));
 			}
 		}
 		/// <summary>
@@ -980,12 +982,12 @@ namespace Cyjb.Collections
 		/// <returns>位于指定索引处的元素。</returns>
 		protected override bool GetItemAt(int index)
 		{
-			if (index < 0 || index >= this.count)
+			if (index < 0 || index >= count)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.EndContractBlock();
-			return (this.items[index >> IndexShift] & (1 << (index & IndexMask))) != 0U;
+			return (items[index >> IndexShift] & (1 << (index & IndexMask))) != 0U;
 		}
 
 		#endregion // ListBase<bool> 成员
@@ -1000,11 +1002,11 @@ namespace Cyjb.Collections
 		/// 则为该项的索引；否则为 <c>-1</c>。</returns>
 		public override int IndexOf(bool item)
 		{
-			int end = this.count >> IndexShift;
-			int idx = -1;
-			for (int i = 0; i <= end; i++)
+			var end = count >> IndexShift;
+			var idx = -1;
+			for (var i = 0; i <= end; i++)
 			{
-				uint value = this.items[i];
+				var value = items[i];
 				if (value == 0U)
 				{
 					if (item)
@@ -1030,7 +1032,7 @@ namespace Cyjb.Collections
 					idx = (i << IndexShift) + value.CountTrailingBits();
 				}
 			}
-			return idx > this.count ? -1 : idx;
+			return idx > count ? -1 : idx;
 		}
 
 		#endregion // IList<T> 成员
@@ -1043,7 +1045,7 @@ namespace Cyjb.Collections
 		/// <value><see cref="BitList"/> 中包含的元素数。</value>
 		public override int Count
 		{
-			get { return this.count; }
+			get { return count; }
 		}
 
 		#endregion // ICollection<bool> 成员
@@ -1071,69 +1073,69 @@ namespace Cyjb.Collections
 		/// 的类型无法自动转换为目标 <paramref name="array"/> 的类型。</exception>
 		void ICollection.CopyTo(Array array, int index)
 		{
-			CommonExceptions.CheckSimplyArray(array, "array");
+			CommonExceptions.CheckSimplyArray(array, nameof(array));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			Contract.EndContractBlock();
-			uint[] uarr = array as uint[];
+			var uarr = array as uint[];
 			if (uarr != null)
 			{
-				int end = 0;
-				if (this.count > 0)
+				var end = 0;
+				if (count > 0)
 				{
-					end = (this.count - 1) >> IndexShift;
+					end = (count - 1) >> IndexShift;
 				}
-				Array.Copy(this.items, 0, array, index, end + 1);
+				Array.Copy(items, 0, array, index, end + 1);
 				return;
 			}
-			int[] iarr = array as int[];
+			var iarr = array as int[];
 			if (iarr != null)
 			{
-				int cnt = 1;
-				if (this.count > 0)
+				var cnt = 1;
+				if (count > 0)
 				{
-					cnt = ((this.count - 1) >> IndexShift) + 1;
+					cnt = ((count - 1) >> IndexShift) + 1;
 				}
 				if (array.Length - index < cnt)
 				{
-					throw CommonExceptions.ArrayTooSmall("array");
+					throw CommonExceptions.ArrayTooSmall(nameof(array));
 				}
-				for (int i = 0; i < cnt; i++)
+				for (var i = 0; i < cnt; i++)
 				{
-					iarr[index++] = unchecked((int)this.items[i]);
+					iarr[index++] = unchecked((int)items[i]);
 				}
 				return;
 			}
-			byte[] barr = array as byte[];
+			var barr = array as byte[];
 			if (barr != null)
 			{
-				int cnt = 1;
-				if (this.count > 0)
+				var cnt = 1;
+				if (count > 0)
 				{
-					cnt = ((this.count - 1) / 8) + 1;
+					cnt = (count - 1) / 8 + 1;
 				}
 				if (array.Length - index < cnt)
 				{
-					throw CommonExceptions.ArrayTooSmall("array");
+					throw CommonExceptions.ArrayTooSmall(nameof(array));
 				}
-				for (int i = 0; i < cnt; i++)
+				for (var i = 0; i < cnt; i++)
 				{
-					barr[index++] = (byte)((this.items[i / 4] >> ((i % 4) * 8)) & 0xFF);
+					barr[index++] = (byte)((items[i / 4] >> (i % 4 * 8)) & 0xFF);
 				}
 				return;
 			}
-			bool[] boarr = array as bool[];
+			var boarr = array as bool[];
 			if (boarr != null)
 			{
-				if (array.Length - index < this.count)
+				if (array.Length - index < count)
 				{
-					throw CommonExceptions.ArrayTooSmall("array");
+					throw CommonExceptions.ArrayTooSmall(nameof(array));
 				}
-				for (int i = 0; i < this.count; i++)
+				for (var i = 0; i < count; i++)
 				{
-					boarr[index++] = (this.items[i >> IndexShift] & (1U << (i & IndexMask))) > 0;
+					boarr[index++] = (items[i >> IndexShift] & (1U << (i & IndexMask))) > 0;
 				}
 				return;
 			}
@@ -1151,19 +1153,19 @@ namespace Cyjb.Collections
 		/// <see cref="System.Collections.Generic.IEnumerator{T}"/>。</returns>
 		public override IEnumerator<bool> GetEnumerator()
 		{
-			int end = this.count >> IndexShift;
+			var end = count >> IndexShift;
 			uint value;
-			for (int i = 0; i < end; i++)
+			for (var i = 0; i < end; i++)
 			{
-				value = this.items[i];
-				for (int j = 0; j < UnitSize; j++, value >>= 1)
+				value = items[i];
+				for (var j = 0; j < UnitSize; j++, value >>= 1)
 				{
 					yield return (value & 1U) == 1U;
 				}
 			}
-			value = this.items[end];
-			end = this.count - (end << IndexShift);
-			for (int i = 0; i < end; i++, value >>= 1)
+			value = items[end];
+			end = count - (end << IndexShift);
+			for (var i = 0; i < end; i++, value >>= 1)
 			{
 				yield return (value & 1U) == 1U;
 			}
@@ -1179,16 +1181,16 @@ namespace Cyjb.Collections
 		/// <param name="min">列表最少的长度。</param>
 		private void EnsureCapacity(int min)
 		{
-			if (this.capacity >= min)
+			if (capacity >= min)
 			{
 				return;
 			}
-			int newCapacity = this.capacity << 1;
+			var newCapacity = capacity << 1;
 			if (newCapacity < min)
 			{
 				newCapacity = min;
 			}
-			this.Capacity = newCapacity;
+			Capacity = newCapacity;
 		}
 		/// <summary>
 		/// 获取指定长度的掩码。
@@ -1213,23 +1215,23 @@ namespace Cyjb.Collections
 		{
 			Contract.Requires(source != null);
 			Contract.Requires(sourceIdx >= 0 && sourceIdx < source.Count);
-			Contract.Requires(itemIdx >= 0 && itemIdx < this.items.Length);
+			Contract.Requires(itemIdx >= 0 && itemIdx < items.Length);
 			Contract.Requires(lowSize >= 0 && lowSize <= UnitSize);
-			Contract.Requires(length >= 0 && length <= this.count);
-			int highSize = UnitSize - lowSize;
-			int cnt = source.Count;
+			Contract.Requires(length >= 0 && length <= count);
+			var highSize = UnitSize - lowSize;
+			var cnt = source.Count;
 			// 特殊处理第一次循环。
 			if (length >= UnitSize)
 			{
 				if (lowSize == 0)
 				{
-					this.items[itemIdx] = source[sourceIdx];
+					items[itemIdx] = source[sourceIdx];
 				}
 				else
 				{
-					uint lowMask = GetMask(lowSize);
-					this.items[itemIdx] = (source[sourceIdx] << lowSize) |
-						(this.items[itemIdx] & lowMask);
+					var lowMask = GetMask(lowSize);
+					items[itemIdx] = (source[sourceIdx] << lowSize) |
+						(items[itemIdx] & lowMask);
 				}
 				length -= UnitSize;
 				sourceIdx++;
@@ -1237,7 +1239,7 @@ namespace Cyjb.Collections
 			}
 			else
 			{
-				uint value = 0U;
+				var value = 0U;
 				if (lowSize == 0)
 				{
 					value = source[sourceIdx];
@@ -1253,8 +1255,8 @@ namespace Cyjb.Collections
 						value |= source[sourceIdx] << lowSize;
 					}
 				}
-				uint lenMask = GetMask(length - lowSize) << lowSize;
-				this.items[itemIdx] = (this.items[itemIdx] & ~lenMask) | (value & lenMask);
+				var lenMask = GetMask(length - lowSize) << lowSize;
+				items[itemIdx] = (items[itemIdx] & ~lenMask) | (value & lenMask);
 				return;
 			}
 			while (length > 0)
@@ -1263,11 +1265,11 @@ namespace Cyjb.Collections
 				{
 					if (lowSize == 0)
 					{
-						this.items[itemIdx] = source[sourceIdx];
+						items[itemIdx] = source[sourceIdx];
 					}
 					else
 					{
-						this.items[itemIdx] = (source[sourceIdx] << lowSize) |
+						items[itemIdx] = (source[sourceIdx] << lowSize) |
 							(source[sourceIdx - 1] >> highSize);
 					}
 					length -= UnitSize;
@@ -1276,7 +1278,7 @@ namespace Cyjb.Collections
 				}
 				else
 				{
-					uint value = 0U;
+					var value = 0U;
 					if (lowSize == 0)
 					{
 						value = source[sourceIdx];
@@ -1292,8 +1294,8 @@ namespace Cyjb.Collections
 							value |= source[sourceIdx] << lowSize;
 						}
 					}
-					uint lenMask = GetMask(length);
-					this.items[itemIdx] = (this.items[itemIdx] & ~lenMask) | (value & lenMask);
+					var lenMask = GetMask(length);
+					items[itemIdx] = (items[itemIdx] & ~lenMask) | (value & lenMask);
 					break;
 				}
 			}
@@ -1307,23 +1309,23 @@ namespace Cyjb.Collections
 		/// <param name="length">最多可以复制的位数，<paramref name="lowSize"/> 也要算在内。</param>
 		private void CopyItemsBackward(int sourceIdx, int itemIdx, int lowSize, int length)
 		{
-			Contract.Requires(sourceIdx >= 0 && sourceIdx < this.items.Length);
-			Contract.Requires(itemIdx >= 0 && itemIdx < this.items.Length);
+			Contract.Requires(sourceIdx >= 0 && sourceIdx < items.Length);
+			Contract.Requires(itemIdx >= 0 && itemIdx < items.Length);
 			Contract.Requires(lowSize >= 0 && lowSize <= UnitSize);
-			Contract.Requires(length >= 0 && length <= this.count);
-			int highSize = UnitSize - lowSize;
+			Contract.Requires(length >= 0 && length <= count);
+			var highSize = UnitSize - lowSize;
 			while (length > 0)
 			{
 				if (length >= UnitSize)
 				{
 					if (highSize == 0)
 					{
-						this.items[itemIdx] = this.items[sourceIdx];
+						items[itemIdx] = items[sourceIdx];
 					}
 					else
 					{
-						this.items[itemIdx] = (this.items[sourceIdx + 1] << lowSize) |
-							(this.items[sourceIdx] >> highSize);
+						items[itemIdx] = (items[sourceIdx + 1] << lowSize) |
+							(items[sourceIdx] >> highSize);
 					}
 					length -= UnitSize;
 					sourceIdx--;
@@ -1334,18 +1336,18 @@ namespace Cyjb.Collections
 					uint value;
 					if (highSize == 0)
 					{
-						value = this.items[sourceIdx];
+						value = items[sourceIdx];
 					}
 					else
 					{
-						value = this.items[sourceIdx + 1] << lowSize;
+						value = items[sourceIdx + 1] << lowSize;
 						if (sourceIdx >= 0)
 						{
-							value |= this.items[sourceIdx] >> highSize;
+							value |= items[sourceIdx] >> highSize;
 						}
 					}
-					uint lenMask = GetMask(UnitSize - length);
-					this.items[itemIdx] = (this.items[itemIdx] & lenMask) | (value & ~lenMask);
+					var lenMask = GetMask(UnitSize - length);
+					items[itemIdx] = (items[itemIdx] & lenMask) | (value & ~lenMask);
 					break;
 				}
 			}

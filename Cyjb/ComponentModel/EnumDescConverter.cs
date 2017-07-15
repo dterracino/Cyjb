@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.ComponentModel
 {
@@ -33,10 +37,10 @@ namespace Cyjb.ComponentModel
 		/// </overloads>
 		public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			string strValue = value as string;
+			var strValue = value as string;
 			if (strValue != null)
 			{
-				return EnumExt.ParseEx(this.EnumType, strValue, true);
+				return EnumExt.ParseEx(EnumType, strValue, true);
 			}
 			return base.ConvertFrom(context, culture, value);
 		}
@@ -58,7 +62,7 @@ namespace Cyjb.ComponentModel
 		public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture,
 			object value, Type destinationType)
 		{
-			CommonExceptions.CheckArgumentNull(destinationType, "destinationType");
+			CommonExceptions.CheckArgumentNull(destinationType, nameof(destinationType));
 			Contract.EndContractBlock();
 			if (value != null && destinationType == typeof(string))
 			{

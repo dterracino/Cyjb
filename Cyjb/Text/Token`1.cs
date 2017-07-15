@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.IO;
 using Cyjb.Utility;
 
@@ -100,7 +103,7 @@ namespace Cyjb.Text
 		{
 			this.id = id;
 			this.text = text;
-			this.start = this.end = loc;
+			start = end = loc;
 		}
 		/// <summary>
 		/// 使用词法单元的相关信息初始化 <see cref="Token{T}"/> 类的新实例。
@@ -126,12 +129,12 @@ namespace Cyjb.Text
 		/// <param name="range">位置范围。</param>
 		public Token(T id, string text, ISourceLocatable range)
 		{
-			CommonExceptions.CheckSourceLocatable(range, "range");
+			CommonExceptions.CheckSourceLocatable(range, nameof(range));
 			Contract.EndContractBlock();
 			if (range != null)
 			{
-				this.start = range.Start;
-				this.end = range.End;
+				start = range.Start;
+				end = range.End;
 			}
 			this.id = id;
 			this.text = text;
@@ -163,12 +166,12 @@ namespace Cyjb.Text
 		/// <param name="value">词法单元的值。</param>
 		public Token(T id, string text, ISourceLocatable range, object value)
 		{
-			CommonExceptions.CheckSourceLocatable(range, "range");
+			CommonExceptions.CheckSourceLocatable(range, nameof(range));
 			Contract.EndContractBlock();
 			if (range != null)
 			{
-				this.start = range.Start;
-				this.end = range.End;
+				start = range.Start;
+				end = range.End;
 			}
 			this.id = id;
 			this.text = text;
@@ -181,34 +184,34 @@ namespace Cyjb.Text
 		/// 获取词法单元的标识符。
 		/// </summary>
 		/// <value>词法单元的标识符。</value>
-		public T Id { get { return this.id; } }
+		public T Id { get { return id; } }
 		/// <summary>
 		/// 获取词法单元的文本。
 		/// </summary>
 		/// <value>词法单元的文本。</value>
-		public string Text { get { return this.text; } }
+		public string Text { get { return text; } }
 		/// <summary>
 		/// 获取词法单元的起始位置。
 		/// </summary>
 		/// <value>词法单元的起始位置。</value>
-		public SourcePosition Start { get { return this.start; } }
+		public SourcePosition Start { get { return start; } }
 		/// <summary>
 		/// 获取词法单元的结束位置。
 		/// </summary>
 		/// <value>词法单元的结束位置。</value>
-		public SourcePosition End { get { return this.end; } }
+		public SourcePosition End { get { return end; } }
 		/// <summary>
 		/// 获取词法单元的值。
 		/// </summary>
 		/// <value>词法单元的值。</value>
-		public object Value { get { return this.value; } }
+		public object Value { get { return value; } }
 		/// <summary>
 		/// 获取当前词法单元是否表示文件的结束。
 		/// </summary>
 		/// <value>如果表示文件的结束，则为 <c>true</c>；否则为 <c>false</c>。</value>
 		public bool IsEndOfFile
 		{
-			get { return EqualityComparer<T>.Default.Equals(this.id, EndOfFile); }
+			get { return EqualityComparer<T>.Default.Equals(id, EndOfFile); }
 		}
 
 		#region IEquatable<Token> 成员
@@ -234,8 +237,8 @@ namespace Cyjb.Text
 			{
 				return true;
 			}
-			return EqualityComparer<T>.Default.Equals(this.id, other.id) && this.text == other.text &&
-			this.start == other.start && this.end == other.end;
+			return EqualityComparer<T>.Default.Equals(id, other.id) && text == other.text &&
+			start == other.start && end == other.end;
 		}
 
 		#endregion // IEquatable<Token> 成员
@@ -250,8 +253,8 @@ namespace Cyjb.Text
 		/// 否则为 <c>false</c>。</returns>
 		public override bool Equals(object obj)
 		{
-			Token<T> token = obj as Token<T>;
-			return token != null && this.Equals(token);
+			var token = obj as Token<T>;
+			return token != null && Equals(token);
 		}
 		/// <summary>
 		/// 用于 <see cref="Token{T}"/> 类型的哈希函数。

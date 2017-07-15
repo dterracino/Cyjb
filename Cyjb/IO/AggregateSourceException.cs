@@ -8,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Security;
 using System.Security.Permissions;
 using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 using JetBrains.Annotations;
 
@@ -68,8 +69,8 @@ namespace Cyjb.IO
 		public AggregateSourceException(string message)
 			: base(message)
 		{
-			this.innerExps = ArrayExt.Empty<SourceException>();
-			this.innerExpsCollection = ReadOnlyCollection<SourceException>.Empty;
+			innerExps = ArrayExt.Empty<SourceException>();
+			innerExpsCollection = ReadOnlyCollection<SourceException>.Empty;
 		}
 		/// <summary>
 		/// 使用指定的错误消息和对导致此异常的内部异常的引用初始化 <see cref="AggregateSourceException"/> 类的新实例。
@@ -81,18 +82,18 @@ namespace Cyjb.IO
 		{
 			if (innerException == null)
 			{
-				this.innerExps = ArrayExt.Empty<SourceException>();
-				this.innerExpsCollection = ReadOnlyCollection<SourceException>.Empty;
+				innerExps = ArrayExt.Empty<SourceException>();
+				innerExpsCollection = ReadOnlyCollection<SourceException>.Empty;
 			}
 			else
 			{
-				SourceException sourceExp = innerException as SourceException;
+				var sourceExp = innerException as SourceException;
 				if (sourceExp == null)
 				{
 					throw CommonExceptions.InvalidCast(innerException.GetType(), typeof(SourceException));
 				}
-				this.innerExps = new[] { sourceExp };
-				this.innerExpsCollection = new ReadOnlyCollection<SourceException>(innerExps);
+				innerExps = new[] { sourceExp };
+				innerExpsCollection = new ReadOnlyCollection<SourceException>(innerExps);
 			}
 		}
 		/// <summary>
@@ -124,18 +125,18 @@ namespace Cyjb.IO
 		private AggregateSourceException(string message, IList<SourceException> innerExceptions)
 			: base(message, innerExceptions != null && innerExceptions.Count > 0 ? innerExceptions[0] : null)
 		{
-			CommonExceptions.CheckArgumentNull(innerExceptions, "innerExceptions");
+			CommonExceptions.CheckArgumentNull(innerExceptions, nameof(innerExceptions));
 			if (innerExceptions.Any(ex => ex == null))
 			{
-				throw CommonExceptions.CollectionItemNull("innerExceptions");
+				throw CommonExceptions.CollectionItemNull(nameof(innerExceptions));
 			}
-			int cnt = innerExceptions.Count;
-			this.innerExps = new SourceException[cnt];
-			for (int i = 0; i < cnt; i++)
+			var cnt = innerExceptions.Count;
+			innerExps = new SourceException[cnt];
+			for (var i = 0; i < cnt; i++)
 			{
-				this.innerExps[i] = innerExceptions[i];
+				innerExps[i] = innerExceptions[i];
 			}
-			innerExpsCollection = new ReadOnlyCollection<SourceException>(this.innerExps);
+			innerExpsCollection = new ReadOnlyCollection<SourceException>(innerExps);
 		}
 		/// <summary>
 		/// 用指定的序列化信息和上下文初始化 <see cref="AggregateSourceException"/> 类的新实例。
@@ -148,9 +149,9 @@ namespace Cyjb.IO
 		protected AggregateSourceException(SerializationInfo info, StreamingContext context)
 			: base(info, context)
 		{
-			CommonExceptions.CheckArgumentNull(info, "info");
+			CommonExceptions.CheckArgumentNull(info, nameof(info));
 			Contract.EndContractBlock();
-			this.innerExps = (SourceException[])info.GetValue("InnerExceptions", typeof(SourceException[]));
+			innerExps = (SourceException[])info.GetValue("InnerExceptions", typeof(SourceException[]));
 			innerExpsCollection = new ReadOnlyCollection<SourceException>(innerExps);
 		}
 
@@ -173,7 +174,7 @@ namespace Cyjb.IO
 		[UsedImplicitly]
 		private int InnerExceptionCount
 		{
-			get { return this.innerExps.Length; }
+			get { return innerExps.Length; }
 		}
 		/// <summary>
 		/// 返回是当前异常的根本原因的 <see cref="AggregateSourceException"/>。
@@ -182,7 +183,7 @@ namespace Cyjb.IO
 		public override Exception GetBaseException()
 		{
 			Exception back = this;
-			AggregateSourceException backAsAggregate = this;
+			var backAsAggregate = this;
 			while (backAsAggregate != null && backAsAggregate.InnerExceptions.Count == 1)
 			{
 				Contract.Assume(back != null);
@@ -211,13 +212,13 @@ namespace Cyjb.IO
 		{
 			if (predicate == null)
 			{
-				throw new ArgumentNullException("predicate");
+				throw new ArgumentNullException(nameof(predicate));
 			}
 			Contract.EndContractBlock();
 			List<Exception> unhandledExceptions = null;
-			for (int i = 0; i < this.innerExps.Length; i++)
+			for (var i = 0; i < innerExps.Length; i++)
 			{
-				SourceException exp = this.innerExps[i];
+				var exp = innerExps[i];
 				if (predicate(exp))
 				{
 					continue;
@@ -230,7 +231,7 @@ namespace Cyjb.IO
 			}
 			if (unhandledExceptions != null)
 			{
-				throw new AggregateException(this.Message, unhandledExceptions);
+				throw new AggregateException(Message, unhandledExceptions);
 			}
 		}
 		/// <summary>
@@ -239,12 +240,12 @@ namespace Cyjb.IO
 		/// <returns>当前对象的字符串形式。</returns>
 		public override string ToString()
 		{
-			StringBuilder text = new StringBuilder();
+			var text = new StringBuilder();
 			text.Append(base.ToString());
-			for (int i = 0; i < this.innerExps.Length; i++)
+			for (var i = 0; i < innerExps.Length; i++)
 			{
 				text.AppendLine();
-				text.AppendFormat(Resources.AggregateSourceException_InnerException, i, this.innerExps[i]);
+				text.AppendFormat(Resources.AggregateSourceException_InnerException, i, innerExps[i]);
 			}
 			return text.ToString();
 		}
@@ -262,7 +263,7 @@ namespace Cyjb.IO
 		[SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
 		public override void GetObjectData(SerializationInfo info, StreamingContext context)
 		{
-			CommonExceptions.CheckArgumentNull(info, "info");
+			CommonExceptions.CheckArgumentNull(info, nameof(info));
 			Contract.EndContractBlock();
 			base.GetObjectData(info, context);
 			info.AddValue("InnerExceptions", innerExps.Clone());

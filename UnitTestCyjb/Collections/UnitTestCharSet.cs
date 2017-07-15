@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -85,7 +88,7 @@ namespace UnitTestCyjb.Collections
 			Assert.AreEqual(hashSet.Count, charSet.Count);
 			hashSetIg.Add(ch);
 			charSetIg.Add(ch);
-			HashSet<char> tempSet = new HashSet<char>(hashSetIg);
+			var tempSet = new HashSet<char>(hashSetIg);
 			Assert.IsTrue(tempSet.SetEquals(charSetIg));
 			Assert.AreEqual(hashSetIg.Count, charSetIg.Count);
 		}
@@ -95,7 +98,7 @@ namespace UnitTestCyjb.Collections
 			Assert.IsTrue(hashSet.SetEquals(charSet));
 			Assert.AreEqual(hashSet.Count, charSet.Count);
 			Assert.AreEqual(hashSetIg.Remove(ch), charSetIg.Remove(ch));
-			HashSet<char> tempSet = new HashSet<char>(hashSetIg);
+			var tempSet = new HashSet<char>(hashSetIg);
 			Assert.IsTrue(tempSet.SetEquals(charSetIg));
 			Assert.AreEqual(hashSetIg.Count, charSetIg.Count);
 		}

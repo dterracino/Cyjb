@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -24,8 +28,8 @@ namespace Cyjb
 		/// </overloads>
 		public static Predicate<T> And<T>(this Predicate<T> predicate, Predicate<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.Ensures(Contract.Result<Predicate<T>>() != null);
 			return obj => predicate(obj) && other(obj);
 		}
@@ -40,8 +44,8 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="others"/> 为 <c>null</c>。</exception>
 		public static Predicate<T> And<T>(this Predicate<T> predicate, params Predicate<T>[] others)
 		{
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
-			CommonExceptions.CheckArgumentNull(others, "others");
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
+			CommonExceptions.CheckArgumentNull(others, nameof(others));
 			Contract.Ensures(Contract.Result<Predicate<T>>() != null);
 			return obj =>
 			{
@@ -49,7 +53,7 @@ namespace Cyjb
 				{
 					return false;
 				}
-				for (int i = 0; i < others.Length; i++)
+				for (var i = 0; i < others.Length; i++)
 				{
 					if (others[i] != null && !others[i](obj))
 					{
@@ -75,8 +79,8 @@ namespace Cyjb
 		/// </overloads>
 		public static Predicate<T> Or<T>(this Predicate<T> predicate, Predicate<T> other)
 		{
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
-			CommonExceptions.CheckArgumentNull(other, "other");
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
+			CommonExceptions.CheckArgumentNull(other, nameof(other));
 			Contract.Ensures(Contract.Result<Predicate<T>>() != null);
 			return obj => predicate(obj) || other(obj);
 		}
@@ -91,8 +95,8 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="others"/> 为 <c>null</c>。</exception>
 		public static Predicate<T> Or<T>(this Predicate<T> predicate, params Predicate<T>[] others)
 		{
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
-			CommonExceptions.CheckArgumentNull(others, "others");
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
+			CommonExceptions.CheckArgumentNull(others, nameof(others));
 			Contract.Ensures(Contract.Result<Predicate<T>>() != null);
 			return obj =>
 			{
@@ -100,7 +104,7 @@ namespace Cyjb
 				{
 					return true;
 				}
-				for (int i = 0; i < others.Length; i++)
+				for (var i = 0; i < others.Length; i++)
 				{
 					if (others[i] != null && !others[i](obj))
 					{
@@ -119,7 +123,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="predicate"/> 为 <c>null</c>。</exception>
 		public static Predicate<T> Not<T>(this Predicate<T> predicate)
 		{
-			CommonExceptions.CheckArgumentNull(predicate, "predicate");
+			CommonExceptions.CheckArgumentNull(predicate, nameof(predicate));
 			Contract.Ensures(Contract.Result<Predicate<T>>() != null);
 			return obj => !predicate(obj);
 		}

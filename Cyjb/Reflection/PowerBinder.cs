@@ -1,10 +1,13 @@
 ﻿using System;
+using Cyjb.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
-using Cyjb.Collections;
+using System.Text;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 
 namespace Cyjb.Reflection
@@ -117,7 +120,7 @@ namespace Cyjb.Reflection
 			{
 				return null;
 			}
-			Type valueType = value.GetType();
+			var valueType = value.GetType();
 			if (type.IsConvertFrom(valueType, isExplicit))
 			{
 				return Convert.ChangeType(value, type);
@@ -149,14 +152,14 @@ namespace Cyjb.Reflection
 		public override FieldInfo BindToField(BindingFlags bindingAttr, FieldInfo[] match, [CanBeNull]object value,
 			CultureInfo culture)
 		{
-			CommonExceptions.CheckCollectionItemNull(match, "match");
+			CommonExceptions.CheckCollectionItemNull(match, nameof(match));
 			Contract.EndContractBlock();
-			int length = 0;
+			var length = 0;
 			if (bindingAttr.HasFlag(BindingFlags.SetField))
 			{
 				// 在设置 SetField 标志时，根据 value 的类型进行选择。
-				Type valueType = value == null ? null : value.GetType();
-				for (int i = 0; i < match.Length; i++)
+				var valueType = value == null ? null : value.GetType();
+				for (var i = 0; i < match.Length; i++)
 				{
 					if (CanChangeType(valueType, match[i].FieldType))
 					{
@@ -178,7 +181,7 @@ namespace Cyjb.Reflection
 			{
 				length = match.Length;
 			}
-			FieldInfo best = GetDeepestMember(match, length);
+			var best = GetDeepestMember(match, length);
 			if (best == null)
 			{
 				throw CommonExceptions.AmbiguousMatchField();
@@ -227,7 +230,7 @@ namespace Cyjb.Reflection
 			{
 				return 1;
 			}
-			bool typeByRef = type.IsByRef;
+			var typeByRef = type.IsByRef;
 			// 根据 type 是否按引用传递，选择普通参数或按引用传递的参数。
 			if (firstType.IsByRef)
 			{
@@ -253,7 +256,7 @@ namespace Cyjb.Reflection
 			{
 				type = type.GetElementType();
 			}
-			bool firstImplicitFromType = true;
+			var firstImplicitFromType = true;
 			if (isExplicit)
 			{
 				// 可以从 type 隐式转换的类型会更匹配，仅当允许显式类型转换时才需要检测。
@@ -263,7 +266,7 @@ namespace Cyjb.Reflection
 					return firstImplicitFromType ? -1 : 1;
 				}
 			}
-			ConversionType convType = TypeExt.GetStandardConversion(firstType, secondType);
+			var convType = TypeExt.GetStandardConversion(firstType, secondType);
 			if (convType == ConversionType.None)
 			{
 				if (firstType.IsSigned())
@@ -299,12 +302,12 @@ namespace Cyjb.Reflection
 		{
 			Contract.Requires(match != null && match.Length >= length && length > 0 && comparer != null);
 			Contract.Ensures(Contract.Result<int>() > 0);
-			T target = match[0];
-			int len = 1;
-			for (int i = 1; i < length; i++)
+			var target = match[0];
+			var len = 1;
+			for (var i = 1; i < length; i++)
 			{
 				// 尝试进一步匹配字段类型。
-				int cmp = comparer(target, match[i]);
+				var cmp = comparer(target, match[i]);
 				if (cmp == 0)
 				{
 					match[len++] = match[i];
@@ -342,12 +345,12 @@ namespace Cyjb.Reflection
 			where TMember : MemberInfo
 		{
 			Contract.Requires(members != null);
-			TMember best = members[0];
-			bool ambig = false;
-			for (int i = 1; i < length; i++)
+			var best = members[0];
+			var ambig = false;
+			for (var i = 1; i < length; i++)
 			{
 				// 比较定义的层级深度。
-				int cmp = best.DeclaringType.GetHierarchyDepth() - members[i].DeclaringType.GetHierarchyDepth();
+				var cmp = best.DeclaringType.GetHierarchyDepth() - members[i].DeclaringType.GetHierarchyDepth();
 				if (cmp == 0)
 				{
 					ambig = true;
@@ -387,10 +390,10 @@ namespace Cyjb.Reflection
 		public override MethodBase SelectMethod(BindingFlags bindingAttr, MethodBase[] match, Type[] types,
 			ParameterModifier[] modifiers)
 		{
-			CommonExceptions.CheckCollectionItemNull(match, "match");
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckCollectionItemNull(match, nameof(match));
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.EndContractBlock();
-			MethodArgumentsOption options = MethodArgumentsOption.None;
+			var options = MethodArgumentsOption.None;
 			if (isExplicit)
 			{
 				options |= MethodArgumentsOption.Explicit;
@@ -399,10 +402,10 @@ namespace Cyjb.Reflection
 			{
 				options |= MethodArgumentsOption.OptionalParamBinding;
 			}
-			MethodMatchInfo[] infos = new MethodMatchInfo[match.Length];
+			var infos = new MethodMatchInfo[match.Length];
 			MethodMatchInfo info;
-			int length = 0;
-			for (int i = 0; i < match.Length; i++)
+			var length = 0;
+			for (var i = 0; i < match.Length; i++)
 			{
 				info = MethodMatchInfo.GetMatchInfo(match[i], types, null, options);
 				if (info != null)
@@ -436,12 +439,12 @@ namespace Cyjb.Reflection
 			// 多个可匹配字段，尝试寻找类型最匹配的方法。
 			length = FilterMember(match, length, (firstMethod, secondMethod) =>
 				CompareMethod(firstMethod, secondMethod, types));
-			MethodMatchInfo best = match[0];
-			bool ambig = false;
-			for (int i = 1; i < length; i++)
+			var best = match[0];
+			var ambig = false;
+			for (var i = 1; i < length; i++)
 			{
 				// 比较定义的层级深度。
-				int cmp = best.Method.DeclaringType.GetHierarchyDepth() - match[i].Method.DeclaringType.GetHierarchyDepth();
+				var cmp = best.Method.DeclaringType.GetHierarchyDepth() - match[i].Method.DeclaringType.GetHierarchyDepth();
 				if (cmp == 0)
 				{
 					ambig = true;
@@ -467,11 +470,11 @@ namespace Cyjb.Reflection
 		private int CompareMethod(MethodMatchInfo firstMethod, MethodMatchInfo secondMethod, Type[] types)
 		{
 			// 检查参数类型匹配。
-			int typeLen = types.Length;
-			int cmpMethod = 0;
-			for (int i = 0; i < typeLen; i++)
+			var typeLen = types.Length;
+			var cmpMethod = 0;
+			for (var i = 0; i < typeLen; i++)
 			{
-				int cmp = CompareType(firstMethod.GetParameterType(i), secondMethod.GetParameterType(i), types[i]);
+				var cmp = CompareType(firstMethod.GetParameterType(i), secondMethod.GetParameterType(i), types[i]);
 				if (cmpMethod == 0)
 				{
 					cmpMethod = cmp;
@@ -511,8 +514,8 @@ namespace Cyjb.Reflection
 				return -1;
 			}
 			// 有 params 参数时形参更多的更好，没有使用默认值的更好。
-			int firstLen = firstMethod.FixedParameters.Length;
-			int secondLen = secondMethod.FixedParameters.Length;
+			var firstLen = firstMethod.FixedParameters.Length;
+			var secondLen = secondMethod.FixedParameters.Length;
 			if (typeLen >= firstLen)
 			{
 				if (typeLen >= secondLen)
@@ -559,17 +562,17 @@ namespace Cyjb.Reflection
 				Contract.Requires(method != null && types != null);
 				Contract.Requires(paramOrder == null || paramOrder.Length >= types.Length);
 				// 修正 indexes 的格式。
-				ParameterInfo[] parameters = method.GetParametersNoCopy();
+				var parameters = method.GetParametersNoCopy();
 				if (paramOrder == null)
 				{
 					types = types.Extend(parameters.Length, typeof(Missing));
 				}
 				else
 				{
-					int typeLen = types.Length;
-					Type[] newTypes = new Type[typeLen > parameters.Length ? typeLen : parameters.Length];
+					var typeLen = types.Length;
+					var newTypes = new Type[typeLen > parameters.Length ? typeLen : parameters.Length];
 					newTypes.Fill(typeof(Missing));
-					for (int i = 0; i < typeLen; i++)
+					for (var i = 0; i < typeLen; i++)
 					{
 						newTypes[paramOrder[i]] = types[i];
 					}
@@ -579,7 +582,7 @@ namespace Cyjb.Reflection
 				// 对泛型方法进行泛型类型推断。
 				if (method.IsGenericMethodDefinition)
 				{
-					Type declaringType = method.DeclaringType;
+					var declaringType = method.DeclaringType;
 					if (declaringType != null && declaringType.ContainsGenericParameters)
 					{
 						return null;
@@ -644,19 +647,19 @@ namespace Cyjb.Reflection
 			private MethodMatchInfo(MethodBase method, MethodArgumentsInfo argsInfo, int[] paramOrder)
 			{
 				Contract.Requires(method != null);
-				this.Method = method;
+				Method = method;
 				if (method.IsGenericMethod)
 				{
-					this.IsGeneric = method.IsGenericMethod;
-					this.GenericArgumentLength = method.GetGenericArguments().Length;
+					IsGeneric = method.IsGenericMethod;
+					GenericArgumentLength = method.GetGenericArguments().Length;
 				}
-				this.FixedParameters = method.GetParametersNoCopy().Left(argsInfo.FixedArguments.Count);
-				this.ParamArrayType = argsInfo.ParamArrayType;
-				if (this.ParamArrayType != null)
+				FixedParameters = method.GetParametersNoCopy().Left(argsInfo.FixedArguments.Count);
+				ParamArrayType = argsInfo.ParamArrayType;
+				if (ParamArrayType != null)
 				{
-					this.ParamArrayElementType = this.ParamArrayType.GetElementType();
+					ParamArrayElementType = ParamArrayType.GetElementType();
 				}
-				this.ParamOrder = paramOrder;
+				ParamOrder = paramOrder;
 			}
 			/// <summary>
 			/// 获取指定实参索引对应的形参类型。
@@ -709,19 +712,19 @@ namespace Cyjb.Reflection
 		public override MethodBase BindToMethod(BindingFlags bindingAttr, MethodBase[] match, ref object[] args,
 			ParameterModifier[] modifiers, CultureInfo culture, string[] names, out object state)
 		{
-			CommonExceptions.CheckCollectionItemNull(match, "match");
-			CommonExceptions.CheckArgumentNull(args, "args");
+			CommonExceptions.CheckCollectionItemNull(match, nameof(match));
+			CommonExceptions.CheckArgumentNull(args, nameof(args));
 			if (names != null && names.Length > args.Length)
 			{
-				throw CommonExceptions.NamedParamTooBig("names");
+				throw CommonExceptions.NamedParamTooBig(nameof(names));
 			}
 			Contract.EndContractBlock();
 			// 检查参数名称数组，不能出现名称相同的参数。
 			if (names != null && !names.IsDistinct(StringComparer.Ordinal))
 			{
-				throw CommonExceptions.DuplicateName("names");
+				throw CommonExceptions.DuplicateName(nameof(names));
 			}
-			MethodArgumentsOption options = MethodArgumentsOption.None;
+			var options = MethodArgumentsOption.None;
 			if (isExplicit)
 			{
 				options |= MethodArgumentsOption.Explicit;
@@ -730,17 +733,17 @@ namespace Cyjb.Reflection
 			{
 				options |= MethodArgumentsOption.OptionalParamBinding;
 			}
-			int typesLen = args.Length;
-			Type[] types = new Type[typesLen];
-			for (int i = 0; i < typesLen; i++)
+			var typesLen = args.Length;
+			var types = new Type[typesLen];
+			for (var i = 0; i < typesLen; i++)
 			{
-				object arg = args[i];
+				var arg = args[i];
 				types[i] = arg == null ? null : arg.GetType();
 			}
-			MethodMatchInfo[] infos = new MethodMatchInfo[match.Length];
+			var infos = new MethodMatchInfo[match.Length];
 			MethodMatchInfo info;
-			int length = 0;
-			for (int i = 0; i < match.Length; i++)
+			var length = 0;
+			for (var i = 0; i < match.Length; i++)
 			{
 				int[] paramOrder = null;
 				if (names != null)
@@ -782,14 +785,14 @@ namespace Cyjb.Reflection
 		private static int[] CreateParamOrder(MethodBase method, string[] names, int length)
 		{
 			Contract.Requires(method != null && names != null && length >= names.Length);
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
-			int[] paramOrder = new int[length].Fill(-1);
-			HashSet<int> usedIndex = new HashSet<int>();
+			var parameters = method.GetParametersNoCopy();
+			var paramOrder = new int[length].Fill(-1);
+			var usedIndex = new HashSet<int>();
 			// 找到与参数名称对应的参数索引。
 			int idx;
-			for (int i = 0; i < names.Length; i++)
+			for (var i = 0; i < names.Length; i++)
 			{
-				string name = names[i];
+				var name = names[i];
 				if (name == null)
 				{
 					// 占位符，直接跳过。
@@ -805,7 +808,7 @@ namespace Cyjb.Reflection
 			}
 			// 依次填充剩余的参数顺序。
 			idx = 0;
-			for (int i = 0; i < length; i++)
+			for (var i = 0; i < length; i++)
 			{
 				if (paramOrder[i] != -1)
 				{
@@ -830,24 +833,24 @@ namespace Cyjb.Reflection
 			Contract.Requires(match != null && args != null);
 			state = args;
 			// 填充参数。
-			ParameterInfo[] parameters = match.FixedParameters;
-			int fixedLen = parameters.Length;
-			int length = fixedLen;
+			var parameters = match.FixedParameters;
+			var fixedLen = parameters.Length;
+			var length = fixedLen;
 			Array paramArray = null;
 			if (match.ParamArrayType != null)
 			{
 				length++;
 				paramArray = Array.CreateInstance(match.ParamArrayElementType, args.Length - fixedLen);
 			}
-			object[] newArgs = new object[length].Fill(Missing.Value);
+			var newArgs = new object[length].Fill(Missing.Value);
 			if (paramArray != null)
 			{
 				newArgs[fixedLen] = paramArray;
 			}
-			int[] paramOrder = match.ParamOrder;
-			for (int i = 0; i < args.Length; i++)
+			var paramOrder = match.ParamOrder;
+			for (var i = 0; i < args.Length; i++)
 			{
-				int idx = paramOrder == null ? i : paramOrder[i];
+				var idx = paramOrder == null ? i : paramOrder[i];
 				if (idx < fixedLen)
 				{
 					newArgs[idx] = args[i];
@@ -859,13 +862,13 @@ namespace Cyjb.Reflection
 				}
 			}
 			// 填充默认值。
-			for (int i = 0; i < fixedLen; i++)
+			for (var i = 0; i < fixedLen; i++)
 			{
 				if (newArgs[i] != Missing.Value)
 				{
 					continue;
 				}
-				ParameterInfo param = parameters[i];
+				var param = parameters[i];
 				if (param.IsParamArray())
 				{
 					newArgs[i] = Array.CreateInstance(param.ParameterType.GetElementType(), 0);
@@ -885,7 +888,7 @@ namespace Cyjb.Reflection
 		/// <param name="state">联编程序提供的对象，用于跟踪参数的重新排序。</param>
 		public override void ReorderArgumentArray(ref object[] args, object state)
 		{
-			object[] oldArgs = state as object[];
+			var oldArgs = state as object[];
 			if (oldArgs != null)
 			{
 				args = oldArgs;
@@ -914,14 +917,14 @@ namespace Cyjb.Reflection
 		public override PropertyInfo SelectProperty(BindingFlags bindingAttr, PropertyInfo[] match,
 			Type returnType, Type[] indexes, ParameterModifier[] modifiers)
 		{
-			CommonExceptions.CheckArgumentNull(match, "match");
+			CommonExceptions.CheckArgumentNull(match, nameof(match));
 			Contract.EndContractBlock();
 			// 按返回值筛选。
-			int length = match.Length;
+			var length = match.Length;
 			if (returnType != null)
 			{
-				int len = 0;
-				for (int i = 0; i < length; i++)
+				var len = 0;
+				for (var i = 0; i < length; i++)
 				{
 					if (CanChangeType(returnType, match[i].PropertyType))
 					{
@@ -933,11 +936,11 @@ namespace Cyjb.Reflection
 			// 按索引参数筛选。
 			if (indexes != null)
 			{
-				int idxLen = indexes.Length;
-				int len = 0;
-				for (int i = 0; i < length; i++)
+				var idxLen = indexes.Length;
+				var len = 0;
+				for (var i = 0; i < length; i++)
 				{
-					ParameterInfo[] parameters = match[i].GetIndexParameters();
+					var parameters = match[i].GetIndexParameters();
 					if (parameters.Length == idxLen && (idxLen == 0 || CheckParameters(parameters, indexes)))
 					{
 						match[len++] = match[i];
@@ -956,7 +959,7 @@ namespace Cyjb.Reflection
 			// 多个可匹配属性，寻找类型最匹配的属性。
 			length = FilterMember(match, length, (firstProperty, secondProperty) =>
 				CompareProperty(firstProperty, secondProperty, returnType, indexes));
-			PropertyInfo best = GetDeepestMember(match, length);
+			var best = GetDeepestMember(match, length);
 			if (best == null)
 			{
 				throw CommonExceptions.AmbiguousMatchProperty();
@@ -972,7 +975,7 @@ namespace Cyjb.Reflection
 		private bool CheckParameters(ParameterInfo[] parameters, Type[] types)
 		{
 			Contract.Requires(parameters != null && types != null);
-			for (int i = 0; i < parameters.Length; i++)
+			for (var i = 0; i < parameters.Length; i++)
 			{
 				if (!CanChangeType(parameters[i].ParameterType, types[i]))
 				{
@@ -997,13 +1000,13 @@ namespace Cyjb.Reflection
 			if (indexes != null && indexes.Length > 0)
 			{
 				// 检查索引参数类型匹配。
-				ParameterInfo[] firstParams = firstProperty.GetIndexParameters();
-				ParameterInfo[] secondParams = secondProperty.GetIndexParameters();
-				int typeLen = indexes.Length;
-				int cmpMethod = 0;
-				for (int i = 0; i < typeLen; i++)
+				var firstParams = firstProperty.GetIndexParameters();
+				var secondParams = secondProperty.GetIndexParameters();
+				var typeLen = indexes.Length;
+				var cmpMethod = 0;
+				for (var i = 0; i < typeLen; i++)
 				{
-					int cmp = CompareType(firstParams[i].ParameterType, secondParams[i].ParameterType, indexes[i]);
+					var cmp = CompareType(firstParams[i].ParameterType, secondParams[i].ParameterType, indexes[i]);
 					if (cmpMethod == 0)
 					{
 						cmpMethod = cmp;

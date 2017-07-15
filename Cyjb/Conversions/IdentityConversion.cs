@@ -1,4 +1,10 @@
-﻿namespace Cyjb.Conversions
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Cyjb.Conversions
 {
 	/// <summary>
 	/// 表示标识转换。

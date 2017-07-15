@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Cyjb;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -21,11 +24,11 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestMethodInvoker()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态方法
 			// 无参数
-			MethodInvoker invoker = type.GetMethod("TestStaticMethod", Type.EmptyTypes).CreateDelegate();
+			var invoker = type.GetMethod("TestStaticMethod", Type.EmptyTypes).CreateDelegate();
 			Assert.AreEqual("StaticMethod", invoker("NoUse"));
 			Assert.AreEqual("StaticMethod", invoker(null));
 			// 字符串参数
@@ -49,7 +52,7 @@ namespace UnitTestCyjb
 			Assert.AreEqual("A_B_StaticMethod", invoker(null, "A", "B", 0));
 
 			// 实例方法
-			TestClass instance = new TestClass { Text = "Instance" };
+			var instance = new TestClass { Text = "Instance" };
 			// 无参数
 			invoker = type.GetMethod("TestInstanceMethod", Type.EmptyTypes).CreateDelegate();
 			Assert.AreEqual("Instance_InstanceMethod", invoker(instance));
@@ -87,10 +90,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestInstanceCreator()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 无参数
-			InstanceCreator creator = type.GetConstructor(Type.EmptyTypes).CreateDelegate();
+			var creator = type.GetConstructor(Type.EmptyTypes).CreateDelegate();
 			Assert.AreEqual("NoParam", ((TestClass)creator()).Text);
 			// 字符串参数
 			creator = type.GetConstructor(new[] { typeof(string) }).CreateDelegate();
@@ -117,7 +120,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestOpenMethodDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态方法
 			// 无参数
@@ -165,14 +168,14 @@ namespace UnitTestCyjb
 			// 引用参数
 			MethodBase methodRef = type.GetMethod("TestStaticMethodRef");
 			Assert.AreEqual("A_B_StaticMethod", methodRef.CreateDelegate<Func<string, string, int, string>>()("A", "B", 0));
-			string value = "B";
+			var value = "B";
 			int value2;
 			Assert.AreEqual("A_B_StaticMethod", methodRef.CreateDelegate<TestDelegate>()("A", ref value, out value2));
 			Assert.AreEqual("StaticMethodRef", value);
 			Assert.AreEqual(101, value2);
 
 			// 实例方法
-			TestClass instance = new TestClass { Text = "Instance" };
+			var instance = new TestClass { Text = "Instance" };
 			// 无参数
 			method = type.GetMethod("TestInstanceMethod", Type.EmptyTypes);
 			Assert.AreEqual("Instance_InstanceMethod", method.CreateDelegate<Func<TestClass, string>>()(instance));
@@ -268,7 +271,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestOpenConstructorDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 无参数
 			MethodBase method = type.GetConstructor(Type.EmptyTypes);
@@ -299,7 +302,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestClosedMethodDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态方法
 			// 无参数
@@ -364,7 +367,7 @@ namespace UnitTestCyjb
 			// 引用参数
 			MethodBase methodRef = type.GetMethod("TestStaticMethodRef");
 			Assert.AreEqual("A_B_StaticMethod", methodRef.CreateDelegate<Func<string, string, int, string>>(null)("A", "B", 0));
-			string value = "B";
+			var value = "B";
 			int value2;
 			Assert.AreEqual("A_B_StaticMethod", methodRef.CreateDelegate<TestDelegate>(null)("A", ref value, out value2));
 			Assert.AreEqual("StaticMethodRef", value);
@@ -376,7 +379,7 @@ namespace UnitTestCyjb
 			Assert.AreEqual(101, value2);
 
 			// 实例方法
-			TestClass instance = new TestClass { Text = "Instance" };
+			var instance = new TestClass { Text = "Instance" };
 			// 无参数
 			method = type.GetMethod("TestInstanceMethod", Type.EmptyTypes);
 			Assert.AreEqual("Instance_InstanceMethod", method.CreateDelegate<Func<TestClass, string>>(null)(instance));
@@ -536,7 +539,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestClosedConstructorDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 无参数
 			MethodBase method = type.GetConstructor(Type.EmptyTypes);
@@ -571,10 +574,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestOpenPropertyDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态属性
-			PropertyInfo property = type.GetProperty("TestStaticProperty");
+			var property = type.GetProperty("TestStaticProperty");
 			property.CreateDelegate<Action<string>>()("Test1");
 			Assert.AreEqual("Test1", property.CreateDelegate<Func<string>>()());
 			property.CreateDelegate<Action<object>>()("Test2");
@@ -584,7 +587,7 @@ namespace UnitTestCyjb
 
 			// 实例属性
 			property = type.GetProperty("TestInstanceProperty");
-			TestClass instance = new TestClass();
+			var instance = new TestClass();
 			property.CreateDelegate<Action<TestClass, string>>()(instance, "Test1");
 			Assert.AreEqual("Test1", property.CreateDelegate<Func<TestClass, string>>()(instance));
 			property.CreateDelegate<Action<TestClass, object>>()(instance, "Test2");
@@ -614,10 +617,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestClosedPropertyDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态属性
-			PropertyInfo property = type.GetProperty("TestStaticProperty");
+			var property = type.GetProperty("TestStaticProperty");
 			property.CreateDelegate<Action<string>>(null)("Test1");
 			Assert.AreEqual("Test1", property.CreateDelegate<Func<string>>(null)());
 			property.CreateDelegate<Action<object>>(null)("Test2");
@@ -629,7 +632,7 @@ namespace UnitTestCyjb
 
 			// 实例属性
 			property = type.GetProperty("TestInstanceProperty");
-			TestClass instance = new TestClass();
+			var instance = new TestClass();
 			property.CreateDelegate<Action<string>>(instance)("Test1");
 			Assert.AreEqual("Test1", property.CreateDelegate<Func<string>>(instance)());
 			property.CreateDelegate<Action<object>>(instance)("Test2");
@@ -664,10 +667,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestOpenFieldDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态字段
-			FieldInfo field = type.GetField("TestStaticField");
+			var field = type.GetField("TestStaticField");
 			field.CreateDelegate<Action<string>>()("Test1");
 			Assert.AreEqual("Test1", field.CreateDelegate<Func<string>>()());
 			field.CreateDelegate<Action<object>>()("Test2");
@@ -677,7 +680,7 @@ namespace UnitTestCyjb
 
 			// 实例字段
 			field = type.GetField("TestInstanceField");
-			TestClass instance = new TestClass();
+			var instance = new TestClass();
 			field.CreateDelegate<Action<TestClass, string>>()(instance, "Test1");
 			Assert.AreEqual("Test1", field.CreateDelegate<Func<TestClass, string>>()(instance));
 			field.CreateDelegate<Action<TestClass, object>>()(instance, "Test2");
@@ -691,10 +694,10 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestClosedFieldDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态字段
-			FieldInfo field = type.GetField("TestStaticField");
+			var field = type.GetField("TestStaticField");
 			field.CreateDelegate<Action<string>>(null)("Test1");
 			Assert.AreEqual("Test1", field.CreateDelegate<Func<string>>(null)());
 			field.CreateDelegate<Action<object>>(null)("Test2");
@@ -706,7 +709,7 @@ namespace UnitTestCyjb
 
 			// 实例字段
 			field = type.GetField("TestInstanceField");
-			TestClass instance = new TestClass();
+			var instance = new TestClass();
 			field.CreateDelegate<Action<string>>(instance)("Test1");
 			Assert.AreEqual("Test1", field.CreateDelegate<Func<string>>(instance)());
 			field.CreateDelegate<Action<object>>(instance)("Test2");
@@ -731,14 +734,14 @@ namespace UnitTestCyjb
 			Assert.AreEqual("Test", func.Wrap<TestFunc>()());
 			Func<string, int, string> func2 = (k, v) => k + "_" + v + "_Func";
 			Assert.AreEqual("Test_0_Func", func2.Wrap<TestFunc2>()("Test", 0));
-			string value = "Test";
+			var value = "Test";
 			int value2;
 			Assert.AreEqual("Test_0_Func", func2.Wrap<TestFunc3>()(ref value, out value2));
 			Assert.AreEqual("Test", value);
 			Assert.AreEqual(0, value2);
 			TestFunc3 func4 = (ref string k, out int v) =>
 			{
-				string oldK = k;
+				var oldK = k;
 				k = "TestNewValue";
 				v = 101;
 				return oldK + "_Func";
@@ -798,7 +801,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestOpenTypeDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态方法
 			Assert.AreEqual("StaticMethod", type.CreateDelegate<Func<string>>("TestStaticMethod")());
@@ -821,7 +824,7 @@ namespace UnitTestCyjb
 			// 引用参数
 			Assert.AreEqual("A_B_StaticMethod",
 				type.CreateDelegate<Func<string, string, int, string>>("TestStaticMethodRef")("A", "B", 0));
-			string value = "B";
+			var value = "B";
 			int value2;
 			Assert.AreEqual("A_B_StaticMethod",
 				type.CreateDelegate<TestDelegate>("TestStaticMethodRef")("A", ref value, out value2));
@@ -829,7 +832,7 @@ namespace UnitTestCyjb
 			Assert.AreEqual(101, value2);
 
 			// 实例方法
-			TestClass instance = new TestClass { Text = "Instance" };
+			var instance = new TestClass { Text = "Instance" };
 			Assert.AreEqual("Instance_InstanceMethod",
 				type.CreateDelegate<Func<TestClass, string>>("TestInstanceMethod")(instance));
 			Assert.AreEqual("Test_Instance_InstanceMethod",
@@ -898,7 +901,7 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestClosedTypeDelegate()
 		{
-			Type type = typeof(TestClass);
+			var type = typeof(TestClass);
 
 			// 静态方法
 			Assert.AreEqual("StaticMethod", type.CreateDelegate<Func<string>>("TestStaticMethod", null)());
@@ -917,7 +920,7 @@ namespace UnitTestCyjb
 			// 引用参数
 			Assert.AreEqual("A_B_StaticMethod",
 				type.CreateDelegate<Func<string, int, string>>("TestStaticMethodRef", "A")("B", 0));
-			string value = "B";
+			var value = "B";
 			int value2;
 			Assert.AreEqual("A_B_StaticMethod",
 				type.CreateDelegate<TestDelegateWithoutKey>("TestStaticMethodRef", "A")(ref value, out value2));
@@ -925,7 +928,7 @@ namespace UnitTestCyjb
 			Assert.AreEqual(101, value2);
 
 			// 实例方法
-			TestClass instance = new TestClass { Text = "Instance" };
+			var instance = new TestClass { Text = "Instance" };
 			Assert.AreEqual("Instance_InstanceMethod", type.CreateDelegate<Func<string>>("TestInstanceMethod", instance)());
 			Assert.AreEqual("Test_Instance_InstanceMethod",
 				type.CreateDelegate<Func<string, string>>("TestInstanceMethod", instance)("Test"));
@@ -990,8 +993,8 @@ namespace UnitTestCyjb
 		[TestMethod]
 		public void TestClosedObjectDelegate()
 		{
-			Type type = typeof(TestClass);
-			TestClass instance = new TestClass { Text = "Instance" };
+			var type = typeof(TestClass);
+			var instance = new TestClass { Text = "Instance" };
 
 			// 实例方法
 			Assert.AreEqual("Instance_InstanceMethod",
@@ -1017,7 +1020,7 @@ namespace UnitTestCyjb
 				DelegateBuilder.CreateDelegate<Func<string, string, int, string>>(
 				instance, "TestInstanceMethodRef")("A", "B", 0));
 			Assert.AreEqual("B", instance.Text);
-			string value = "X";
+			var value = "X";
 			int value2;
 			Assert.AreEqual("A_X_InstanceMethod", DelegateBuilder.CreateDelegate<TestDelegate>(instance, "TestInstanceMethodRef")
 				("A", ref value, out value2));
@@ -1056,11 +1059,11 @@ namespace UnitTestCyjb
 			public string Text;
 			public TestStruct(string text)
 			{
-				this.Text = text;
+				Text = text;
 			}
 			public TestStruct(int value)
 			{
-				this.Text = value.ToString();
+				Text = value.ToString();
 			}
 		}
 		private class TestClass
@@ -1086,8 +1089,8 @@ namespace UnitTestCyjb
 			}
 			public static string TestStaticMethodVarargs(__arglist)
 			{
-				ArgIterator args = new ArgIterator(__arglist);
-				StringBuilder text = new StringBuilder(16);
+				var args = new ArgIterator(__arglist);
+				var text = new StringBuilder(16);
 				while (args.GetRemainingCount() > 0)
 				{
 					text.Append(TypedReference.ToObject(args.GetNextArg()));
@@ -1098,8 +1101,8 @@ namespace UnitTestCyjb
 			}
 			public static string TestStaticMethodVarargs(string key, __arglist)
 			{
-				ArgIterator args = new ArgIterator(__arglist);
-				StringBuilder text = new StringBuilder(16);
+				var args = new ArgIterator(__arglist);
+				var text = new StringBuilder(16);
 				while (args.GetRemainingCount() > 0)
 				{
 					text.Append(TypedReference.ToObject(args.GetNextArg()));
@@ -1115,7 +1118,7 @@ namespace UnitTestCyjb
 			}
 			public static string TestStaticMethodRef(string key, ref string value, out int value2)
 			{
-				string oldValue = value;
+				var oldValue = value;
 				value = "StaticMethodRef";
 				value2 = 101;
 				return key + "_" + oldValue + "_StaticMethod";
@@ -1144,8 +1147,8 @@ namespace UnitTestCyjb
 			}
 			public string TestInstanceMethodVarargs(__arglist)
 			{
-				ArgIterator args = new ArgIterator(__arglist);
-				StringBuilder text = new StringBuilder(16);
+				var args = new ArgIterator(__arglist);
+				var text = new StringBuilder(16);
 				while (args.GetRemainingCount() > 0)
 				{
 					text.Append(TypedReference.ToObject(args.GetNextArg()));
@@ -1157,8 +1160,8 @@ namespace UnitTestCyjb
 			}
 			public string TestInstanceMethodVarargs(string key, __arglist)
 			{
-				ArgIterator args = new ArgIterator(__arglist);
-				StringBuilder text = new StringBuilder(16);
+				var args = new ArgIterator(__arglist);
+				var text = new StringBuilder(16);
 				while (args.GetRemainingCount() > 0)
 				{
 					text.Append(TypedReference.ToObject(args.GetNextArg()));
@@ -1188,15 +1191,15 @@ namespace UnitTestCyjb
 
 			public TestClass()
 			{
-				this.Text = "NoParam";
+				Text = "NoParam";
 			}
 			public TestClass(string key)
 			{
-				this.Text = key;
+				Text = key;
 			}
 			public TestClass(int key)
 			{
-				this.Text = key.ToString();
+				Text = key.ToString();
 			}
 
 			#endregion // 构造函数

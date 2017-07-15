@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -31,7 +34,7 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static void Times(this uint source, Action action)
 		{
-			CommonExceptions.CheckArgumentNull(action, "action");
+			CommonExceptions.CheckArgumentNull(action, nameof(action));
 			Contract.EndContractBlock();
 			for (uint i = 0; i < source; i++)
 			{
@@ -47,7 +50,7 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static void Times(this uint source, Action<uint> action)
 		{
-			CommonExceptions.CheckArgumentNull(action, "action");
+			CommonExceptions.CheckArgumentNull(action, nameof(action));
 			Contract.EndContractBlock();
 			for (uint i = 0; i < source; i++)
 			{
@@ -81,7 +84,7 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static IEnumerable<T> Times<T>(this uint source, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
 			for (uint i = 0; i < source; i++)
 			{
@@ -99,7 +102,7 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static IEnumerable<T> Times<T>(this uint source, Func<uint, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
 			for (uint i = 0; i < source; i++)
 			{
@@ -150,7 +153,7 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static void To(this uint source, uint destination, Action<uint> action)
 		{
-			CommonExceptions.CheckArgumentNull(action, "action");
+			CommonExceptions.CheckArgumentNull(action, nameof(action));
 			Contract.EndContractBlock();
 			if (source < destination)
 			{
@@ -269,7 +272,7 @@ namespace Cyjb
 			if (value >= 10000U) { return 4; }
 			if (value >= 1000U) { return 3; }
 			if (value >= 100U) { return 2; }
-			return (value >= 10U) ? 1 : 0;
+			return value >= 10U ? 1 : 0;
 		}
 		/// <summary>
 		/// 计算指定整数的二进制表示中末尾连续 <c>0</c> 的个数。
@@ -326,8 +329,8 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static uint NextBitPermutation(this uint value)
 		{
-			uint t = value | (value - 1);
-			return (t + 1U) | (((~t & (uint)(-(int)~t)) - 1U) >> (value.CountTrailingZeroBits() + 1));
+			var t = value | (value - 1);
+			return (t + 1U) | (((~t & (uint)-(int)~t) - 1U) >> (value.CountTrailingZeroBits() + 1));
 		}
 
 		#endregion // 位运算

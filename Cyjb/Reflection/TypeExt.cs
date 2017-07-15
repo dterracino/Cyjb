@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Conversions;
 
 namespace Cyjb.Reflection
@@ -165,7 +167,7 @@ namespace Cyjb.Reflection
 		[Pure]
 		public static Type GetNonNullableType(this Type type)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<Type>() != null);
 			return Nullable.GetUnderlyingType(type) ?? type;
 		}
@@ -202,10 +204,10 @@ namespace Cyjb.Reflection
 		/// 《C# 判断类型间能否隐式或强制类型转换，以及开放泛型类型转换》</seealso>
 		public static bool IsImplicitFrom(this Type type, Type fromType)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckArgumentNull(fromType, "fromType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckArgumentNull(fromType, nameof(fromType));
 			Contract.EndContractBlock();
-			Conversion conversion = ConversionFactory.GetPreDefinedConversion(fromType, type);
+			var conversion = ConversionFactory.GetPreDefinedConversion(fromType, type);
 			return conversion != null && conversion.ConversionType.IsImplicit();
 		}
 		/// <summary>
@@ -233,10 +235,10 @@ namespace Cyjb.Reflection
 		/// 《C# 判断类型间能否隐式或强制类型转换，以及开放泛型类型转换》</seealso>
 		public static bool IsExplicitFrom(this Type type, Type fromType)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckArgumentNull(fromType, "fromType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckArgumentNull(fromType, nameof(fromType));
 			Contract.EndContractBlock();
-			Conversion conversion = ConversionFactory.GetPreDefinedConversion(fromType, type);
+			var conversion = ConversionFactory.GetPreDefinedConversion(fromType, type);
 			return conversion != null && conversion.ConversionType != ConversionType.None;
 		}
 		/// <summary>
@@ -268,10 +270,10 @@ namespace Cyjb.Reflection
 		/// 《C# 判断类型间能否隐式或强制类型转换，以及开放泛型类型转换》</seealso>
 		public static bool IsConvertFrom(this Type type, Type fromType, bool isExplicit)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
-			CommonExceptions.CheckArgumentNull(fromType, "fromType");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
+			CommonExceptions.CheckArgumentNull(fromType, nameof(fromType));
 			Contract.EndContractBlock();
-			Conversion conversion = ConversionFactory.GetPreDefinedConversion(fromType, type);
+			var conversion = ConversionFactory.GetPreDefinedConversion(fromType, type);
 			return conversion != null && conversion.ConversionType != ConversionType.None &&
 				(isExplicit || conversion.ConversionType.IsImplicit());
 		}
@@ -304,10 +306,10 @@ namespace Cyjb.Reflection
 		/// <remarks>若 A 类型可以隐式类型转换（指预定义的类型转换）为 B 类型，那么就称 A 被 B 包含，而 B 包含 A。</remarks>
 		public static Type GetEncompassingType(IEnumerable<Type> types)
 		{
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.EndContractBlock();
 			Type encompassingType = null;
-			foreach (Type type in types)
+			foreach (var type in types)
 			{
 				if (type == null)
 				{
@@ -326,7 +328,7 @@ namespace Cyjb.Reflection
 					}
 					else if (type != typeof(void))
 					{
-						ConversionType convType = ConversionFactory.GetStandardConversion(type, encompassingType);
+						var convType = ConversionFactory.GetStandardConversion(type, encompassingType);
 						if (convType == ConversionType.None)
 						{
 							return null;
@@ -349,10 +351,10 @@ namespace Cyjb.Reflection
 		/// <remarks>若 A 类型可以隐式类型转换（指预定义的类型转换）为 B 类型，那么就称 A 被 B 包含，而 B 包含 A。</remarks>
 		public static Type GetEncompassedType(IEnumerable<Type> types)
 		{
-			CommonExceptions.CheckArgumentNull(types, "types");
+			CommonExceptions.CheckArgumentNull(types, nameof(types));
 			Contract.EndContractBlock();
 			Type encompassedType = null;
-			foreach (Type type in types)
+			foreach (var type in types)
 			{
 				if (type == null)
 				{
@@ -371,7 +373,7 @@ namespace Cyjb.Reflection
 					}
 					else if (type != typeof(void))
 					{
-						ConversionType convType = ConversionFactory.GetStandardConversion(encompassedType, type);
+						var convType = ConversionFactory.GetStandardConversion(encompassedType, type);
 						if (convType == ConversionType.None)
 						{
 							return null;
@@ -411,8 +413,8 @@ namespace Cyjb.Reflection
 		/// </example>
 		public static Type CloseDefinitionFrom(this Type definition, Type type)
 		{
-			CommonExceptions.CheckArgumentNull(definition, "definition");
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(definition, nameof(definition));
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.EndContractBlock();
 			if (!definition.IsGenericTypeDefinition)
 			{
@@ -440,8 +442,8 @@ namespace Cyjb.Reflection
 				return type;
 			}
 			// 查找实现的接口。
-			Type[] interfaces = type.GetInterfaces();
-			for (int i = 0; i < interfaces.Length; i++)
+			var interfaces = type.GetInterfaces();
+			for (var i = 0; i < interfaces.Length; i++)
 			{
 				if (interfaces[i].IsGenericType && definition == interfaces[i].GetGenericTypeDefinition())
 				{
@@ -471,8 +473,8 @@ namespace Cyjb.Reflection
 		/// </example>
 		public static Type UniqueCloseDefinitionFrom(this Type definition, Type type)
 		{
-			CommonExceptions.CheckArgumentNull(definition, "definition");
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(definition, nameof(definition));
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.EndContractBlock();
 			if (!definition.IsGenericTypeDefinition)
 			{
@@ -500,9 +502,9 @@ namespace Cyjb.Reflection
 				return type;
 			}
 			// 查找实现的接口。
-			Type[] interfaces = type.GetInterfaces();
-			UniqueValue<Type> unique = new UniqueValue<Type>();
-			for (int i = 0; i < interfaces.Length && !unique.IsAmbig; i++)
+			var interfaces = type.GetInterfaces();
+			var unique = new UniqueValue<Type>();
+			for (var i = 0; i < interfaces.Length && !unique.IsAmbig; i++)
 			{
 				if (interfaces[i].IsGenericType && definition == interfaces[i].GetGenericTypeDefinition())
 				{
@@ -546,7 +548,7 @@ namespace Cyjb.Reflection
 		/// <returns>指定类型的定义层级深度。</returns>
 		internal static int GetHierarchyDepth(this Type type)
 		{
-			int depth = -1;
+			var depth = -1;
 			while (type != null)
 			{
 				type = type.BaseType;
@@ -587,16 +589,16 @@ namespace Cyjb.Reflection
 		/// <see cref="FullName"/> 返回的字符串中的类型实参也不会包含程序集、版本等信息。</remarks>
 		public static string FullName(this Type type)
 		{
-			CommonExceptions.CheckArgumentNull(type, "type");
+			CommonExceptions.CheckArgumentNull(type, nameof(type));
 			Contract.Ensures(Contract.Result<string>() != null);
 			if (!type.IsGenericType || type.ContainsGenericParameters)
 			{
 				return type.FullName;
 			}
-			StringBuilder text = new StringBuilder(type.GetGenericTypeDefinition().FullName);
+			var text = new StringBuilder(type.GetGenericTypeDefinition().FullName);
 			text.Append('[');
-			Type[] args = type.GetGenericArguments();
-			for (int i = 0; i < args.Length; i++)
+			var args = type.GetGenericArguments();
+			for (var i = 0; i < args.Length; i++)
 			{
 				if (i > 0)
 				{

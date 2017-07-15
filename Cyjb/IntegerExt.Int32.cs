@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -35,9 +38,9 @@ namespace Cyjb
 		/// </overloads>
 		public static void Times(this int source, Action action)
 		{
-			CommonExceptions.CheckArgumentNull(action, "action");
+			CommonExceptions.CheckArgumentNull(action, nameof(action));
 			Contract.EndContractBlock();
-			for (int i = 0; i < source; i++)
+			for (var i = 0; i < source; i++)
 			{
 				action();
 			}
@@ -50,9 +53,9 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="action"/> 为 <c>null</c>。</exception>
 		public static void Times(this int source, Action<int> action)
 		{
-			CommonExceptions.CheckArgumentNull(action, "action");
+			CommonExceptions.CheckArgumentNull(action, nameof(action));
 			Contract.EndContractBlock();
-			for (int i = 0; i < source; i++)
+			for (var i = 0; i < source; i++)
 			{
 				action(i);
 			}
@@ -67,7 +70,7 @@ namespace Cyjb
 		public static IEnumerable<T> Times<T>(this int source, T value)
 		{
 			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-			for (int i = 0; i < source; i++)
+			for (var i = 0; i < source; i++)
 			{
 				yield return value;
 			}
@@ -82,9 +85,9 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static IEnumerable<T> Times<T>(this int source, Func<T> value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-			for (int i = 0; i < source; i++)
+			for (var i = 0; i < source; i++)
 			{
 				yield return value();
 			}
@@ -99,9 +102,9 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public static IEnumerable<T> Times<T>(this int source, Func<int, T> value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.Ensures(Contract.Result<IEnumerable<T>>() != null);
-			for (int i = 0; i < source; i++)
+			for (var i = 0; i < source; i++)
 			{
 				yield return value(i);
 			}
@@ -151,7 +154,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="action"/> 为 <c>null</c>。</exception>
 		public static void To(this int source, int destination, Action<int> action)
 		{
-			CommonExceptions.CheckArgumentNull(action, "action");
+			CommonExceptions.CheckArgumentNull(action, nameof(action));
 			Contract.EndContractBlock();
 			if (source < destination)
 			{
@@ -286,7 +289,7 @@ namespace Cyjb
 			if (value >= 10000) { return 4; }
 			if (value >= 1000) { return 3; }
 			if (value >= 100) { return 2; }
-			return (value >= 10) ? 1 : 0;
+			return value >= 10 ? 1 : 0;
 		}
 		/// <summary>
 		/// 计算指定整数的二进制表示中末尾连续 <c>0</c> 的个数。
@@ -301,7 +304,7 @@ namespace Cyjb
 		public static int CountTrailingZeroBits(this int value)
 		{
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= 31);
-			return multiplyDeBruijnBitPosition32[((uint)((value & -value) * 0x077CB531U)) >> 27];
+			return multiplyDeBruijnBitPosition32[(uint)((value & -value) * 0x077CB531U) >> 27];
 		}
 		/// <summary>
 		/// 计算指定整数的二进制表示中末尾连续 <c>1</c> 的个数。
@@ -358,7 +361,7 @@ namespace Cyjb
 		/// </overloads>
 		public static int NextBitPermutation(this int value)
 		{
-			int t = value | (value - 1);
+			var t = value | (value - 1);
 			return (t + 1) | (((~t & -~t) - 1) >> (value.CountTrailingZeroBits() + 1));
 		}
 

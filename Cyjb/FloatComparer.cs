@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -40,7 +43,7 @@ namespace Cyjb
 		{
 			if (epsilon <= 0)
 			{
-				throw CommonExceptions.ArgumentMustBePositive("epsilon", epsilon);
+				throw CommonExceptions.ArgumentMustBePositive(nameof(epsilon), epsilon);
 			}
 			Contract.EndContractBlock();
 			this.epsilon = epsilon;
@@ -58,21 +61,21 @@ namespace Cyjb
 		{
 			if (x > y)
 			{
-				float eps = x;
+				var eps = x;
 				if (x < 0 || (y < 0 && x + y < 0))
 				{
 					eps = -y;
 				}
-				return (x - y) < eps * this.epsilon ? 0 : 1;
+				return x - y < eps * epsilon ? 0 : 1;
 			}
 			if (x < y)
 			{
-				float eps = y;
+				var eps = y;
 				if (y < 0 || (x < 0 && x + y < 0))
 				{
 					eps = -x;
 				}
-				return (y - x) < eps * this.epsilon ? 0 : -1;
+				return y - x < eps * epsilon ? 0 : -1;
 			}
 			if (float.IsNaN(x))
 			{

@@ -1,4 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -63,7 +68,7 @@ namespace Cyjb
 		/// <summary>
 		/// 表示用户定义的转换。
 		/// </summary>
-		UserDefined,
+		UserDefined
 	}
 	/// <summary>
 	/// 提供 <see cref="ConversionType"/> 枚举的扩展方法。

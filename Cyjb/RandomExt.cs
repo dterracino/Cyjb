@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -56,7 +60,7 @@ namespace Cyjb
 		{
 			if (maxValue < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("maxValue", maxValue);
+				throw CommonExceptions.ArgumentNegative(nameof(maxValue), maxValue);
 			}
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= maxValue);
 			return Random.Next(maxValue);
@@ -77,7 +81,7 @@ namespace Cyjb
 		{
 			if (minValue > maxValue)
 			{
-				throw CommonExceptions.ReversedArgument("minValue", "maxValue");
+				throw CommonExceptions.ReversedArgument(nameof(minValue), nameof(maxValue));
 			}
 			Contract.Ensures(Contract.Result<int>() >= minValue && Contract.Result<int>() <= maxValue);
 			return Random.Next(minValue, maxValue);
@@ -134,7 +138,7 @@ namespace Cyjb
 		{
 			if (minValue > maxValue)
 			{
-				throw CommonExceptions.ReversedArgument("minValue", "maxValue");
+				throw CommonExceptions.ReversedArgument(nameof(minValue), nameof(maxValue));
 			}
 			Contract.Ensures(Contract.Result<uint>() >= minValue && Contract.Result<uint>() <= maxValue);
 			return minValue + NextUInt32(maxValue - minValue);
@@ -177,7 +181,7 @@ namespace Cyjb
 		{
 			if (maxValue < 0)
 			{
-				throw CommonExceptions.ArgumentMustBePositive("maxValue", maxValue);
+				throw CommonExceptions.ArgumentMustBePositive(nameof(maxValue), maxValue);
 			}
 			Contract.Ensures(Contract.Result<long>() >= 0L && Contract.Result<long>() <= maxValue);
 			return (long)(Random.NextDouble() * maxValue);
@@ -198,18 +202,18 @@ namespace Cyjb
 		{
 			if (minValue > maxValue)
 			{
-				throw CommonExceptions.ReversedArgument("minValue", "maxValue");
+				throw CommonExceptions.ReversedArgument(nameof(minValue), nameof(maxValue));
 			}
 			Contract.Ensures(Contract.Result<long>() >= minValue && Contract.Result<long>() <= maxValue);
-			long num = unchecked(maxValue - minValue);
+			var num = unchecked(maxValue - minValue);
 			// num <= long.MaxValue
 			if (num >= 0)
 			{
 				return minValue + NextInt64(num);
 			}
 			// minValue < 0 && maxValue >= 0
-			ulong uNum = (ulong)num;
-			ulong value = NextUInt64(uNum);
+			var uNum = (ulong)num;
+			var value = NextUInt64(uNum);
 			if (value > 0x7FFFFFFFFFFFFFFFUL)
 			{
 				return (minValue & 0x7FFFFFFFFFFFFFFFL) + (long)(value & 0x7FFFFFFFFFFFFFFFUL);
@@ -233,11 +237,11 @@ namespace Cyjb
 		[CLSCompliant(false)]
 		public static ulong NextUInt64()
 		{
-			ulong value = (ulong)Random.Next();
+			var value = (ulong)Random.Next();
 			value <<= 31;
 			value |= (uint)Random.Next();
 			value <<= 31;
-			value |= ((uint)Random.Next() & 3);
+			value |= (uint)Random.Next() & 3;
 			return value;
 		}
 		/// <summary>
@@ -272,7 +276,7 @@ namespace Cyjb
 		{
 			if (minValue > maxValue)
 			{
-				throw CommonExceptions.ReversedArgument("minValue", "maxValue");
+				throw CommonExceptions.ReversedArgument(nameof(minValue), nameof(maxValue));
 			}
 			Contract.Ensures(Contract.Result<ulong>() >= minValue && Contract.Result<ulong>() <= maxValue);
 			return minValue + NextUInt64(maxValue - minValue);
@@ -295,7 +299,7 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="buffer"/> 为 <c>null</c>。</exception>
 		public static void NextBytes(byte[] buffer)
 		{
-			CommonExceptions.CheckArgumentNull(buffer, "buffer");
+			CommonExceptions.CheckArgumentNull(buffer, nameof(buffer));
 			Contract.EndContractBlock();
 			Random.NextBytes(buffer);
 		}
@@ -346,7 +350,7 @@ namespace Cyjb
 		/// <returns>随机挑选的值。</returns>
 		public static T Choose<T>(T item1, T item2, T item3)
 		{
-			int value = Random.Next(3);
+			var value = Random.Next(3);
 			if (value == 0)
 			{
 				return item1;
@@ -367,13 +371,13 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="items"/> 为空数组。</exception>
 		public static T Choose<T>(params T[] items)
 		{
-			CommonExceptions.CheckCollectionEmpty(items, "items");
+			CommonExceptions.CheckCollectionEmpty(items, nameof(items));
 			Contract.EndContractBlock();
 			if (items.Length == 1)
 			{
 				return items[0];
 			}
-			int index = Random.Next(items.Length);
+			var index = Random.Next(items.Length);
 			return items[index];
 		}
 

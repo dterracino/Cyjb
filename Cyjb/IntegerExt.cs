@@ -1,4 +1,10 @@
-﻿namespace Cyjb
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Cyjb
 {
 	/// <summary>
 	/// 提供对整数的扩展方法。

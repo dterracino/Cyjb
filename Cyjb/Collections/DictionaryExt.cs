@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -21,7 +24,7 @@ namespace Cyjb.Collections
 		/// <exception cref="ArgumentNullException"><paramref name="dict"/> 为 <c>null</c>。</exception>
 		public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(dict, "dict");
+			CommonExceptions.CheckArgumentNull(dict, nameof(dict));
 			Contract.EndContractBlock();
 			TValue value;
 			return dict.TryGetValue(key, out value) ? value : default(TValue);

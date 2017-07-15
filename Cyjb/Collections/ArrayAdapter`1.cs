@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections.ObjectModel;
 
 namespace Cyjb.Collections
@@ -43,10 +46,10 @@ namespace Cyjb.Collections
 		public ArrayAdapter(params T[] array)
 			: base(array)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.EndContractBlock();
 			this.array = array;
-			this.count = array.Length;
+			count = array.Length;
 		}
 		/// <summary>
 		/// 使用给定的数组初始化 <see cref="ArrayAdapter{T}"/> 类的新实例。
@@ -60,19 +63,19 @@ namespace Cyjb.Collections
 		public ArrayAdapter(T[] array, int offset)
 			: base(array)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (offset < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("offset", offset);
+				throw CommonExceptions.ArgumentNegative(nameof(offset), offset);
 			}
 			if (offset > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("offset", offset);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(offset), offset);
 			}
 			Contract.EndContractBlock();
 			this.array = array;
 			this.offset = offset;
-			this.count = array.Length - offset;
+			count = array.Length - offset;
 		}
 		/// <summary>
 		/// 使用给定的数组初始化 <see cref="ArrayAdapter{T}"/> 类的新实例。
@@ -89,14 +92,14 @@ namespace Cyjb.Collections
 		public ArrayAdapter(T[] array, int offset, int count)
 			: base(array)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (offset < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("offset", offset);
+				throw CommonExceptions.ArgumentNegative(nameof(offset), offset);
 			}
 			if (count < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("count", count);
+				throw CommonExceptions.ArgumentNegative(nameof(count), count);
 			}
 			if (offset + count > array.Length)
 			{
@@ -146,7 +149,7 @@ namespace Cyjb.Collections
 		/// <param name="item">位于指定索引处的元素的新值。对于引用类型，该值可以为 <c>null</c>。</param>
 		protected override void SetItemAt(int index, T item)
 		{
-			this.array[index] = item;
+			array[index] = item;
 		}
 		/// <summary>
 		/// 返回指定索引处的元素。
@@ -155,7 +158,7 @@ namespace Cyjb.Collections
 		/// <returns>位于指定索引处的元素。</returns>
 		protected override T GetItemAt(int index)
 		{
-			return this.array[index + offset];
+			return array[index + offset];
 		}
 
 		#endregion // ListBase<T> 成员
@@ -170,7 +173,7 @@ namespace Cyjb.Collections
 		/// 则为该对象的索引；否则为 <c>-1</c>。</returns>
 		public override int IndexOf(T item)
 		{
-			return Array.IndexOf(this.array, item, this.offset, this.count);
+			return Array.IndexOf(array, item, offset, count);
 		}
 
 		#endregion // IList<T> 成员
@@ -198,7 +201,7 @@ namespace Cyjb.Collections
 		/// <value><see cref="ArrayAdapter{T}"/> 中包含的元素数。</value>
 		public override int Count
 		{
-			get { return this.count; }
+			get { return count; }
 		}
 		/// <summary>
 		/// 从 <see cref="ArrayAdapter{T}"/> 中移除所有元素。此实现总是引发 <see cref="NotSupportedException"/>。
@@ -221,7 +224,7 @@ namespace Cyjb.Collections
 		{
 			for (int i = offset, len = offset + count; i < len; i++)
 			{
-				yield return this.array[i];
+				yield return array[i];
 			}
 		}
 

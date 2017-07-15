@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
@@ -92,7 +95,7 @@ namespace Cyjb.IO
 		public SourceLocator(SourcePosition initPosition, int tabSize)
 		{
 			this.tabSize = tabSize;
-			this.NextPosition = initPosition;
+			NextPosition = initPosition;
 		}
 		/// <summary>
 		/// 获取 Tab 的宽度。
@@ -130,7 +133,7 @@ namespace Cyjb.IO
 			{
 				if (value.IsUnknown)
 				{
-					this.Reset();
+					Reset();
 				}
 				else
 				{
@@ -190,7 +193,7 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="chars"/> 为 <c>null</c>。</exception>
 		public void Forward(char[] chars)
 		{
-			CommonExceptions.CheckArgumentNull(chars, "chars");
+			CommonExceptions.CheckArgumentNull(chars, nameof(chars));
 			Contract.EndContractBlock();
 			if (chars.Length == 1)
 			{
@@ -214,18 +217,18 @@ namespace Cyjb.IO
 		/// 不表示 <paramref name="chars"/> 中的有效范围。</exception>
 		public void Forward(char[] chars, int index, int count)
 		{
-			CommonExceptions.CheckArgumentNull(chars, "chars");
+			CommonExceptions.CheckArgumentNull(chars, nameof(chars));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (count < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("count", count);
+				throw CommonExceptions.ArgumentNegative(nameof(count), count);
 			}
 			if (index + count > chars.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("count", count);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(count), count);
 			}
 			Contract.EndContractBlock();
 			if (count == 1)
@@ -244,7 +247,7 @@ namespace Cyjb.IO
 		/// <exception cref="ArgumentNullException"><paramref name="str"/> 为 <c>null</c>。</exception>
 		public void Forward(string str)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			Contract.EndContractBlock();
 			if (str.Length == 1)
 			{
@@ -268,18 +271,18 @@ namespace Cyjb.IO
 		/// 不表示 <paramref name="str"/> 中的有效范围。</exception>
 		public void Forward(string str, int index, int count)
 		{
-			CommonExceptions.CheckArgumentNull(str, "str");
+			CommonExceptions.CheckArgumentNull(str, nameof(str));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (count < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("count", count);
+				throw CommonExceptions.ArgumentNegative(nameof(count), count);
 			}
 			if (index + count > str.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("count", count);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(count), count);
 			}
 			Contract.EndContractBlock();
 			if (count == 1)
@@ -339,11 +342,11 @@ namespace Cyjb.IO
 		{
 			Contract.Requires(end > start);
 			Contract.Requires(widths.Count == 0);
-			char oldHighSurrogate = this.surrogate;
-			this.surrogate = NoSurrogate;
+			var oldHighSurrogate = surrogate;
+			surrogate = NoSurrogate;
 			// 最后一个字符需要特殊考虑，否则无法得到当前位置。
-			int lastWidth = 0;
-			char lastChar = *end--;
+			var lastWidth = 0;
+			var lastChar = *end--;
 			if (!char.IsHighSurrogate(lastChar))
 			{
 				if (lastChar == '\n')
@@ -369,9 +372,9 @@ namespace Cyjb.IO
 				}
 				lastChar = NoSurrogate;
 			}
-			this.curCol = this.nextCol;
-			this.curLine = this.nextLine;
-			int width = 0;
+			curCol = nextCol;
+			curLine = nextLine;
+			var width = 0;
 			for (; end >= start; end--)
 			{
 				if (*end == '\n')
@@ -379,13 +382,13 @@ namespace Cyjb.IO
 					widths.Add(width);
 					oldHighSurrogate = NoSurrogate;
 					// 统计之前的行数。
-					this.curCol = 1;
-					this.curLine++;
+					curCol = 1;
+					curLine++;
 					for (; end >= start; end--)
 					{
 						if (*end == '\n')
 						{
-							this.curLine++;
+							curLine++;
 						}
 					}
 					break;
@@ -409,27 +412,27 @@ namespace Cyjb.IO
 				widths.Add(width);
 			}
 			// 统计列数。
-			for (int j = widths.Count - 1; j > 0; j--)
+			for (var j = widths.Count - 1; j > 0; j--)
 			{
-				this.curCol += widths[j];
-				this.curCol = ForwardTab(this.curCol);
+				curCol += widths[j];
+				curCol = ForwardTab(curCol);
 			}
-			this.surrogate = lastChar;
-			this.curCol += widths[0];
+			surrogate = lastChar;
+			curCol += widths[0];
 			widths.Clear();
-			this.nextLine = this.curLine;
+			nextLine = curLine;
 			if (lastWidth >= 0)
 			{
-				this.nextCol = this.curCol + lastWidth;
+				nextCol = curCol + lastWidth;
 			}
 			else if (lastWidth == -1)
 			{
-				this.nextCol = 1;
-				this.nextLine++;
+				nextCol = 1;
+				nextLine++;
 			}
 			else
 			{
-				this.nextCol = this.ForwardTab(this.curCol);
+				nextCol = ForwardTab(curCol);
 			}
 		}
 		/// <summary>
@@ -454,17 +457,17 @@ namespace Cyjb.IO
 			}
 			if (char.IsHighSurrogate(ch))
 			{
-				this.surrogate = ch;
+				surrogate = ch;
 				return 0;
 			}
 			// ch 是低代理项
-			if (this.surrogate == NoSurrogate)
+			if (surrogate == NoSurrogate)
 			{
 				// 缺失相应高代理项，忽略无效数据。
 				return 0;
 			}
-			int chValue = char.ConvertToUtf32(this.surrogate, ch);
-			this.surrogate = NoSurrogate;
+			var chValue = char.ConvertToUtf32(surrogate, ch);
+			surrogate = NoSurrogate;
 			return CharExt.Width(chValue);
 		}
 		/// <summary>
@@ -480,17 +483,17 @@ namespace Cyjb.IO
 			}
 			if (char.IsLowSurrogate(ch))
 			{
-				this.surrogate = ch;
+				surrogate = ch;
 				return 0;
 			}
 			// ch 是高代理项
-			if (this.surrogate == NoSurrogate)
+			if (surrogate == NoSurrogate)
 			{
 				// 缺失相应低代理项，忽略无效数据。
 				return 0;
 			}
-			int chValue = char.ConvertToUtf32(ch, this.surrogate);
-			this.surrogate = NoSurrogate;
+			var chValue = char.ConvertToUtf32(ch, surrogate);
+			surrogate = NoSurrogate;
 			return CharExt.Width(chValue);
 		}
 	}

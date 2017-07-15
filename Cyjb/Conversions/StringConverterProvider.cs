@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Reflection;
 using JetBrains.Annotations;
 
@@ -120,7 +124,7 @@ namespace Cyjb.Conversions
 		[UsedImplicitly]
 		private static TOutput ConvertToEnum<TOutput>(string value)
 		{
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			return (TOutput)Enum.Parse(typeof(TOutput), value);
 		}

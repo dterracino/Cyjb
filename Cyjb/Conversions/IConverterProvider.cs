@@ -1,7 +1,10 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
-using System.Reflection;
 using Cyjb.Reflection;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -56,12 +59,12 @@ namespace Cyjb
 			{
 				return false;
 			}
-			MethodInfo method = dlg.GetInvokeMethod();
+			var method = dlg.GetInvokeMethod();
 			if (method.ReturnType != outputType)
 			{
 				return false;
 			}
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
+			var parameters = method.GetParametersNoCopy();
 			return parameters.Length == 1 && parameters[0].ParameterType == provider.OriginType;
 		}
 		/// <summary>
@@ -79,12 +82,12 @@ namespace Cyjb
 			{
 				return false;
 			}
-			MethodInfo method = dlg.GetInvokeMethod();
+			var method = dlg.GetInvokeMethod();
 			if (method.ReturnType != provider.OriginType)
 			{
 				return false;
 			}
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
+			var parameters = method.GetParametersNoCopy();
 			return (parameters.Length == 1 && parameters[0].ParameterType == inputType) ||
 				(parameters.Length == 2 && parameters[1].ParameterType == inputType);
 		}

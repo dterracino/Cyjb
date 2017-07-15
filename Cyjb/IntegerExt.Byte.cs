@@ -1,4 +1,9 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -73,7 +78,7 @@ namespace Cyjb
 		{
 			Contract.Ensures(Contract.Result<int>() >= 0 && Contract.Result<int>() <= 2);
 			if (value >= 100) { return 2; }
-			return (value >= 10) ? 1 : 0;
+			return value >= 10 ? 1 : 0;
 		}
 		/// <summary>
 		/// 返回大于或等于指定整数的最小的 <c>2</c> 的幂次。
@@ -82,7 +87,7 @@ namespace Cyjb
 		/// <returns>大于或等于指定整数的最小的 <c>2</c> 的幂次。</returns>
 		public static byte CeilingPowerOf2(this byte value)
 		{
-			int iValue = value - 1;
+			var iValue = value - 1;
 			iValue |= iValue >> 1;
 			iValue |= iValue >> 2;
 			iValue |= iValue >> 4;

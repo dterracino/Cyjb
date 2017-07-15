@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Collections;
 
 namespace Cyjb.Reflection
@@ -24,12 +26,12 @@ namespace Cyjb.Reflection
 		public static MethodArgumentsInfo GetInfo(MethodBase method, Type[] types, MethodArgumentsOption options)
 		{
 			Contract.Requires(method != null && types != null);
-			MethodArgumentsInfo result = new MethodArgumentsInfo(method, types);
-			bool optionalParamBinding = options.HasFlag(MethodArgumentsOption.OptionalParamBinding);
-			bool isExplicit = options.HasFlag(MethodArgumentsOption.Explicit);
-			bool convertRefType = options.HasFlag(MethodArgumentsOption.ConvertRefType);
+			var result = new MethodArgumentsInfo(method, types);
+			var optionalParamBinding = options.HasFlag(MethodArgumentsOption.OptionalParamBinding);
+			var isExplicit = options.HasFlag(MethodArgumentsOption.Explicit);
+			var convertRefType = options.HasFlag(MethodArgumentsOption.ConvertRefType);
 			// 填充方法实例。
-			int offset = 0;
+			var offset = 0;
 			if (options.HasFlag(MethodArgumentsOption.ContainsInstance))
 			{
 				if (!result.MarkInstanceType(isExplicit, convertRefType))
@@ -44,8 +46,8 @@ namespace Cyjb.Reflection
 				return null;
 			}
 			// 检查实参是否与形参对应，未对应的参数是否包含默认值。
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
-			int paramLen = parameters.Length;
+			var parameters = method.GetParametersNoCopy();
+			var paramLen = parameters.Length;
 			if (result.ParamArrayType != null)
 			{
 				paramLen--;
@@ -109,7 +111,7 @@ namespace Cyjb.Reflection
 		{
 			Contract.Requires(method != null && types != null);
 			this.method = method;
-			this.arguments = types;
+			arguments = types;
 		}
 		/// <summary>
 		/// 获取方法实例实参类型。
@@ -117,7 +119,7 @@ namespace Cyjb.Reflection
 		/// <value>方法实例实参类型。<c>null</c> 表示不是实例方法。</value>
 		public Type InstanceType
 		{
-			get { return this.instanceType; }
+			get { return instanceType; }
 		}
 		/// <summary>
 		/// 获取方法的固定实参列表。
@@ -128,7 +130,7 @@ namespace Cyjb.Reflection
 		/// 为 <c>null</c> 表示实参值是 <c>null</c>，仅具有引用类型的约束。</remarks>
 		public IList<Type> FixedArguments
 		{
-			get { return this.fixedArguments; }
+			get { return fixedArguments; }
 		}
 		/// <summary>
 		/// 获取 params 形参的类型。
@@ -136,7 +138,7 @@ namespace Cyjb.Reflection
 		/// <value>params 形参的类型，如果为 <c>null</c> 表示无需特殊处理 params 参数。</value>
 		public Type ParamArrayType
 		{
-			get { return this.paramArrayType; }
+			get { return paramArrayType; }
 		}
 		/// <summary>
 		/// 获取 params 实参的类型列表。
@@ -145,7 +147,7 @@ namespace Cyjb.Reflection
 		/// <remarks>列表元素为 <c>null</c> 表示实参值是 <c>null</c>，仅具有引用类型的约束。</remarks>
 		public IList<Type> ParamArgumentTypes
 		{
-			get { return this.paramArgumentTypes; }
+			get { return paramArgumentTypes; }
 		}
 		/// <summary>
 		/// 获取可变参数的类型。
@@ -154,19 +156,19 @@ namespace Cyjb.Reflection
 		/// <remarks>列表元素为 <c>null</c> 表示实参值是 <c>null</c>，仅具有引用类型的约束。</remarks>
 		public IList<Type> OptionalArgumentTypes
 		{
-			get { return this.optionalArgumentTypes; }
+			get { return optionalArgumentTypes; }
 		}
 		/// <summary>
 		/// 清除 params 参数信息，表示无需特殊处理该参数。
 		/// </summary>
 		public void ClearParamArrayType()
 		{
-			if (this.paramArrayType != null)
+			if (paramArrayType != null)
 			{
-				this.paramArrayType = null;
-				this.paramArgumentTypes = null;
-				this.fixedArguments = new ArrayAdapter<Type>(this.arguments, this.fixedArguments.Offset,
-					this.fixedArguments.Count + 1);
+				paramArrayType = null;
+				paramArgumentTypes = null;
+				fixedArguments = new ArrayAdapter<Type>(arguments, fixedArguments.Offset,
+					fixedArguments.Count + 1);
 			}
 		}
 		/// <summary>
@@ -176,10 +178,10 @@ namespace Cyjb.Reflection
 		public void UpdateParamArrayType(MethodBase newMethod)
 		{
 			Contract.Requires(newMethod != null);
-			if (this.paramArrayType != null)
+			if (paramArrayType != null)
 			{
-				ParameterInfo[] parameters = newMethod.GetParametersNoCopy();
-				this.paramArrayType = parameters[parameters.Length - 1].ParameterType;
+				var parameters = newMethod.GetParametersNoCopy();
+				paramArrayType = parameters[parameters.Length - 1].ParameterType;
 			}
 		}
 
@@ -197,32 +199,32 @@ namespace Cyjb.Reflection
 			{
 				return false;
 			}
-			if (this.arguments.Length == 0)
+			if (arguments.Length == 0)
 			{
 				return false;
 			}
-			this.instanceType = this.arguments[0];
-			if (this.instanceType == null)
+			instanceType = arguments[0];
+			if (instanceType == null)
 			{
-				this.instanceType = this.method.DeclaringType;
-				Contract.Assume(this.instanceType != null);
-				return !this.instanceType.IsValueType;
+				instanceType = method.DeclaringType;
+				Contract.Assume(instanceType != null);
+				return !instanceType.IsValueType;
 			}
-			if (this.instanceType == typeof(Missing))
+			if (instanceType == typeof(Missing))
 			{
 				return true;
 			}
-			if (this.instanceType.IsByRef)
+			if (instanceType.IsByRef)
 			{
-				this.instanceType = this.instanceType.GetElementType();
+				instanceType = instanceType.GetElementType();
 				if (!convertRefType)
 				{
-					return method.DeclaringType == this.instanceType;
+					return method.DeclaringType == instanceType;
 				}
 			}
-			Type declaringType = method.DeclaringType;
+			var declaringType = method.DeclaringType;
 			Contract.Assume(declaringType != null);
-			return declaringType.IsConvertFrom(this.instanceType, isExplicit);
+			return declaringType.IsConvertFrom(instanceType, isExplicit);
 		}
 		/// <summary>
 		/// 填充 params 参数和可变参数。
@@ -233,22 +235,22 @@ namespace Cyjb.Reflection
 		/// <returns>如果填充参数成功，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		private bool FillParamArray(bool isExplicit, bool convertRefType)
 		{
-			ParameterInfo[] parameters = method.GetParametersNoCopy();
-			int paramLen = parameters.Length;
-			int offset = this.instanceType == null ? 0 : 1;
+			var parameters = method.GetParametersNoCopy();
+			var paramLen = parameters.Length;
+			var offset = instanceType == null ? 0 : 1;
 			offset += paramLen;
 			if (method.CallingConvention.HasFlag(CallingConventions.VarArgs))
 			{
-				this.optionalArgumentTypes = new ArrayAdapter<Type>(this.arguments, offset);
-				return this.optionalArgumentTypes.All(type => type != null);
+				optionalArgumentTypes = new ArrayAdapter<Type>(arguments, offset);
+				return optionalArgumentTypes.All(type => type != null);
 			}
 			if (paramLen > 0)
 			{
-				ParameterInfo lastParam = parameters[paramLen - 1];
+				var lastParam = parameters[paramLen - 1];
 				if (lastParam.IsParamArray())
 				{
-					this.paramArrayType = lastParam.ParameterType;
-					this.paramArgumentTypes = new ArrayAdapter<Type>(this.arguments, offset - 1);
+					paramArrayType = lastParam.ParameterType;
+					paramArgumentTypes = new ArrayAdapter<Type>(arguments, offset - 1);
 					return lastParam.ParameterType.ContainsGenericParameters || CheckParamArrayType(isExplicit, convertRefType);
 				}
 			}
@@ -264,16 +266,16 @@ namespace Cyjb.Reflection
 		/// <returns>如果 params 参数类型匹配，则为 <c>true</c>；否则为 <c>false</c>。</returns>
 		private bool CheckParamArrayType(bool isExplicit, bool convertRefType)
 		{
-			int paramCnt = this.paramArgumentTypes.Count;
+			var paramCnt = paramArgumentTypes.Count;
 			if (paramCnt == 0)
 			{
 				return true;
 			}
-			Type paramElementType = this.paramArrayType.GetElementType();
+			var paramElementType = paramArrayType.GetElementType();
 			if (paramCnt == 1)
 			{
 				// 只有一个实参，可能是数组或数组元素。
-				Type type = this.paramArgumentTypes[0];
+				var type = paramArgumentTypes[0];
 				bool isTypeMatch;
 				if (type == null || type == typeof(Missing))
 				{
@@ -294,16 +296,16 @@ namespace Cyjb.Reflection
 				if (isTypeMatch)
 				{
 					// 实参是数组，无需进行特殊处理。
-					this.paramArrayType = null;
-					this.paramArgumentTypes = null;
+					paramArrayType = null;
+					paramArgumentTypes = null;
 					return true;
 				}
 				return paramElementType.IsConvertFrom(type, isExplicit);
 			}
 			// 有多个实参，必须是数组元素。
-			for (int i = 0; i < paramCnt; i++)
+			for (var i = 0; i < paramCnt; i++)
 			{
-				Type type = this.paramArgumentTypes[i];
+				var type = paramArgumentTypes[i];
 				if (type == null)
 				{
 					if (paramElementType.IsValueType)
@@ -345,7 +347,7 @@ namespace Cyjb.Reflection
 		private static bool CheckParameter(ParameterInfo parameter, Type type, bool optionalParamBinding,
 			bool isExplicit, bool convertRefType)
 		{
-			Type paramType = parameter.ParameterType;
+			var paramType = parameter.ParameterType;
 			if (paramType.ContainsGenericParameters)
 			{
 				return true;
@@ -355,7 +357,7 @@ namespace Cyjb.Reflection
 				// 检查可选参数和 params 参数。
 				return parameter.IsParamArray() || (optionalParamBinding && parameter.HasDefaultValue);
 			}
-			bool isByRef = false;
+			var isByRef = false;
 			if (paramType.IsByRef)
 			{
 				paramType = paramType.GetElementType();
@@ -417,6 +419,6 @@ namespace Cyjb.Reflection
 		/// <summary>
 		/// 对可选参数进行绑定，且使用显式类型转换。
 		/// </summary>
-		OptionalAndExplicit = 6,
+		OptionalAndExplicit = 6
 	}
 }

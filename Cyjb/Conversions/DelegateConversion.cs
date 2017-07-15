@@ -1,10 +1,13 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -40,7 +43,7 @@ namespace Cyjb.Conversions
 		/// <value>要调用的类型转换委托。</value>
 		public Delegate Converter
 		{
-			get { return this.converter; }
+			get { return converter; }
 		}
 		/// <summary>
 		/// 写入类型转换的指令。
@@ -51,7 +54,7 @@ namespace Cyjb.Conversions
 		/// <param name="isChecked">是否执行溢出检查。</param>
 		public override void Emit(ILGenerator generator, Type inputType, Type outputType, bool isChecked)
 		{
-			MethodInfo method = converter.Method;
+			var method = converter.Method;
 			if (method.IsStatic && method.GetParametersNoCopy().Length == 1)
 			{
 				// 没有闭包的静态方法可以直接调用。

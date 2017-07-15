@@ -1,4 +1,9 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -9,11 +14,7 @@ namespace Cyjb.Utility
 	/// <seealso cref="CacheFactory"/>
 	public sealed class CacheSection : ConfigurationSection
 	{
-		/// <summary>
-		/// 初始化 <see cref="CacheSection"/> 类的新实例。
-		/// </summary>
-		public CacheSection() { }
-		/// <summary>
+	    /// <summary>
 		/// 获取缓存配置。
 		/// </summary>
 		/// <value>缓存配置。</value>
@@ -21,7 +22,7 @@ namespace Cyjb.Utility
 		[ConfigurationCollection(typeof(CacheElementCollection), AddItemName = "cache")]
 		public CacheElementCollection Caches
 		{
-			get { return ((CacheElementCollection)this[""]); }
+			get { return (CacheElementCollection)this[""]; }
 		}
 	}
 }

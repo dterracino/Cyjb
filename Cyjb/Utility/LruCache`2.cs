@@ -3,7 +3,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -78,18 +81,18 @@ namespace Cyjb.Utility
 		{
 			if (maxSize < 2)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("maxSize", maxSize);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(maxSize), maxSize);
 			}
 			Contract.EndContractBlock();
 			this.maxSize = maxSize;
-			this.hotSize = (int)(maxSize * hotPrecent);
-			if (this.hotSize < 1)
+			hotSize = (int)(maxSize * hotPrecent);
+			if (hotSize < 1)
 			{
-				this.hotSize = 1;
+				hotSize = 1;
 			}
-			else if (maxSize - this.hotSize < 1)
+			else if (maxSize - hotSize < 1)
 			{
-				this.hotSize = this.maxSize - 1;
+				hotSize = this.maxSize - 1;
 			}
 		}
 		/// <summary>
@@ -113,9 +116,9 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public void Add(TKey key, TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
-			this.AddInternal(key, new Lazy<TValue>(() => value, false), true);
+			AddInternal(key, new Lazy<TValue>(() => value, false), true);
 		}
 		/// <summary>
 		/// 清空缓存中的所有对象。
@@ -137,7 +140,7 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public bool Contains(TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			return cacheDict.ContainsKey(key);
 		}
@@ -157,8 +160,8 @@ namespace Cyjb.Utility
 		/// </overloads>
 		public TValue GetOrAdd(TKey key, Func<TKey, TValue> valueFactory)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(valueFactory, "valueFactory");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(valueFactory, nameof(valueFactory));
 			Contract.EndContractBlock();
 			LruNode<TKey, TValue> node;
 			if (cacheDict.TryGetValue(key, out node))
@@ -167,7 +170,7 @@ namespace Cyjb.Utility
 			}
 			else
 			{
-				node = this.AddInternal(key, new Lazy<TValue>(() => valueFactory(key)), false);
+				node = AddInternal(key, new Lazy<TValue>(() => valueFactory(key)), false);
 			}
 			return node.Value.Value;
 		}
@@ -184,8 +187,8 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="valueFactory"/> 为 <c>null</c>。</exception>
 		public TValue GetOrAdd<TArg>(TKey key, TArg arg, Func<TKey, TArg, TValue> valueFactory)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(valueFactory, "valueFactory");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(valueFactory, nameof(valueFactory));
 			Contract.EndContractBlock();
 			LruNode<TKey, TValue> node;
 			if (cacheDict.TryGetValue(key, out node))
@@ -194,7 +197,7 @@ namespace Cyjb.Utility
 			}
 			else
 			{
-				node = this.AddInternal(key, new Lazy<TValue>(() => valueFactory(key, arg)), false);
+				node = AddInternal(key, new Lazy<TValue>(() => valueFactory(key, arg)), false);
 			}
 			return node.Value.Value;
 		}
@@ -213,8 +216,8 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="valueFactory"/> 为 <c>null</c>。</exception>
 		public TValue GetOrAdd<TArg0, TArg1>(TKey key, TArg0 arg0, TArg1 arg1, Func<TKey, TArg0, TArg1, TValue> valueFactory)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(valueFactory, "valueFactory");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(valueFactory, nameof(valueFactory));
 			Contract.EndContractBlock();
 			LruNode<TKey, TValue> node;
 			if (cacheDict.TryGetValue(key, out node))
@@ -223,7 +226,7 @@ namespace Cyjb.Utility
 			}
 			else
 			{
-				node = this.AddInternal(key, new Lazy<TValue>(() => valueFactory(key, arg0, arg1)), false);
+				node = AddInternal(key, new Lazy<TValue>(() => valueFactory(key, arg0, arg1)), false);
 			}
 			return node.Value.Value;
 		}
@@ -234,7 +237,7 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public void Remove(TKey key)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			LruNode<TKey, TValue> node;
 			if (cacheDict.TryRemove(key, out node))
@@ -261,7 +264,7 @@ namespace Cyjb.Utility
 		/// <exception cref="ArgumentNullException"><paramref name="key"/> 为 <c>null</c>。</exception>
 		public bool TryGet(TKey key, out TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
 			Contract.EndContractBlock();
 			LruNode<TKey, TValue> node;
 			if (cacheDict.TryGetValue(key, out node))
@@ -287,19 +290,19 @@ namespace Cyjb.Utility
 			Contract.Requires(node != null);
 			if (node.Next == node)
 			{
-				this.head = null;
+				head = null;
 			}
 			else
 			{
 				node.Next.Prev = node.Prev;
 				node.Prev.Next = node.Next;
-				if (this.head == node)
+				if (head == node)
 				{
-					this.head = node.Next;
+					head = node.Next;
 				}
-				else if (this.codeHead == node)
+				else if (codeHead == node)
 				{
-					this.codeHead = node.Next;
+					codeHead = node.Next;
 				}
 			}
 		}
@@ -310,20 +313,20 @@ namespace Cyjb.Utility
 		private void AddHotFirst(LruNode<TKey, TValue> node)
 		{
 			Contract.Requires(node != null);
-			if (this.head == null)
+			if (head == null)
 			{
 				node.Next = node.Prev = node;
 			}
 			else
 			{
-				this.head.AddBefore(node);
+				head.AddBefore(node);
 				// 热端长度增加，将冷端头节点像前移动一个位置。
-				if (this.codeHead != null)
+				if (codeHead != null)
 				{
-					this.codeHead = this.codeHead.Prev;
+					codeHead = codeHead.Prev;
 				}
 			}
-			this.head = node;
+			head = node;
 		}
 		/// <summary>
 		/// 将指定的节点添加到链表冷端的头部，链表操作本身是非线程安全的。
@@ -332,10 +335,10 @@ namespace Cyjb.Utility
 		private void AddCodeFirst(LruNode<TKey, TValue> node)
 		{
 			Contract.Requires(node != null);
-			Contract.Assume(this.codeHead != null);
+			Contract.Assume(codeHead != null);
 			// 这里 codeHead != null，在调用的时候已经保证了这一点。
-			this.codeHead.AddBefore(node);
-			this.codeHead = node;
+			codeHead.AddBefore(node);
+			codeHead = node;
 		}
 
 		#endregion // 链表操作
@@ -349,8 +352,8 @@ namespace Cyjb.Utility
 		private LruNode<TKey, TValue> AddInternal(TKey key, Lazy<TValue> value, bool force)
 		{
 			Contract.Requires(key != null && value != null);
-			LruNode<TKey, TValue> newNode = new LruNode<TKey, TValue>(key, value);
-			LruNode<TKey, TValue> node = cacheDict.AddOrUpdate(key, newNode, (k, v) =>
+			var newNode = new LruNode<TKey, TValue>(key, value);
+			var node = cacheDict.AddOrUpdate(key, newNode, (k, v) =>
 			{
 				if (force)
 				{
@@ -391,11 +394,11 @@ namespace Cyjb.Utility
 						// 将旧 node 移除。
 						if (!comparer.Equals(head.Prev.Key, key))
 						{
-							this.cacheDict.TryRemove(head.Prev.Key, out node);
+							cacheDict.TryRemove(head.Prev.Key, out node);
 						}
-						this.Remove(head.Prev);
+						Remove(head.Prev);
 						// 将新节点添加到冷端的头。
-						this.AddCodeFirst(newNode);
+						AddCodeFirst(newNode);
 					}
 				}
 				return newNode;

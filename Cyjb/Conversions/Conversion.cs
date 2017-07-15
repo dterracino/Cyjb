@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -19,7 +23,7 @@ namespace Cyjb.Conversions
 		/// <param name="conversionType">当前转换的类型。</param>
 		internal Conversion(ConversionType conversionType)
 		{
-			this.ConversionType = conversionType;
+			ConversionType = conversionType;
 		}
 		/// <summary>
 		/// 写入类型转换的 IL 指令。

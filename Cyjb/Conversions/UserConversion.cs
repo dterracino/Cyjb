@@ -1,8 +1,12 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using Cyjb.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -34,8 +38,8 @@ namespace Cyjb.Conversions
 		/// <param name="isChecked">是否执行溢出检查。</param>
 		public override void Emit(ILGenerator generator, Type inputType, Type outputType, bool isChecked)
 		{
-			Type methodType = method.GetParametersNoCopy()[0].ParameterType;
-			Conversion conv = ConversionFactory.GetPreDefinedConversionNotVoid(inputType, methodType);
+			var methodType = method.GetParametersNoCopy()[0].ParameterType;
+			var conv = ConversionFactory.GetPreDefinedConversionNotVoid(inputType, methodType);
 			conv.Emit(generator, inputType, methodType, isChecked);
 			generator.EmitCall(method);
 			methodType = method.ReturnType;

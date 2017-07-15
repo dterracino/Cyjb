@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.IO
 {
@@ -28,8 +32,8 @@ namespace Cyjb.IO
 		/// </overloads>
 		public static string GetCultureSpecifiedFile(string path, string fileName)
 		{
-			CommonExceptions.CheckArgumentNull(path, "path");
-			CommonExceptions.CheckArgumentNull(fileName, "fileName");
+			CommonExceptions.CheckArgumentNull(path, nameof(path));
+			CommonExceptions.CheckArgumentNull(fileName, nameof(fileName));
 			Contract.EndContractBlock();
 			return GetCultureSpecifiedFile(path, fileName, CultureInfo.CurrentCulture);
 		}
@@ -47,13 +51,13 @@ namespace Cyjb.IO
 		/// 中包含一个或多个无效字符。</exception>
 		public static string GetCultureSpecifiedFile(string path, string fileName, CultureInfo culture)
 		{
-			CommonExceptions.CheckArgumentNull(path, "path");
-			CommonExceptions.CheckArgumentNull(fileName, "fileName");
-			CommonExceptions.CheckArgumentNull(culture, "culture");
+			CommonExceptions.CheckArgumentNull(path, nameof(path));
+			CommonExceptions.CheckArgumentNull(fileName, nameof(fileName));
+			CommonExceptions.CheckArgumentNull(culture, nameof(culture));
 			Contract.EndContractBlock();
 			while (true)
 			{
-				string filePath = Path.Combine(path, culture.Name, fileName);
+				var filePath = Path.Combine(path, culture.Name, fileName);
 				if (File.Exists(filePath))
 				{
 					return filePath;

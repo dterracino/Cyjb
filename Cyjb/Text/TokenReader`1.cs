@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.IO;
 
 namespace Cyjb.Text
@@ -29,9 +32,9 @@ namespace Cyjb.Text
 		/// <exception cref="ArgumentNullException"><paramref name="reader"/> 为 <c>null</c>。</exception>
 		protected TokenReader(SourceReader reader)
 		{
-			CommonExceptions.CheckArgumentNull(reader, "reader");
+			CommonExceptions.CheckArgumentNull(reader, nameof(reader));
 			Contract.EndContractBlock();
-			this.Source = reader;
+			Source = reader;
 		}
 
 		#region IDisposable 成员
@@ -46,7 +49,7 @@ namespace Cyjb.Text
 		/// </overloads>
 		public void Dispose()
 		{
-			this.Dispose(true);
+			Dispose(true);
 			GC.SuppressFinalize(this);
 		}
 		/// <summary>
@@ -57,7 +60,7 @@ namespace Cyjb.Text
 		{
 			if (disposing)
 			{
-				this.Source.Dispose();
+				Source.Dispose();
 			}
 		}
 
@@ -74,10 +77,10 @@ namespace Cyjb.Text
 		/// <returns>输入流中的下一个词法单元。</returns>
 		public Token<T> ReadToken()
 		{
-			if (this.peekToken)
+			if (peekToken)
 			{
-				this.peekToken = false;
-				return this.nextToken;
+				peekToken = false;
+				return nextToken;
 			}
 			return InternalReadToken();
 		}
@@ -87,12 +90,12 @@ namespace Cyjb.Text
 		/// <returns>输入流中的下一个词法单元。</returns>
 		public Token<T> PeekToken()
 		{
-			if (!this.peekToken)
+			if (!peekToken)
 			{
-				this.peekToken = true;
-				this.nextToken = InternalReadToken();
+				peekToken = true;
+				nextToken = InternalReadToken();
 			}
-			return this.nextToken;
+			return nextToken;
 		}
 		/// <summary>
 		/// 读取输入流中的下一个词法单元并提升输入流的字符位置。
@@ -113,7 +116,7 @@ namespace Cyjb.Text
 		{
 			while (true)
 			{
-				Token<T> token = this.ReadToken();
+				var token = ReadToken();
 				yield return token;
 				if (token.IsEndOfFile)
 				{
@@ -132,7 +135,7 @@ namespace Cyjb.Text
 		/// <returns>可用于循环访问集合的 <see cref="IEnumerator"/>。</returns>
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return this.GetEnumerator();
+			return GetEnumerator();
 		}
 
 		#endregion // IEnumerable 成员

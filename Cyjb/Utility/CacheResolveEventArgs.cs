@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Utility
 {
@@ -54,7 +58,7 @@ namespace Cyjb.Utility
 			get
 			{
 				Contract.Ensures(Contract.Result<string>() != null);
-				return this.key;
+				return key;
 			}
 		}
 		/// <summary>
@@ -66,7 +70,7 @@ namespace Cyjb.Utility
 			get
 			{
 				Contract.Ensures(Contract.Result<Type>() != null);
-				return this.keyType;
+				return keyType;
 			}
 		}
 		/// <summary>
@@ -78,14 +82,14 @@ namespace Cyjb.Utility
 			get
 			{
 				Contract.Ensures(Contract.Result<Type>() != null);
-				return this.valueType;
+				return valueType;
 			}
 		}
 		/// <summary>
 		/// 获取创建缓冲池时已发生的 <see cref="ConfigurationErrorsException"/>。
 		/// </summary>
 		/// <value>已发生的 <see cref="ConfigurationErrorsException"/>。</value>
-		public ConfigurationErrorsException InnerException { get { return this.innerException; } }
+		public ConfigurationErrorsException InnerException { get { return innerException; } }
 		/// <summary>
 		/// 获取或设置默认的缓冲池对象。
 		/// </summary>

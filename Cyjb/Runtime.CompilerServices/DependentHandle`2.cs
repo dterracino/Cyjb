@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.Permissions;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Runtime.CompilerServices
 {
@@ -90,8 +94,8 @@ namespace Cyjb.Runtime.CompilerServices
 		/// <exception cref="ArgumentNullException"><paramref name="value"/> 为 <c>null</c>。</exception>
 		public DependentHandle(TKey key, TValue value)
 		{
-			CommonExceptions.CheckArgumentNull(key, "key");
-			CommonExceptions.CheckArgumentNull(value, "value");
+			CommonExceptions.CheckArgumentNull(key, nameof(key));
+			CommonExceptions.CheckArgumentNull(value, nameof(value));
 			Contract.EndContractBlock();
 			initialize(key, value, out handle);
 		}
@@ -112,7 +116,7 @@ namespace Cyjb.Runtime.CompilerServices
 				if (key == null)
 				{
 					// 键已被释放掉，就尽早释放句柄。
-					this.Dispose();
+					Dispose();
 				}
 				return key as TKey;
 			}
@@ -135,7 +139,7 @@ namespace Cyjb.Runtime.CompilerServices
 				if (key == null)
 				{
 					// 键已被释放掉，就尽早释放句柄。
-					this.Dispose();
+					Dispose();
 					return null;
 				}
 				return value as TValue;
@@ -167,7 +171,7 @@ namespace Cyjb.Runtime.CompilerServices
 			{
 				return;
 			}
-			this.Dispose();
+			Dispose();
 		}
 	}
 }

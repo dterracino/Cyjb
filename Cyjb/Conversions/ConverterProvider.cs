@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Conversions
 {
@@ -19,8 +22,8 @@ namespace Cyjb.Conversions
 		{
 			Contract.Requires(first != null && second != null);
 			Contract.Requires(first.OriginType != null && first.OriginType == second.OriginType);
-			ConverterProvider firstProvider = first as ConverterProvider;
-			ConverterProvider secondProvider = second as ConverterProvider;
+			var firstProvider = first as ConverterProvider;
+			var secondProvider = second as ConverterProvider;
 			if (firstProvider != null)
 			{
 				if (secondProvider != null)
@@ -65,14 +68,14 @@ namespace Cyjb.Conversions
 		public ConverterProvider(Delegate converter, Type inputType, Type outputType)
 		{
 			Contract.Requires(converter != null && inputType != null && outputType != null);
-			this.originType = inputType;
-			this.toDict = new Dictionary<Type, Delegate>(1)
+			originType = inputType;
+			toDict = new Dictionary<Type, Delegate>(1)
 			{
 				{ outputType, converter }
 			};
-			this.fromDict = new Dictionary<Type, Delegate>();
-			this.toDict = new Dictionary<Type, Delegate>();
-			this.subProvider = ArrayExt.Empty<IConverterProvider>();
+			fromDict = new Dictionary<Type, Delegate>();
+			toDict = new Dictionary<Type, Delegate>();
+			subProvider = ArrayExt.Empty<IConverterProvider>();
 		}
 		/// <summary>
 		/// 通过合并现有的类型转换器提供者初始化 <see cref="ConverterProvider"/> 类的新实例。
@@ -83,10 +86,10 @@ namespace Cyjb.Conversions
 		{
 			Contract.Requires(first != null && second != null);
 			Contract.Requires(first.OriginType != null && first.OriginType == second.OriginType);
-			this.originType = first.OriginType;
-			this.fromDict = new Dictionary<Type, Delegate>();
-			this.toDict = new Dictionary<Type, Delegate>();
-			this.subProvider = new[] { first, second };
+			originType = first.OriginType;
+			fromDict = new Dictionary<Type, Delegate>();
+			toDict = new Dictionary<Type, Delegate>();
+			subProvider = new[] { first, second };
 		}
 		/// <summary>
 		/// 将当前类型转换器提供者与指定的 <see cref="ConverterProvider"/> 合并。
@@ -94,22 +97,22 @@ namespace Cyjb.Conversions
 		/// <param name="provider">要合并的类型转换器提供者。</param>
 		private void CombineWith(ConverterProvider provider)
 		{
-			Contract.Requires(provider != null && this.OriginType == provider.OriginType);
-			foreach (KeyValuePair<Type, Delegate> pair in provider.fromDict)
+			Contract.Requires(provider != null && OriginType == provider.OriginType);
+			foreach (var pair in provider.fromDict)
 			{
-				this.fromDict.Add(pair.Key, pair.Value);
+				fromDict.Add(pair.Key, pair.Value);
 			}
-			foreach (KeyValuePair<Type, Delegate> pair in provider.toDict)
+			foreach (var pair in provider.toDict)
 			{
-				this.toDict.Add(pair.Key, pair.Value);
+				toDict.Add(pair.Key, pair.Value);
 			}
-			if (this.subProvider.Length == 0)
+			if (subProvider.Length == 0)
 			{
-				this.subProvider = provider.subProvider;
+				subProvider = provider.subProvider;
 			}
 			else if (provider.subProvider.Length > 0)
 			{
-				this.subProvider = ArrayExt.Combine(this.subProvider, provider.subProvider);
+				subProvider = ArrayExt.Combine(subProvider, provider.subProvider);
 			}
 		}
 		/// <summary>
@@ -118,17 +121,17 @@ namespace Cyjb.Conversions
 		/// <param name="provider">要合并的类型转换器提供者。</param>
 		private void CombineWith(IConverterProvider provider)
 		{
-			Contract.Requires(provider != null && this.OriginType == provider.OriginType);
-			if (this.subProvider.Length == 0)
+			Contract.Requires(provider != null && OriginType == provider.OriginType);
+			if (subProvider.Length == 0)
 			{
-				this.subProvider = new[] { provider };
+				subProvider = new[] { provider };
 			}
 			else
 			{
-				IConverterProvider[] newProviders = new IConverterProvider[this.subProvider.Length + 1];
-				this.subProvider.CopyTo(newProviders, 0);
+				var newProviders = new IConverterProvider[subProvider.Length + 1];
+				subProvider.CopyTo(newProviders, 0);
 				newProviders[newProviders.Length - 1] = provider;
-				this.subProvider = newProviders;
+				subProvider = newProviders;
 			}
 		}
 		/// <summary>
@@ -137,7 +140,7 @@ namespace Cyjb.Conversions
 		/// <value>类型转换器的源类型。</value>
 		public Type OriginType
 		{
-			get { return this.originType; }
+			get { return originType; }
 		}
 		/// <summary>
 		/// 返回将对象从 <see cref="OriginType"/> 类型转换为 <paramref name="outputType"/> 类型的类型转换器。
@@ -155,7 +158,7 @@ namespace Cyjb.Conversions
 				return dlg;
 			}
 			// 子提供者按倒序遍历，这样后添加的会先被访问。
-			for (int i = subProvider.Length - 1; i >= 0; i--)
+			for (var i = subProvider.Length - 1; i >= 0; i--)
 			{
 				dlg = subProvider[i].GetConverterTo(outputType);
 				if (dlg != null && this.IsValidConverterTo(dlg, outputType))
@@ -181,7 +184,7 @@ namespace Cyjb.Conversions
 				return dlg;
 			}
 			// 子提供者按倒序遍历，这样后添加的会先被访问。
-			for (int i = subProvider.Length - 1; i >= 0; i--)
+			for (var i = subProvider.Length - 1; i >= 0; i--)
 			{
 				dlg = subProvider[i].GetConverterFrom(inputType);
 				if (dlg != null && this.IsValidConverterFrom(dlg, inputType))

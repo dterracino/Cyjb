@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Text
 {
@@ -9,11 +13,7 @@ namespace Cyjb.Text
 	public abstract class TokenParser<T>
 		where T : struct
 	{
-		/// <summary>
-		/// 初始化 <see cref="TokenParser{T}"/> 类的新实例。
-		/// </summary>
-		protected TokenParser() { }
-		/// <summary>
+	    /// <summary>
 		/// 获取词法单元的分析结果。
 		/// </summary>
 		/// <value>词法单元的分析结果。其值储存在 <see cref="Token{T}.Value"/> 属性中。</value>
@@ -34,7 +34,7 @@ namespace Cyjb.Text
 		/// <param name="tokens">要分析的词法单元序列。</param>
 		public void Parse(IEnumerable<Token<T>> tokens)
 		{
-			foreach (Token<T> token in tokens)
+			foreach (var token in tokens)
 			{
 				Parse(token);
 			}

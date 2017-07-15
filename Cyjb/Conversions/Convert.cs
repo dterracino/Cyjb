@@ -1,10 +1,14 @@
 ﻿using System;
+using Cyjb.Reflection;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics.Contracts;
+using System.Linq;
 using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Conversions;
-using Cyjb.Reflection;
 using Cyjb.Utility;
 
 namespace Cyjb
@@ -18,7 +22,7 @@ namespace Cyjb
 	/// <para>默认添加了所有类型转换为字符串，和字符串转换为数字、布尔和日期/时间的额外方法。</para>
 	/// <para>所有数值类型转换，都会对溢出进行检查，如果数值不在范围内则会抛出异常。</para>
 	/// <para>explicit 和 implicit 方法缓存的键为 Cyjb.UserConversionCache，默认使用上限为 <c>256</c> 的 
-	/// <see cref="LruCache{TKey, TValue}"/>。动态生成的类型转换方法缓存的键为 Cyjb.ConverterCache，
+	/// <see cref="LruCache{TKey,TValue}"/>。动态生成的类型转换方法缓存的键为 Cyjb.ConverterCache，
 	/// 默认使用无上限的 <see cref="SimplyCache{TKey, TValue}"/>。关于如何设置缓存，
 	/// 可以参见 <see cref="CacheFactory"/>。</para>
 	/// </remarks>
@@ -34,8 +38,8 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="outputType"/> 为 <c>null</c>。</exception>
 		public static Type GetConverterType(Type inputType, Type outputType)
 		{
-			CommonExceptions.CheckArgumentNull(inputType, "inputType");
-			CommonExceptions.CheckArgumentNull(outputType, "outputType");
+			CommonExceptions.CheckArgumentNull(inputType, nameof(inputType));
+			CommonExceptions.CheckArgumentNull(outputType, nameof(outputType));
 			Contract.EndContractBlock();
 			return typeof(Converter<,>).MakeGenericType(inputType, outputType);
 		}
@@ -83,13 +87,13 @@ namespace Cyjb
 			Contract.Requires(inputType != null && outputType != null);
 			return converterCache.GetOrAdd(new Tuple<Type, Type>(inputType, outputType), types =>
 			{
-				Conversion conversion = ConversionFactory.GetConversion(inputType, outputType);
+				var conversion = ConversionFactory.GetConversion(inputType, outputType);
 				if (conversion == null)
 				{
 					return null;
 				}
-				Converter converter = new Converter();
-				DelegateConversion dlgConversion = conversion as DelegateConversion;
+				var converter = new Converter();
+				var dlgConversion = conversion as DelegateConversion;
 				if (dlgConversion != null)
 				{
 					converter.GenericConverter = dlgConversion.Converter;
@@ -125,7 +129,7 @@ namespace Cyjb
 						return converter;
 					}
 				}
-				Delegate dlg = BuildConverter(conversion, inputType, outputType, false, buildGeneric);
+				var dlg = BuildConverter(conversion, inputType, outputType, false, buildGeneric);
 				if (buildGeneric)
 				{
 					converter.GenericConverter = dlg;
@@ -152,10 +156,10 @@ namespace Cyjb
 		{
 			Contract.Requires(conversion != null && inputType != null && outputType != null);
 			Contract.Ensures(Contract.Result<Delegate>() != null);
-			DynamicMethod method = new DynamicMethod("Converter", buildGeneric ? outputType : typeof(object),
+			var method = new DynamicMethod("Converter", buildGeneric ? outputType : typeof(object),
 				new[] { buildGeneric ? inputType : typeof(object) }, true);
-			ILGenerator il = method.GetILGenerator();
-			bool passByAddress = conversion is FromNullableConversion;
+			var il = method.GetILGenerator();
+			var passByAddress = conversion is FromNullableConversion;
 			if (passByAddress && (buildGeneric || !inputType.IsValueType))
 			{
 				il.Emit(OpCodes.Ldarga_S, (byte)0);
@@ -199,9 +203,9 @@ namespace Cyjb
 		/// </overloads>
 		public static Converter<TInput, TOutput> GetConverter<TInput, TOutput>()
 		{
-			Type inputType = typeof(TInput);
-			Type outputType = typeof(TOutput);
-			Converter converter = GetConverterInternal(inputType, outputType, true);
+			var inputType = typeof(TInput);
+			var outputType = typeof(TOutput);
+			var converter = GetConverterInternal(inputType, outputType, true);
 			if (converter == null)
 			{
 				return null;
@@ -227,8 +231,8 @@ namespace Cyjb
 		/// <exception cref="ArgumentException"><paramref name="outputType"/> 包含泛型参数。</exception>
 		public static Converter<object, object> GetConverter(Type inputType, Type outputType)
 		{
-			CommonExceptions.CheckArgumentNull(inputType, "inputType");
-			CommonExceptions.CheckArgumentNull(outputType, "outputType");
+			CommonExceptions.CheckArgumentNull(inputType, nameof(inputType));
+			CommonExceptions.CheckArgumentNull(outputType, nameof(outputType));
 			Contract.EndContractBlock();
 			if (inputType.ContainsGenericParameters)
 			{
@@ -238,7 +242,7 @@ namespace Cyjb
 			{
 				throw CommonExceptions.TypeContainsGenericParameters(outputType);
 			}
-			Converter converter = GetConverterInternal(inputType, outputType, false);
+			var converter = GetConverterInternal(inputType, outputType, false);
 			if (converter == null)
 			{
 				return null;
@@ -264,8 +268,8 @@ namespace Cyjb
 		[SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
 		public static bool CanChangeType(Type inputType, Type outputType)
 		{
-			CommonExceptions.CheckArgumentNull(inputType, "inputType");
-			CommonExceptions.CheckArgumentNull(outputType, "outputType");
+			CommonExceptions.CheckArgumentNull(inputType, nameof(inputType));
+			CommonExceptions.CheckArgumentNull(outputType, nameof(outputType));
 			Contract.EndContractBlock();
 			if (inputType.ContainsGenericParameters)
 			{
@@ -297,7 +301,7 @@ namespace Cyjb
 		/// <see cref="IConverterProvider"/> 提供的类型转换方法。</remarks>
 		public static void AddConverter<TInput, TOutput>(Converter<TInput, TOutput> converter)
 		{
-			CommonExceptions.CheckArgumentNull(converter, "converter");
+			CommonExceptions.CheckArgumentNull(converter, nameof(converter));
 			Contract.EndContractBlock();
 			ConversionFactory.AddConverterProvider(new ConverterProvider(converter, typeof(TInput), typeof(TOutput)));
 		}
@@ -313,10 +317,10 @@ namespace Cyjb
 		/// 方法提供的类型转换方法优先级更高，且后设置的优先级更高。</remarks>
 		public static void AddConverterProvider(IConverterProvider provider)
 		{
-			CommonExceptions.CheckArgumentNull(provider, "provider");
+			CommonExceptions.CheckArgumentNull(provider, nameof(provider));
 			if (provider.OriginType == null)
 			{
-				throw CommonExceptions.ArgumentNull("provider");
+				throw CommonExceptions.ArgumentNull(nameof(provider));
 			}
 			Contract.EndContractBlock();
 			ConversionFactory.AddConverterProvider(provider);
@@ -342,7 +346,7 @@ namespace Cyjb
 		/// </overloads>
 		public static TOutput ChangeType<TInput, TOutput>(TInput value)
 		{
-			Converter<TInput, TOutput> converter = GetConverter<TInput, TOutput>();
+			var converter = GetConverter<TInput, TOutput>();
 			if (converter == null)
 			{
 				throw CommonExceptions.InvalidCast(typeof(TInput), typeof(TOutput));
@@ -370,7 +374,7 @@ namespace Cyjb
 				}
 				return default(TOutput);
 			}
-			Converter<object, object> converter = GetConverter(value.GetType(), typeof(TOutput));
+			var converter = GetConverter(value.GetType(), typeof(TOutput));
 			if (converter == null)
 			{
 				throw CommonExceptions.InvalidCast(value.GetType(), typeof(TOutput));
@@ -391,7 +395,7 @@ namespace Cyjb
 		/// <exception cref="InvalidCastException">不支持此转换。</exception>
 		public static object ChangeType(object value, Type outputType)
 		{
-			CommonExceptions.CheckArgumentNull(outputType, "outputType");
+			CommonExceptions.CheckArgumentNull(outputType, nameof(outputType));
 			Contract.EndContractBlock();
 			if (value == null)
 			{
@@ -401,7 +405,7 @@ namespace Cyjb
 				}
 				return null;
 			}
-			Converter<object, object> converter = GetConverter(value.GetType(), outputType);
+			var converter = GetConverter(value.GetType(), outputType);
 			if (converter == null)
 			{
 				throw CommonExceptions.InvalidCast(value.GetType(), outputType);

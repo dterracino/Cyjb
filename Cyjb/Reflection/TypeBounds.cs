@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Reflection
 {
@@ -27,13 +29,13 @@ namespace Cyjb.Reflection
 		public TypeBounds(params Type[] genericArguments)
 		{
 			Contract.Requires(genericArguments != null);
-			int len = genericArguments.Length;
-			this.boundSets = new BoundSet[len];
-			this.boundSetDict = new Dictionary<Type, BoundSet>(len);
-			for (int i = 0; i < genericArguments.Length; i++)
+			var len = genericArguments.Length;
+			boundSets = new BoundSet[len];
+			boundSetDict = new Dictionary<Type, BoundSet>(len);
+			for (var i = 0; i < genericArguments.Length; i++)
 			{
-				this.boundSets[i] = new BoundSet(genericArguments[i]);
-				this.boundSetDict.Add(genericArguments[i], this.boundSets[i]);
+				boundSets[i] = new BoundSet(genericArguments[i]);
+				boundSetDict.Add(genericArguments[i], boundSets[i]);
 			}
 		}
 		/// <summary>
@@ -43,13 +45,13 @@ namespace Cyjb.Reflection
 		public TypeBounds(TypeBounds typeBounds)
 		{
 			Contract.Requires(typeBounds != null);
-			int len = typeBounds.boundSets.Length;
-			this.boundSets = new BoundSet[len];
-			this.boundSetDict = new Dictionary<Type, BoundSet>(len);
-			for (int i = 0; i < typeBounds.boundSets.Length; i++)
+			var len = typeBounds.boundSets.Length;
+			boundSets = new BoundSet[len];
+			boundSetDict = new Dictionary<Type, BoundSet>(len);
+			for (var i = 0; i < typeBounds.boundSets.Length; i++)
 			{
-				this.boundSets[i] = new BoundSet(typeBounds.boundSets[i]);
-				this.boundSetDict.Add(this.boundSets[i].GenericArgument, this.boundSets[i]);
+				boundSets[i] = new BoundSet(typeBounds.boundSets[i]);
+				boundSetDict.Add(boundSets[i].GenericArgument, boundSets[i]);
 			}
 		}
 		/// <summary>
@@ -59,11 +61,11 @@ namespace Cyjb.Reflection
 		/// 如果推断失败，则为 <c>null</c>。</returns>
 		public Type[] FixTypeArguments()
 		{
-			int len = this.boundSets.Length;
-			Type[] result = new Type[len];
-			for (int i = 0; i < len; i++)
+			var len = boundSets.Length;
+			var result = new Type[len];
+			for (var i = 0; i < len; i++)
 			{
-				result[i] = this.boundSets[i].FixTypeArg();
+				result[i] = boundSets[i].FixTypeArg();
 				if (result[i] == null)
 				{
 					return null;
@@ -128,7 +130,7 @@ namespace Cyjb.Reflection
 				return type.IsArray && paramType.GetArrayRank() == type.GetArrayRank() &&
 					ExactInferences(paramType.GetElementType(), type.GetElementType());
 			}
-			Type paramUnderlyingType = Nullable.GetUnderlyingType(paramType);
+			var paramUnderlyingType = Nullable.GetUnderlyingType(paramType);
 			if (paramUnderlyingType != null)
 			{
 				type = Nullable.GetUnderlyingType(type);
@@ -138,9 +140,9 @@ namespace Cyjb.Reflection
 			{
 				return false;
 			}
-			Type[] paramTypeArgs = paramType.GetGenericArguments();
-			Type[] typeArgs = type.GetGenericArguments();
-			for (int i = 0; i < paramTypeArgs.Length; i++)
+			var paramTypeArgs = paramType.GetGenericArguments();
+			var typeArgs = type.GetGenericArguments();
+			for (var i = 0; i < paramTypeArgs.Length; i++)
 			{
 				if (!ExactInferences(paramTypeArgs[i], typeArgs[i]))
 				{
@@ -162,7 +164,7 @@ namespace Cyjb.Reflection
 			{
 				return boundSetDict[paramType].AddLowerBound(type);
 			}
-			Type paramUnderlyingType = Nullable.GetUnderlyingType(paramType);
+			var paramUnderlyingType = Nullable.GetUnderlyingType(paramType);
 			if (paramUnderlyingType != null)
 			{
 				type = Nullable.GetUnderlyingType(type);
@@ -179,7 +181,7 @@ namespace Cyjb.Reflection
 				return IsReferenceType(type) ? LowerBoundInferences(paramType, type) :
 					ExactInferences(paramType, type);
 			}
-			Type paramDefinition = paramType.GetGenericTypeDefinition();
+			var paramDefinition = paramType.GetGenericTypeDefinition();
 			if (paramDefinition.IsIListOrBase())
 			{
 				if (type.IsArray && type.GetArrayRank() == 1)
@@ -190,15 +192,15 @@ namespace Cyjb.Reflection
 						ExactInferences(paramType, type);
 				}
 			}
-			Type tempType = paramDefinition.UniqueCloseDefinitionFrom(type);
+			var tempType = paramDefinition.UniqueCloseDefinitionFrom(type);
 			if (tempType == null)
 			{
 				return false;
 			}
-			Type[] originArgs = paramDefinition.GetGenericArguments();
-			Type[] paramTypeArgs = paramType.GetGenericArguments();
-			Type[] typeArgs = tempType.GetGenericArguments();
-			for (int i = 0; i < originArgs.Length; i++)
+			var originArgs = paramDefinition.GetGenericArguments();
+			var paramTypeArgs = paramType.GetGenericArguments();
+			var typeArgs = tempType.GetGenericArguments();
+			for (var i = 0; i < originArgs.Length; i++)
 			{
 				if (!GenericArgumentInferences(originArgs[i].GenericParameterAttributes,
 					paramTypeArgs[i], typeArgs[i], GenericParameterAttributes.Covariant))
@@ -221,7 +223,7 @@ namespace Cyjb.Reflection
 			{
 				return boundSetDict[paramType].AddUpperBound(type);
 			}
-			Type paramUnderlyingType = Nullable.GetUnderlyingType(paramType);
+			var paramUnderlyingType = Nullable.GetUnderlyingType(paramType);
 			if (paramUnderlyingType != null)
 			{
 				type = Nullable.GetUnderlyingType(type);
@@ -253,16 +255,16 @@ namespace Cyjb.Reflection
 			{
 				return false;
 			}
-			Type paramDefinition = type.GetGenericTypeDefinition();
-			Type tempType = paramDefinition.UniqueCloseDefinitionFrom(paramType);
+			var paramDefinition = type.GetGenericTypeDefinition();
+			var tempType = paramDefinition.UniqueCloseDefinitionFrom(paramType);
 			if (tempType == null)
 			{
 				return false;
 			}
-			Type[] originArgs = paramDefinition.GetGenericArguments();
-			Type[] paramTypeArgs = tempType.GetGenericArguments();
-			Type[] typeArgs = type.GetGenericArguments();
-			for (int i = 0; i < originArgs.Length; i++)
+			var originArgs = paramDefinition.GetGenericArguments();
+			var paramTypeArgs = tempType.GetGenericArguments();
+			var typeArgs = type.GetGenericArguments();
+			for (var i = 0; i < originArgs.Length; i++)
 			{
 				if (!GenericArgumentInferences(originArgs[i].GenericParameterAttributes,
 					paramTypeArgs[i], typeArgs[i], GenericParameterAttributes.Contravariant))
@@ -352,16 +354,16 @@ namespace Cyjb.Reflection
 			public BoundSet(BoundSet bound)
 			{
 				Contract.Requires(bound != null);
-				this.genericArgument = bound.genericArgument;
-				this.ReferenceType = bound.ReferenceType;
+				genericArgument = bound.genericArgument;
+				ReferenceType = bound.ReferenceType;
 				if (bound.exactBound == null)
 				{
-					this.lowerBounds.UnionWith(bound.lowerBounds);
-					this.upperBounds.UnionWith(bound.upperBounds);
+					lowerBounds.UnionWith(bound.lowerBounds);
+					upperBounds.UnionWith(bound.upperBounds);
 				}
 				else
 				{
-					this.exactBound = bound.exactBound;
+					exactBound = bound.exactBound;
 				}
 			}
 			/// <summary>
@@ -370,7 +372,7 @@ namespace Cyjb.Reflection
 			/// <value>界限集对应的泛型参数。</value>
 			public Type GenericArgument
 			{
-				get { return this.genericArgument; }
+				get { return genericArgument; }
 			}
 			/// <summary>
 			/// 向类型推断的精确界限集中添加指定的类型。
@@ -384,7 +386,7 @@ namespace Cyjb.Reflection
 				{
 					return exactBound == type;
 				}
-				if (!this.CanFixed(type))
+				if (!CanFixed(type))
 				{
 					// 与现有的界限冲突。
 					return false;
@@ -436,9 +438,9 @@ namespace Cyjb.Reflection
 				Type result;
 				if (exactBound == null)
 				{
-					HashSet<Type> types = new HashSet<Type>(lowerBounds);
+					var types = new HashSet<Type>(lowerBounds);
 					types.UnionWith(upperBounds);
-					types.RemoveWhere(type => !this.CanFixed(type));
+					types.RemoveWhere(type => !CanFixed(type));
 					if (types.Count == 0)
 					{
 						// 没有找到合适的推断结果。

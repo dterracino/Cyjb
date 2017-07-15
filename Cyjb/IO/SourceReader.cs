@@ -5,6 +5,7 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using Cyjb.Text;
 
 namespace Cyjb.IO
@@ -135,10 +136,10 @@ namespace Cyjb.IO
 		public SourceReader(TextReader reader, SourcePosition initPosition, int tabSize)
 			: this(initPosition, tabSize)
 		{
-			CommonExceptions.CheckArgumentNull(reader, "reader");
+			CommonExceptions.CheckArgumentNull(reader, nameof(reader));
 			if (tabSize <= 0)
 			{
-				throw CommonExceptions.ArgumentMustBePositive("tabSize", tabSize);
+				throw CommonExceptions.ArgumentMustBePositive(nameof(tabSize), tabSize);
 			}
 			Contract.EndContractBlock();
 			this.reader = reader;
@@ -176,13 +177,13 @@ namespace Cyjb.IO
 			get { return globalIndex; }
 			set
 			{
-				if (value > this.globalIndex)
+				if (value > globalIndex)
 				{
-					this.Read(value - this.globalIndex - 1);
+					Read(value - globalIndex - 1);
 				}
-				else if (value < this.globalIndex)
+				else if (value < globalIndex)
 				{
-					this.Unget(this.globalIndex - value);
+					Unget(globalIndex - value);
 				}
 			}
 		}
@@ -216,14 +217,14 @@ namespace Cyjb.IO
 		/// </remarks>
 		public Queue<Tuple<int, string>> PlaceHolders
 		{
-			get { return this.placeHolders; }
+			get { return placeHolders; }
 		}
 		/// <summary>
 		/// 关闭 <see cref="SourceReader"/> 对象和基础字符读取器，并释放与读取器关联的所有系统资源。
 		/// </summary>
 		public void Close()
 		{
-			this.Dispose();
+			Dispose();
 		}
 
 		#region IDisposable 成员
@@ -233,14 +234,14 @@ namespace Cyjb.IO
 		/// </summary>
 		public void Dispose()
 		{
-			if (this.reader == null)
+			if (reader == null)
 			{
 				return;
 			}
-			this.reader.Dispose();
-			this.reader = null;
-			this.current = this.last = this.first = null;
-			this.builder = null;
+			reader.Dispose();
+			reader = null;
+			current = last = first = null;
+			builder = null;
 		}
 
 		#endregion
@@ -281,12 +282,12 @@ namespace Cyjb.IO
 		{
 			if (idx < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("idx", idx);
+				throw CommonExceptions.ArgumentNegative(nameof(idx), idx);
 			}
 			Contract.EndContractBlock();
 			CheckDisposed();
-			SourceBuffer temp = current;
-			int tempLen = length;
+			var temp = current;
+			var tempLen = length;
 			idx += index;
 			while (true)
 			{
@@ -341,7 +342,7 @@ namespace Cyjb.IO
 		{
 			if (idx < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("idx", idx);
+				throw CommonExceptions.ArgumentNegative(nameof(idx), idx);
 			}
 			Contract.EndContractBlock();
 			CheckDisposed();
@@ -413,7 +414,7 @@ namespace Cyjb.IO
 		{
 			if (count < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("count", count);
+				throw CommonExceptions.ArgumentNegative(nameof(count), count);
 			}
 			Contract.EndContractBlock();
 			CheckDisposed();
@@ -423,14 +424,14 @@ namespace Cyjb.IO
 			}
 			if (count == 1)
 			{
-				return this.Unget() ? 1 : 0;
+				return Unget() ? 1 : 0;
 			}
-			int backCount = 0;
+			var backCount = 0;
 			while (true)
 			{
 				if (current == first)
 				{
-					int charCnt = index - firstIndex;
+					var charCnt = index - firstIndex;
 					if (count > charCnt)
 					{
 						backCount += charCnt;
@@ -468,8 +469,8 @@ namespace Cyjb.IO
 			CheckDisposed();
 			InitBuilder();
 			// 将字符串复制到 StringBuilder 中。
-			SourceBuffer buf = first;
-			int fIndex = firstIndex;
+			var buf = first;
+			var fIndex = firstIndex;
 			while (buf != current)
 			{
 				CopyToBuilder(buf, fIndex, BufferSize - fIndex);
@@ -488,12 +489,12 @@ namespace Cyjb.IO
 			CheckDisposed();
 			while (first != current)
 			{
-				this.Forward(first, firstIndex, BufferSize - firstIndex);
+				Forward(first, firstIndex, BufferSize - firstIndex);
 				startIndex += BufferSize - firstIndex;
 				firstIndex = 0;
 				first = first.Next;
 			}
-			this.Forward(current, firstIndex, index - firstIndex);
+			Forward(current, firstIndex, index - firstIndex);
 			startIndex += index - firstIndex;
 			firstIndex = index;
 		}
@@ -510,13 +511,13 @@ namespace Cyjb.IO
 			while (first != current)
 			{
 				CopyToBuilder(first, firstIndex, BufferSize - firstIndex);
-				this.Forward(first, firstIndex, BufferSize - firstIndex);
+				Forward(first, firstIndex, BufferSize - firstIndex);
 				startIndex += BufferSize - firstIndex;
 				firstIndex = 0;
 				first = first.Next;
 			}
 			CopyToBuilder(first, firstIndex, index - firstIndex);
-			this.Forward(current, firstIndex, index - firstIndex);
+			Forward(current, firstIndex, index - firstIndex);
 			startIndex += index - firstIndex;
 			firstIndex = index;
 			builder.Length = builderCopiedLen;
@@ -554,7 +555,7 @@ namespace Cyjb.IO
 		public Token<T> AcceptToken<T>(T id, object value)
 			where T : struct
 		{
-			SourcePosition start = locator.NextPosition;
+			var start = locator.NextPosition;
 			return new Token<T>(id, Accept(), start, locator.Position, value);
 		}
 		/// <summary>
@@ -562,7 +563,7 @@ namespace Cyjb.IO
 		/// </summary>
 		private void CheckDisposed()
 		{
-			if (this.reader == null)
+			if (reader == null)
 			{
 				throw CommonExceptions.StreamClosed(typeof(SourceReader));
 			}
@@ -575,18 +576,18 @@ namespace Cyjb.IO
 		/// <param name="len">要前进的字符的长度。</param>
 		private void Forward(SourceBuffer buffer, int start, int len)
 		{
-			Tuple<int, string> placeholder = CurrentPlaceHolder();
+			var placeholder = CurrentPlaceHolder();
 			if (placeholder == null)
 			{
 				locator.Forward(buffer.Buffer, start, len);
 			}
 			else
 			{
-				int end = start + len;
-				int local = placeholder.Item1 - buffer.StartIndex;
+				var end = start + len;
+				var local = placeholder.Item1 - buffer.StartIndex;
 				while (local < end)
 				{
-					this.placeHolders.Dequeue();
+					placeHolders.Dequeue();
 					locator.Forward(buffer.Buffer, start, local - start);
 					locator.Forward(placeholder.Item2);
 					start = local + 1;
@@ -609,9 +610,9 @@ namespace Cyjb.IO
 		private Tuple<int, string> CurrentPlaceHolder()
 		{
 			Tuple<int, string> tuple = null;
-			while (this.placeHolders.Count > 0 && (tuple = this.placeHolders.Peek()) == null)
+			while (placeHolders.Count > 0 && (tuple = placeHolders.Peek()) == null)
 			{
-				this.placeHolders.Dequeue();
+				placeHolders.Dequeue();
 			}
 			return tuple;
 		}
@@ -649,7 +650,7 @@ namespace Cyjb.IO
 			}
 			else if ((builderCopiedLen += len) > builder.Length)
 			{
-				int l = builderCopiedLen - builder.Length;
+				var l = builderCopiedLen - builder.Length;
 				builder.Append(buffer.Buffer, len - l, l);
 			}
 		}
@@ -703,7 +704,7 @@ namespace Cyjb.IO
 				if (last.Next == first)
 				{
 					// 没有可用的空缓冲区，则需要新建立一块。
-					SourceBuffer buffer = new SourceBuffer
+					var buffer = new SourceBuffer
 					{
 						Next = last.Next,
 						Prev = current

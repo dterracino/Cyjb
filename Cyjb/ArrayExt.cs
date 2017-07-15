@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb
 {
@@ -25,10 +28,10 @@ namespace Cyjb
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> 小于 <c>0</c>。</exception>
 		public static T[] Left<T>(this T[] array, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (length == 0)
@@ -39,7 +42,7 @@ namespace Cyjb
 			{
 				length = array.Length;
 			}
-			T[] result = new T[length];
+			var result = new T[length];
 			Array.Copy(array, result, length);
 			return result;
 		}
@@ -56,10 +59,10 @@ namespace Cyjb
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> 小于 <c>0</c>。</exception>
 		public static T[] Right<T>(this T[] array, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (length < 0)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("length", length);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(length), length);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (length == 0)
@@ -70,7 +73,7 @@ namespace Cyjb
 			{
 				length = array.Length;
 			}
-			T[] result = new T[length];
+			var result = new T[length];
 			Array.Copy(array, array.Length - length, result, 0, length);
 			return result;
 		}
@@ -93,17 +96,17 @@ namespace Cyjb
 		/// </overloads>
 		public static T[] Subarray<T>(this T[] array, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < -array.Length || startIndex > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (startIndex == array.Length)
 			{
 				return Empty<T>();
 			}
-			T[] result = new T[array.Length - startIndex];
+			var result = new T[array.Length - startIndex];
 			Array.Copy(array, startIndex, result, 0, result.Length);
 			return result;
 		}
@@ -124,10 +127,10 @@ namespace Cyjb
 		/// 之和指示的位置不在此数组中。</exception>
 		public static T[] Subarray<T>(this T[] array, int startIndex, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < -array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (length < 0 || startIndex + length > array.Length)
 			{
@@ -142,7 +145,7 @@ namespace Cyjb
 			{
 				startIndex += array.Length;
 			}
-			T[] result = new T[length];
+			var result = new T[length];
 			Array.Copy(array, startIndex, result, 0, length);
 			return result;
 		}
@@ -164,10 +167,10 @@ namespace Cyjb
 		/// </overloads>
 		public static T[] Slice<T>(this T[] array, int startIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < -array.Length || startIndex > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (startIndex == array.Length)
@@ -178,7 +181,7 @@ namespace Cyjb
 			{
 				startIndex += array.Length;
 			}
-			T[] result = new T[array.Length - startIndex];
+			var result = new T[array.Length - startIndex];
 			Array.Copy(array, startIndex, result, 0, result.Length);
 			return result;
 		}
@@ -198,14 +201,14 @@ namespace Cyjb
 		/// 指示的位置不在此数组中。</exception>
 		public static T[] Slice<T>(this T[] array, int startIndex, int endIndex)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (startIndex < -array.Length || startIndex > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("startIndex", startIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(startIndex), startIndex);
 			}
 			if (endIndex < -array.Length || endIndex > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("endIndex", endIndex);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(endIndex), endIndex);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (startIndex == endIndex)
@@ -224,7 +227,7 @@ namespace Cyjb
 			{
 				return Empty<T>();
 			}
-			T[] result = new T[endIndex - startIndex];
+			var result = new T[endIndex - startIndex];
 			Array.Copy(array, startIndex, result, 0, result.Length);
 			return result;
 		}
@@ -269,14 +272,14 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		public static T[] Add<T>(this T[] array, params T[] items)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (items == null || items.Length == 0)
 			{
 				return array;
 			}
-			int len = array.Length + items.Length;
-			T[] result = new T[len];
+			var len = array.Length + items.Length;
+			var result = new T[len];
 			array.CopyTo(result, 0);
 			items.CopyTo(result, array.Length);
 			return result;
@@ -293,22 +296,22 @@ namespace Cyjb
 		/// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 <c>0</c> 或大于数组的长度。</exception>
 		public static T[] Insert<T>(this T[] array, int index, params T[] items)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			if (index < 0)
 			{
-				throw CommonExceptions.ArgumentNegative("index", index);
+				throw CommonExceptions.ArgumentNegative(nameof(index), index);
 			}
 			if (index > array.Length)
 			{
-				throw CommonExceptions.ArgumentOutOfRange("index", index);
+				throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 			}
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (items == null || items.Length == 0)
 			{
 				return array;
 			}
-			int len = array.Length + items.Length;
-			T[] result = new T[len];
+			var len = array.Length + items.Length;
+			var result = new T[len];
 			if (index > 0)
 			{
 				Array.Copy(array, 0, result, 0, index);
@@ -326,16 +329,16 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="arrays"/> 为 <c>null</c>。</exception>
 		public static T[] Combine<T>(params T[][] arrays)
 		{
-			CommonExceptions.CheckArgumentNull(arrays, "arrays");
+			CommonExceptions.CheckArgumentNull(arrays, nameof(arrays));
 			Contract.Ensures(Contract.Result<T[]>() != null);
-			int len = arrays.Sum(arr => arr == null ? 0 : arr.Length);
+			var len = arrays.Sum(arr => arr == null ? 0 : arr.Length);
 			if (len == 0)
 			{
 				return Empty<T>();
 			}
-			T[] result = new T[len];
-			int idx = 0;
-			for (int i = 0; i < arrays.Length; i++)
+			var result = new T[len];
+			var idx = 0;
+			for (var i = 0; i < arrays.Length; i++)
 			{
 				if (arrays[i] != null)
 				{
@@ -360,13 +363,13 @@ namespace Cyjb
 		/// </overloads>
 		public static T[] Extend<T>(this T[] array, int length)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (length <= array.Length)
 			{
 				return array;
 			}
-			T[] result = new T[length];
+			var result = new T[length];
 			array.CopyTo(result, 0);
 			return result;
 		}
@@ -381,13 +384,13 @@ namespace Cyjb
 		/// <exception cref="ArgumentNullException"><paramref name="array"/> 为 <c>null</c>。</exception>
 		public static T[] Extend<T>(this T[] array, int length, T value)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.Ensures(Contract.Result<T[]>() != null);
 			if (length <= array.Length)
 			{
 				return array;
 			}
-			T[] result = new T[length];
+			var result = new T[length];
 			array.CopyTo(result, 0);
 			result.FillInternal(value, array.Length, length - array.Length);
 			return result;
@@ -407,9 +410,9 @@ namespace Cyjb
 		/// <typeparamref name="TOutput"/> 类型。</exception>
 		public static TOutput[] ConvertAll<TInput, TOutput>(this TInput[] array)
 		{
-			CommonExceptions.CheckArgumentNull(array, "array");
+			CommonExceptions.CheckArgumentNull(array, nameof(array));
 			Contract.EndContractBlock();
-			Converter<TInput, TOutput> converter = Convert.GetConverter<TInput, TOutput>();
+			var converter = Convert.GetConverter<TInput, TOutput>();
 			if (converter == null)
 			{
 				throw CommonExceptions.InvalidCast(typeof(TInput), typeof(TOutput));

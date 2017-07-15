@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Cyjb.Collections
 {
@@ -54,11 +57,11 @@ namespace Cyjb.Collections
 			{
 				if (index < 0)
 				{
-					throw CommonExceptions.ArgumentNegative("index", index);
+					throw CommonExceptions.ArgumentNegative(nameof(index), index);
 				}
-				if (index >= this.Count)
+				if (index >= Count)
 				{
-					throw CommonExceptions.ArgumentOutOfRange("index", index);
+					throw CommonExceptions.ArgumentOutOfRange(nameof(index), index);
 				}
 				Contract.EndContractBlock();
 				return getElement(this, index);
